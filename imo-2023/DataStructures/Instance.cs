@@ -26,7 +26,9 @@ internal record Instance(int Dimension, IReadOnlyList<Node> Nodes, int[,] Distan
   }
 
 
-  public Node ClosestTo(Node node, IEnumerable<Node>? except) {
+  public int this[Node first, Node second] => Distances[first.Index, second.Index];
+
+  public Node ClosestTo(Node node, IEnumerable<Node>? except = null) {
     var closest = node;
     var excepted = except?.ToHashSet() ?? new HashSet<Node>();
 
@@ -38,7 +40,7 @@ internal record Instance(int Dimension, IReadOnlyList<Node> Nodes, int[,] Distan
     return closest;
   }
 
-  public Node FurthestTo(Node node, IEnumerable<Node>? except) {
+  public Node FurthestTo(Node node, IEnumerable<Node>? except = null) {
     var furthest = node;
     var excepted = except?.ToHashSet() ?? new HashSet<Node>();
 
