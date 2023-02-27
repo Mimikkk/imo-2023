@@ -4,7 +4,7 @@ internal record Instance(int Dimension, IReadOnlyList<Node> Nodes, int[,] Distan
 {
   public static Instance Read(string path)
   {
-    var nodes = Node.From(File.ReadLines($"{Prelude.ProjectDirectory}/resources/instances/{path}.tsp")
+    var nodes = Node.From(File.ReadLines($"{ProjectDirectory}/resources/instances/{path}.tsp")
       .Skip(6).SkipLast(1)).ToList();
 
     return new Instance(nodes.Count, nodes, CreateDistanceMatrix(nodes));
