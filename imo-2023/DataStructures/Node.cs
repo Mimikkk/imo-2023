@@ -22,11 +22,8 @@ internal record Node(int Index, int X, int Y)
   {
     var closest = this;
     for (var i = 0; instance.Dimension > i; ++i)
-    {
       if (closest.Index == Index) closest = instance.Nodes[i];
-      else if (instance.Distances[Index, i] < instance.Distances[Index, closest.Index])
-        closest = instance.Nodes[i];
-    }
+      else if (instance.Distances[Index, i] < instance.Distances[Index, closest.Index]) closest = instance.Nodes[i];
 
     return closest;
   }
