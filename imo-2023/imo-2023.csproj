@@ -8,4 +8,12 @@
         <Nullable>enable</Nullable>
     </PropertyGroup>
 
+    <ItemGroup>
+      <PackageReference Include="ScottPlot" Version="5.0.1-beta" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Resources\graphs" />
+    </ItemGroup>
+
 </Project>

@@ -1,6 +1,5 @@
-namespace imo_2023;
-
-internal static class Prelude {
-  public static readonly string ProjectDirectory =
-    Directory.GetParent(Environment.CurrentDirectory)?.Parent?.Parent?.FullName!;
-}
+global using System;
+global using static System.Console;
+global using static imo_2023.Methods.LogMethods;
+global using static imo_2023.Methods.ChartMethods;
+global using static imo_2023.Globals;

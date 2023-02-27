@@ -2,4 +2,5 @@
 using imo_2023.DataStructures;
 
 var instance = Instance.KroA;
-instance.PerformGreedyNearestNeighbour();
+var path = instance.PerformGreedyNearestNeighbour();
+CreateNodeGraph(nodes: path, filename: "nearest-neighbour");

@@ -1,8 +1,8 @@
 using imo_2023.Extensions;
 
-namespace imo_2023;
+namespace imo_2023.Methods;
 
-public static class Log {
+public static class LogMethods {
   public static void W(object? any) => Write(any);
   public static void Wl(object? any) => WriteLine(any);
 
@@ -48,5 +48,4 @@ public static class Log {
     W(set);
     WriteLine();
   }
-
 }
