@@ -1,3 +1,5 @@
-﻿using imo_2023.DataStructures;
+﻿using imo_2023.Algorithms;
+using imo_2023.DataStructures;
 
-L(Instance.Read("kroA100").Distances);
+var instance = Instance.KroA;
+instance.PerformGreedyNearestNeighbour();

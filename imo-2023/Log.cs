@@ -1,23 +1,52 @@
+using imo_2023.Extensions;
+
 namespace imo_2023;
 
-public static class Log
-{
-  public static void L(object any) => WriteLine(any);
+public static class Log {
+  public static void W(object? any) => Write(any);
+  public static void Wl(object? any) => WriteLine(any);
 
-  public static void L(int[,] matrix)
-  {
-    WriteLine('[');
-    for (var i = 0; i < matrix.GetLength(0); i++)
-    {
-      for (var j = 0; j < matrix.GetLength(1); j++)
-      {
-        Write(matrix[i, j]);
-        if (j < matrix.GetLength(1) - 1) Write(", ");
-      }
-
-      WriteLine(';');
+  public static void W<T>(T[,] matrix) {
+    W('[');
+    for (var i = 0; i < matrix.GetLength(0); i++) {
+      W(matrix.ReadRow(i));
+      if (i < matrix.GetLength(0) - 1) Wl(", ");
     }
-
-    WriteLine(']');
+    W(']');
   }
+  public static void Wl<T>(T[,] matrix) {
+    W(matrix);
+    WriteLine();
+  }
+
+  public static void W<T>(IEnumerable<T> enumerable) {
+    Write('[');
+    var collected = enumerable.ToArray();
+
+    for (var i = 0; i < collected.Length; i++) {
+      W(collected[i]!);
+      if (i < collected.Length - 1) Write(", ");
+    }
+    Write(']');
+  }
+  public static void Wl<T>(IEnumerable<T> enumerable) {
+    W(enumerable);
+    WriteLine();
+  }
+
+  public static void W<T>(HashSet<T> set) {
+    Write('{');
+    var collected = set.ToArray();
+
+    for (var i = 0; i < collected.Length; i++) {
+      W(collected[i]!);
+      if (i < collected.Length - 1) Write(", ");
+    }
+    Write('}');
+  }
+  public static void Wl<T>(HashSet<T> set) {
+    W(set);
+    WriteLine();
+  }
+
 }
