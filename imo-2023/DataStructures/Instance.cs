@@ -29,35 +29,20 @@ internal record Instance(int Dimension, IReadOnlyList<Node> Nodes, int[,] Distan
   public int this[Node first, Node second] => Distances[first.Index, second.Index];
 
   public Node ClosestTo(Node node, IEnumerable<Node>? except = null) {
-    var closest = node;
-    var excepted = except?.ToHashSet() ?? new HashSet<Node>();
+    except ??= new List<Node>();
 
-    var distances = Distances.ReadRow(node.Index);
-    for (var i = 0; Dimension > i; ++i)
-      if (!excepted.Contains(Nodes[i]) && (closest.Index == node.Index || distances[i] < distances[closest.Index]))
-        closest = Nodes[i];
-
-    return closest;
+    return Nodes.Except(except.Concat(Yield(node))).MinBy(n => this[node, n])!;
   }
 
   public Node FurthestTo(Node node, IEnumerable<Node>? except = null) {
-    var furthest = node;
-    var excepted = except?.ToHashSet() ?? new HashSet<Node>();
+    except ??= new List<Node>();
 
-    var distances = Distances.ReadRow(node.Index);
-    for (var i = 0; Dimension > i; ++i)
-      if (!excepted.Contains(Nodes[i]) && (furthest.Index == node.Index || distances[i] < distances[furthest.Index]))
-        furthest = Nodes[i];
-
-    return furthest;
+    return Nodes.Except(except.Concat(Yield(node))).MaxBy(n => this[node, n])!;
   }
 
-  public int DistanceOf(IEnumerable<Node> path) {
-    var items = path.ToArray();
-    var distance = 0;
+  public int DistanceOf(IEnumerable<Node> cycle) {
+    var items = cycle.ToArray();
 
-    for (var i = 0; i < items.Length - 1; ++i) distance += Distances[items[i].Index, items[i + 1].Index];
-
-    return distance;
+    return this[items[0], items[^1]] + items.Pairwise().Sum(p => this[p.a, p.b]);
   }
 }

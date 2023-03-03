@@ -6,14 +6,18 @@
         <RootNamespace>imo_2023</RootNamespace>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
+
+        <UseWindowsForms>true</UseWindowsForms>
+        <TargetPlatformIdentifier>Windows</TargetPlatformIdentifier>
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="ScottPlot" Version="5.0.1-beta" />
+        <PackageReference Include="ScottPlot" Version="5.0.2-beta"/>
+        <PackageReference Include="ScottPlot.WinForms" Version="5.0.2-beta"/>
+        <Reference Include="System.Windows.Forms"/>
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Resources\Graphs" />
+        <Folder Include="Resources\Graphs"/>
     </ItemGroup>
-
 </Project>

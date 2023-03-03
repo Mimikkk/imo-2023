@@ -11,8 +11,8 @@ internal record Node(int Index, int X, int Y) {
   public int DistanceTo(Node other) => (int)Math.Round(Math.Sqrt(Math.Pow(X - other.X, 2) + Math.Pow(Y - other.Y, 2)));
 
   public static Node Choose(IEnumerable<Node> nodes) {
-    var items = nodes.ToList();
+    var items = nodes.ToArray();
 
-    return items[Random.Next(items.Count)];
+    return items[Random.Next(items.Length)];
   }
 }
