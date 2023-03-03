@@ -57,9 +57,9 @@ parent.HandleCreated += (_, _) => {
   form.Width = parent.ClientSize.Width;
   form.Height = parent.ClientSize.Height;
 };
-parent.Resize += (sender, cd) => {
+parent.Resize += (sender, _) => {
   var control = (Control)sender!;
- 
+
   form.Width = parent.ClientSize.Width;
   form.Height = parent.ClientSize.Height;
   chart.Add.Scatter(new double[] { control.Size.Width }, new double[] { control.Size.Height });
