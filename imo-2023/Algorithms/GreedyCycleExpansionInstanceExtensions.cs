@@ -11,19 +11,15 @@ internal static class GreedyCycleExpansionInstanceExtensions {
     var distance = instance.DistanceOf(cycle);
 
     while (cycle.Count < instance.Dimension) {
-      var distances = new List<(int i, int distance)>();
+      var (previous, next, bestDistance) = (
+        from first in cycle
+        from second in cycle.Except(Yield(first))
+        from considered in instance.Nodes.Except(cycle)
+        let dist = distance - instance[first, second] + instance[first, considered] + instance[considered, second]
+        select (first, considered, dist)).MinBy(d => d.dist);
 
-      foreach (var first in cycle) {
-        foreach (var second in cycle.Except(Yield(first))) {
-          foreach (var considered in instance.Nodes.Except(cycle)) {
-            var newDistance = distance - instance[first, second] + instance[first, considered] + instance[considered, second];
-
-            distances.Add((considered.Index, newDistance));
-          }
-        }
-      }
-
-      cycle.Add(instance.Nodes[distances.MinBy(d => d.distance).i]);
+      distance = bestDistance;
+      cycle.Insert(cycle.IndexOf(previous), next);
     }
 
     return cycle;
