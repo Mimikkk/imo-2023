@@ -1,6 +1,4 @@
-using imo_2023.Extensions;
-
-namespace imo_2023.DataStructures;
+namespace Algorithms.DataStructures;
 
 public record Instance(int Dimension, IReadOnlyList<Node> Nodes, int[,] Distances) {
   public static Instance Read(string path) {
@@ -11,16 +9,17 @@ public record Instance(int Dimension, IReadOnlyList<Node> Nodes, int[,] Distance
 
     return new Instance(nodes.Count, nodes, CreateDistanceMatrix(nodes));
   }
-  public static Instance KroA => Read("kroA100");
-  public static Instance KroB => Read("kroB100");
 
   private static int[,] CreateDistanceMatrix(IEnumerable<Node> nodes) {
     var items = nodes.ToArray();
     var distances = new int[items.Length, items.Length];
 
     for (var i = 0; i < items.Length; ++i)
-    for (var j = 0; j < items.Length; ++j)
+    for (var j = 0; j < items.Length; ++j) {
+      if (i == j) continue;
       distances[i, j] = items[i].DistanceTo(items[j]);
+      distances[j, i] = items[j].DistanceTo(items[i]);
+    }
 
     return distances;
   }

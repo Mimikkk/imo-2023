@@ -1,4 +1,4 @@
-namespace imo_2023;
+namespace Algorithms;
 
 internal static class Globals {
   public static readonly string ProjectDirectory =

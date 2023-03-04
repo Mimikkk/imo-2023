@@ -1,4 +1,4 @@
-﻿namespace imo_2023.Extensions;
+﻿namespace Algorithms.Extensions;
 
 public static class MatrixExtensions {
   public static T[] ReadRow<T>(this T[,] matrix, int row) {

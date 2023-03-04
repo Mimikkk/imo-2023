@@ -1,4 +1,4 @@
-﻿namespace imo_2023.Extensions;
+﻿namespace Algorithms.Extensions;
 
 public static class IEnumerableExtensions {
   public static IEnumerable<T> Yield<T>(T item) {

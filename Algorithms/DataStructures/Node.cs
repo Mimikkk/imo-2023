@@ -1,4 +1,4 @@
-namespace imo_2023.DataStructures;
+namespace Algorithms.DataStructures;
 
 public record Node(int Index, int X, int Y) {
   private static readonly Random Random = new();

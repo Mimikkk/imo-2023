@@ -1,22 +1,25 @@
+using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
+using Algorithms.DataStructures;
+using Algorithms.Extensions;
+using Algorithms.Methods;
 using Avalonia.Controls;
-using imo_2023.DataStructures;
-using imo_2023.Extensions;
-using imo_2023.Methods;
 using Interface.Types;
 using ScottPlot;
 
 namespace Interface;
 
 public partial class MainWindow : Window {
+
   private string SelectedInstance => Instances.SelectedItem.As<Option>().Value;
   private string SelectedAlgorithm => Algorithms.SelectedItem.As<Option>().Value;
   private int CurrentHistoryStep => (int)HistorySlider.Value;
   private ObservableCollection<List<Node>> History { get; set; } = new();
-  private Instance? CurrentInstance = null;
+  private Instance? CurrentInstance;
   public MainWindow() {
     InitializeComponent();
     RunStartup();
@@ -25,6 +28,7 @@ public partial class MainWindow : Window {
       HistorySlider.Maximum = History.Count - 1;
       HistorySlider.Value = History.Count - 1;
     };
+
     History.Add(new() { new(0, 1, 2), new(1, 1, 2), new(1, 1, 3) });
     History.Add(new() { new(0, 1, 2), new(1, 1, 2), new(1, 5, 8) });
   }

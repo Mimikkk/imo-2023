@@ -1,7 +1,7 @@
-﻿using imo_2023.DataStructures;
+﻿using Algorithms.DataStructures;
 using ScottPlot;
 
-namespace imo_2023.Methods;
+namespace Algorithms.Methods;
 
 public static class ChartMethods {
   public static Plot CreateChart() => new();

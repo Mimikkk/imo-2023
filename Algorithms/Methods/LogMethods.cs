@@ -1,6 +1,4 @@
-using imo_2023.Extensions;
-
-namespace imo_2023.Methods;
+namespace Algorithms.Methods;
 
 public static class LogMethods {
   public static void W(object? any) => Write(any);
