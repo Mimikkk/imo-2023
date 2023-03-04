@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
+using Algorithms.Algorithms;
 using Algorithms.DataStructures;
 using Algorithms.Extensions;
 using Algorithms.Methods;
@@ -23,32 +24,45 @@ public partial class MainWindow : Window {
   public MainWindow() {
     InitializeComponent();
     RunStartup();
-
-    History.CollectionChanged += (_, _) => {
-      HistorySlider.Maximum = History.Count - 1;
-      HistorySlider.Value = History.Count - 1;
-    };
-
-    History.Add(new() { new(0, 1, 2), new(1, 1, 2), new(1, 1, 3) });
-    History.Add(new() { new(0, 1, 2), new(1, 1, 2), new(1, 5, 8) });
   }
 
   private void InitializeListeners() {
+    History.CollectionChanged += (_, _) => {
+      HistorySlider.Maximum = History.Count;
+      HistorySlider.Value = History.Count;
+    };
+
     HistoryText.Text = $"Krok: 0";
     HistorySlider.Minimum = 0;
     HistorySlider.Maximum = 0;
     HistorySlider.PropertyChanged += (_, _) => {
-      HistoryText.Text = $"Krok: {CurrentHistoryStep}";
       if (CurrentInstance is null) return;
+      HistoryText.Text = $"Krok: {CurrentHistoryStep}";
+
       Chart.Plot.Clear();
-      Chart.Plot.Add.Cycle(History[CurrentHistoryStep], CurrentInstance);
+      Chart.Plot.Add.Scatter(CurrentInstance.Nodes, CurrentInstance);
+      if (History.ElementAtOrDefault(CurrentHistoryStep - 1) is { } nodes) {
+        if (nodes == History.Last()) Chart.Plot.Add.Cycle(nodes, CurrentInstance);
+        else Chart.Plot.Add.Path(nodes, CurrentInstance);
+      }
       Chart.Refresh();
     };
+    
     StepNextButton.Click += (_, _) => {
-      if (CurrentHistoryStep < History.Count - 1) HistorySlider.Value = CurrentHistoryStep + 1;
+      if (CurrentHistoryStep >= History.Count - 1) return;
+      HistorySlider.Value = CurrentHistoryStep + 1;
     };
     StepBackButton.Click += (_, _) => {
-      if (CurrentHistoryStep > 0) HistorySlider.Value = CurrentHistoryStep - 1;
+      if (CurrentHistoryStep <= 0) return;
+      HistorySlider.Value = CurrentHistoryStep - 1;
+    };
+    RunButton.Click += (_, _) => {
+      if (CurrentInstance is null) return;
+
+      var observed = new ObservableList<Node>();
+      History.Clear();
+      observed.Changed += (_, _) => History.Add(observed.ToList());
+      CurrentInstance.SearchWithGreedyNearestNeighbour(observed);
     };
   }
 
@@ -68,14 +82,7 @@ public partial class MainWindow : Window {
     Algorithms.SelectedIndex = 0;
   }
 
-  private void InitializeChart() {
-    var dataX = new double[] { 1, 2, 3, 4, 5, 6, 7, 8 };
-    var dataY = new double[] { 1, 4, 9, 16, 25, 35, 40 };
-
-
-    Chart.Plot.Add.Scatter(dataX, dataY);
-    Chart.Refresh();
-  }
+  private void InitializeChart() { }
 
   private void RunStartup() {
     GetType()

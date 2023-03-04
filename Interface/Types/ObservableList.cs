@@ -5,42 +5,42 @@ using System.Collections.Generic;
 namespace Interface.Types;
 
 public class ObservableList<T> : IList<T> {
-  private List<T> List { get; } = new();
+  private readonly List<T> _list = new();
   public event EventHandler? Changed;
 
-  public IEnumerator<T> GetEnumerator() => List.GetEnumerator();
+  public IEnumerator<T> GetEnumerator() => _list.GetEnumerator();
   IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
   public void Add(T item) {
-    List.Add(item);
+    _list.Add(item);
     Changed?.Invoke(this, EventArgs.Empty);
   }
   public void Clear() {
-    List.Clear();
+    _list.Clear();
     Changed?.Invoke(this, EventArgs.Empty);
   }
-  public bool Contains(T item) => List.Contains(item);
-  public void CopyTo(T[] array, int arrayIndex) => List.CopyTo(array, arrayIndex);
+  public bool Contains(T item) => _list.Contains(item);
+  public void CopyTo(T[] array, int arrayIndex) => _list.CopyTo(array, arrayIndex);
   public bool Remove(T item) {
-    var result = List.Remove(item);
+    var result = _list.Remove(item);
     Changed?.Invoke(this, EventArgs.Empty);
     return result;
   }
-  public int Count => List.Count;
+  public int Count => _list.Count;
   public bool IsReadOnly => false;
   public int IndexOf(T item) {
-    return List.IndexOf(item);
+    return _list.IndexOf(item);
   }
   public void Insert(int index, T item) {
-    List.Insert(index, item);
+    _list.Insert(index, item);
     Changed?.Invoke(this, EventArgs.Empty);
   }
   public void RemoveAt(int index) {
-    List.RemoveAt(index);
+    _list.RemoveAt(index);
     Changed?.Invoke(this, EventArgs.Empty);
   }
   public T this[int index] {
-    get => List[index];
-    set => List[index] = value;
+    get => _list[index];
+    set => _list[index] = value;
   }
 }

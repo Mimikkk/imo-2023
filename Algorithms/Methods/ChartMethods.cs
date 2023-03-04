@@ -1,11 +1,10 @@
 ﻿using Algorithms.DataStructures;
 using ScottPlot;
+using ScottPlot.Extensions;
 
 namespace Algorithms.Methods;
 
 public static class ChartMethods {
-  public static Plot CreateChart() => new();
-
   public static AddPlottable Cycle(this AddPlottable add, IEnumerable<Node> cycle, Instance instance) {
     var nodes = cycle as Node[] ?? cycle.ToArray();
 
@@ -13,7 +12,33 @@ public static class ChartMethods {
       xs: nodes.Select(node => (double)node.X).Append(nodes.First().X).ToArray(),
       ys: nodes.Select(node => (double)node.Y).Append(nodes.First().Y).ToArray()
     );
-    scatter.Label = $"Cycle with length: {instance.DistanceOf(nodes.Append(nodes.First()))}";
+    scatter.Label = $"Cycle length: {instance.DistanceOf(nodes.Append(nodes.First()))}";
+
+    return add;
+  }
+
+  public static AddPlottable Path(this AddPlottable add, IEnumerable<Node> cycle, Instance instance) {
+    var nodes = cycle as Node[] ?? cycle.ToArray();
+
+    var scatter = add.Scatter(
+      xs: nodes.Select(node => (double)node.X).ToArray(),
+      ys: nodes.Select(node => (double)node.Y).ToArray()
+    );
+    scatter.Label = $"Path length: {instance.DistanceOf(nodes.Append(nodes.First()))}";
+
+    return add;
+  }
+
+  public static AddPlottable Scatter(this AddPlottable add, IEnumerable<Node> nodes, Instance instance) {
+    nodes = nodes.ToArray();
+
+    var scatter = add.Scatter(
+      nodes.Select(node => (double)node.X).ToArray(),
+      nodes.Select(node => (double)node.Y).ToArray()
+    );
+
+    scatter.LineStyle.Width = 0.01f;
+    scatter.Label = $"Points in Instance: {instance.Nodes.Count}";
 
     return add;
   }

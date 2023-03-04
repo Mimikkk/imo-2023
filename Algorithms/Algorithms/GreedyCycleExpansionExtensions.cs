@@ -3,7 +3,8 @@ using Algorithms.DataStructures;
 namespace Algorithms.Algorithms;
 
 public static class GreedyCycleExpansionExtensions {
-  public static IEnumerable<Node> SearchWithGreedyCycleExpansion(this Instance instance) {
+  public static IEnumerable<Node>
+    SearchWithGreedyCycleExpansion(this Instance instance) {
     var start = Node.Choose(instance.Nodes);
     var closest = instance.ClosestTo(start);
 

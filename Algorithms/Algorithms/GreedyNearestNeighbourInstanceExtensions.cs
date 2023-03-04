@@ -3,7 +3,8 @@ using Algorithms.DataStructures;
 namespace Algorithms.Algorithms;
 
 public static class GreedyNearestNeighbourExtensions {
-  public static IEnumerable<Node> SearchWithGreedyNearestNeighbour(this Instance instance, IList<Node>? path = null) {
+  public static IEnumerable<Node>
+    SearchWithGreedyNearestNeighbour(this Instance instance, IList<Node>? path = null) {
     path ??= new List<Node>();
 
     path.Add(Node.Choose(instance.Nodes));
@@ -12,11 +13,8 @@ public static class GreedyNearestNeighbourExtensions {
     return path;
   }
 
-  public static (IEnumerable<Node>, IEnumerable<Node>) SearchDoubleWithGreedyNearestNeighbour(
-    this Instance instance,
-    IList<Node>? first = null,
-    IList<Node>? second = null
-  ) {
+  public static (IEnumerable<Node>, IEnumerable<Node>)
+    SearchDoubleWithGreedyNearestNeighbour(this Instance instance, IList<Node>? first = null, IList<Node>? second = null) {
     first ??= new List<Node>();
     second ??= new List<Node>();
     first.Add(Node.Choose(instance.Nodes));
