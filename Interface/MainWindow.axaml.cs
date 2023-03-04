@@ -1,7 +1,5 @@
-using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
 using System.Linq;
 using Algorithms.Algorithms;
 using Algorithms.DataStructures;
@@ -37,10 +35,6 @@ public partial class MainWindow : Window {
 
     HistorySlider.PropertyChanged += (_, change) => {
       if (change.Property.Name != "Value") return;
-      var (prev, next) = ((double)change.OldValue!, (double)change.NewValue!);
-
-      if (prev > next) FollowNodeBackwards();
-      else FollowNodeForwards();
 
       HistoryText.Text = $"Krok: {HistoryStep}";
       ChartRefresh();
@@ -134,10 +128,10 @@ public partial class MainWindow : Window {
 
     foreach (var history in Histories) {
       if (SelectedAlgorithm == Algorithm.GreedyCycleExpansion) {
-        if (HistoryStep == (int)HistorySlider.Maximum) Chart.Plot.Add.Cycle(history.Last(), Instance);
+        if (HistoryStep == (int)HistorySlider.Maximum) Chart.Plot.Add.Cycle(history[HistoryStep], Instance);
         else Chart.Plot.Add.Cycle(history[HistoryStep], Instance);
       } else {
-        if (HistoryStep == (int)HistorySlider.Maximum) Chart.Plot.Add.Cycle(history.Last(), Instance);
+        if (HistoryStep == (int)HistorySlider.Maximum) Chart.Plot.Add.Cycle(history[HistoryStep], Instance);
         else Chart.Plot.Add.Path(history[HistoryStep], Instance);
       }
     }
@@ -163,19 +157,6 @@ public partial class MainWindow : Window {
     Title = $"Mouse - {(int)mx}x, {(int)my}y";
     if (SelectedNode is not null) Title += $" : Selected Node - {SelectedNode!.Index} at {SelectedNode.X}x, {SelectedNode.Y}y";
     Chart.Refresh();
-  }
-
-  private void FollowNodeForwards() {
-    if (HistoryStep <= 1 && SelectedNode is null) return;
-    var history = Histories.FirstOrDefault(h => h[HistoryStep - 1].LastOrDefault() == SelectedNode);
-    if (history is null) return;
-    SelectedNode = history[HistoryStep].Last();
-  }
-  private void FollowNodeBackwards() {
-    if (HistoryStep is 0 || SelectedNode is null) return;
-    var history = Histories.FirstOrDefault(h => h[HistoryStep + 1].LastOrDefault() == SelectedNode);
-    if (history is null) return;
-    SelectedNode = history[HistoryStep].Last();
   }
 
   private Node? ClosestNode;
