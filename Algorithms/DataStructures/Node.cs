@@ -1,6 +1,6 @@
 namespace imo_2023.DataStructures;
 
-internal record Node(int Index, int X, int Y) {
+public record Node(int Index, int X, int Y) {
   private static readonly Random Random = new();
 
   public static IEnumerable<Node> From(IEnumerable<string> descriptors) =>

@@ -3,7 +3,7 @@ using ScottPlot;
 
 namespace imo_2023.Methods;
 
-internal static class ChartMethods {
+public static class ChartMethods {
   public static Plot CreateChart() => new();
 
   public static AddPlottable Cycle(this AddPlottable add, IEnumerable<Node> cycle, Instance instance) {

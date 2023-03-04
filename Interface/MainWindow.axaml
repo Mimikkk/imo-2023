@@ -7,11 +7,11 @@
         x:Class="Interface.MainWindow"
         Title="IMO - 2023">
     <Grid Background="#3b82f6" ShowGridLines="True" RowDefinitions="*,Auto" ColumnDefinitions="*,Auto">
-        <ScottPlot:AvaPlot Grid.Row="0" Grid.Column="0" RelativePanel.Above="True" Name="Plot" />
+        <ScottPlot:AvaPlot Grid.Row="0" Grid.Column="0" RelativePanel.Above="True" Name="Chart" />
         <StackPanel Grid.Row="0" Grid.Column="1" Spacing="4" Margin="8" Width="200">
             <Border CornerRadius="4" BorderBrush="#4f46e5" Background="#1e40af">
                 <StackPanel Margin="4">
-                    <TextBlock Padding="4" Margin="0 0 0 -20">Krok historii</TextBlock>
+                    <TextBlock Padding="4" Margin="0 0 0 -20" Name="History" />
                     <Slider Minimum="0" Maximum="10" IsSnapToTickEnabled="True" TickFrequency="1"
                             TickPlacement="BottomRight" />
                 </StackPanel>

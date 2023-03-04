@@ -2,7 +2,7 @@ using imo_2023.DataStructures;
 
 namespace imo_2023.Algorithms;
 
-internal static class NearestNeighbourInstanceExtensions {
+public static class NearestNeighbourInstanceExtensions {
   public static IEnumerable<Node> SearchWithGreedyNearestNeighbour(this Instance instance) {
     var path = new List<Node> { Node.Choose(instance.Nodes) };
 

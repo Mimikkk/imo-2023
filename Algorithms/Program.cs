@@ -44,25 +44,8 @@ switch (algorithm) {
 
     chart.Add.Cycle(path, instance);
     chart.Title.Label.Text = "KroA100 - Greedy Cycle Expansion";
+    chart.Save("Super");
     break;
   }
 }
-// var parent = new Form();
-// var form = new FormsPlot();
-// form.View(chart);
-// form.Parent = parent;
-// parent.HandleCreated += (_, _) => {
-//   form.Width = parent.ClientSize.Width;
-//   form.Height = parent.ClientSize.Height;
-// };
-// parent.Resize += (sender, _) => {
-//   var control = (Control)sender!;
-//
-//   form.Width = parent.ClientSize.Width;
-//   form.Height = parent.ClientSize.Height;
-//   chart.Add.Scatter(new double[] { control.Size.Width }, new double[] { control.Size.Height });
-// };
-//
-// parent.Show();
-// while (parent.Created) Application.DoEvents();
 return 0;

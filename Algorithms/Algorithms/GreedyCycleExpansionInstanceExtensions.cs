@@ -2,7 +2,7 @@ using imo_2023.DataStructures;
 
 namespace imo_2023.Algorithms;
 
-internal static class GreedyCycleExpansionInstanceExtensions {
+public static class GreedyCycleExpansionInstanceExtensions {
   public static IEnumerable<Node> SearchWithGreedyCycleExpansion(this Instance instance) {
     var start = Node.Choose(instance.Nodes);
     var closest = instance.ClosestTo(start);

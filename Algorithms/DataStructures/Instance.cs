@@ -2,7 +2,7 @@ using imo_2023.Extensions;
 
 namespace imo_2023.DataStructures;
 
-internal record Instance(int Dimension, IReadOnlyList<Node> Nodes, int[,] Distances) {
+public record Instance(int Dimension, IReadOnlyList<Node> Nodes, int[,] Distances) {
   public static Instance Read(string path) {
     var nodes = Node.From(File.ReadLines($"{ProjectDirectory}/resources/instances/{path}.tsp")
         .Skip(6)
