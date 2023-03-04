@@ -47,7 +47,7 @@ public partial class MainWindow : Window {
       }
       Chart.Refresh();
     };
-    
+
     StepNextButton.Click += (_, _) => {
       if (CurrentHistoryStep >= History.Count - 1) return;
       HistorySlider.Value = CurrentHistoryStep + 1;
@@ -58,11 +58,17 @@ public partial class MainWindow : Window {
     };
     RunButton.Click += (_, _) => {
       if (CurrentInstance is null) return;
-
       var observed = new ObservableList<Node>();
       History.Clear();
       observed.Changed += (_, _) => History.Add(observed.ToList());
       CurrentInstance.SearchWithGreedyNearestNeighbour(observed);
+
+      Chart.Plot.SetAxisLimits(
+        0,
+        CurrentInstance.Nodes.Max(x => x.X),
+        0,
+        CurrentInstance.Nodes.Max(x => x.Y)
+      );
     };
   }
 
