@@ -7,7 +7,9 @@ using Algorithms.DataStructures;
 using Algorithms.Extensions;
 using Algorithms.Methods;
 using Avalonia.Controls;
+using Avalonia.Media;
 using Interface.Types;
+using ScottPlot;
 
 namespace Interface;
 
@@ -17,11 +19,16 @@ public partial class MainWindow : Window {
     InitializeComboBoxes();
     InitializeListeners();
     InitializeChart();
-  }
 
+    Chart.PointerMoved += (_, _) => { };
+  }
+  private readonly Pixel HighlightedPoint = new();
+  private int LastHighlightedIndex = -1;
   private void InitializeListeners() {
     HistoryText.Text = $"Krok: 0";
     HistorySlider.Minimum = 0;
+    _histories.CollectionChanged += (_, _) => ChartRefresh();
+
     HistorySlider.PropertyChanged += (_, _) => {
       HistoryText.Text = $"Krok: {HistoryStep}";
       ChartRefresh();
@@ -64,9 +71,9 @@ public partial class MainWindow : Window {
       Instance = Instance.Read(SelectedInstance);
       HistorySlider.Value = 0;
       HistorySlider.Maximum = 0;
+
+      Chart.Plot.AutoScale();
       _histories.Clear();
-      ChartZoomIn();
-      ChartRefresh();
     };
     Instance = Instance.Read(SelectedInstance);
 
@@ -79,7 +86,7 @@ public partial class MainWindow : Window {
   }
 
   private void InitializeChart() {
-    ChartZoomIn();
+    Chart.Plot.AutoScale();
     ChartRefresh();
   }
 
@@ -91,14 +98,6 @@ public partial class MainWindow : Window {
       else Chart.Plot.Add.Path(history[HistoryStep - 1], Instance);
     }
     Chart.Refresh();
-  }
-  private void ChartZoomIn() {
-    Chart.Plot.SetAxisLimits(
-      0,
-      Instance.Nodes.Max(x => x.X),
-      0,
-      Instance.Nodes.Max(x => x.Y)
-    );
   }
 
   private Instance Instance = null!;
