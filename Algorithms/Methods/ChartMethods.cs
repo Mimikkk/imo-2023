@@ -8,6 +8,7 @@ namespace Algorithms.Methods;
 public static class ChartMethods {
   public static AddPlottable Cycle(this AddPlottable add, IEnumerable<Node> cycle, Instance instance) {
     var nodes = cycle as Node[] ?? cycle.ToArray();
+    if (nodes.Length < 1) return add;
 
     var scatter = add.Scatter(
       xs: nodes.Select(node => (double)node.X).Append(nodes.First().X).ToArray(),
@@ -20,6 +21,7 @@ public static class ChartMethods {
 
   public static AddPlottable Path(this AddPlottable add, IEnumerable<Node> cycle, Instance instance) {
     var nodes = cycle as Node[] ?? cycle.ToArray();
+    if (nodes.Length < 1) return add;
 
     var scatter = add.Scatter(
       xs: nodes.Select(node => (double)node.X).ToArray(),
