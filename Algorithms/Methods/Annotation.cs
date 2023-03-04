@@ -5,14 +5,11 @@ using SkiaSharp;
 namespace Algorithms.Methods;
 
 public class Annotation : IPlottable {
-  private string Text { get; set; }
-  private Coordinates Coordinate { get; set; }
   public Annotation(Coordinates coordinate, string text) {
     Text = text;
     Coordinate = coordinate;
   }
 
-  public AxisLimits GetAxisLimits() => new();
 
   public void Render(SKSurface surface) {
     using var paint = new SKPaint { IsAntialias = true, TextAlign = SKTextAlign.Center };
@@ -25,7 +22,12 @@ public class Annotation : IPlottable {
     paint.Color = SKColors.Wheat;
     canvas.DrawText(Text, pixel.X, pixel.Y, paint);
   }
+
+  public AxisLimits GetAxisLimits() => new();
   public bool IsVisible { get; set; } = true;
   public IAxes Axes { get; set; } = ScottPlot.Axis.Axes.Default;
   public IEnumerable<LegendItem> LegendItems { get; } = Yield(new LegendItem());
+
+  private string Text { get; set; }
+  private Coordinates Coordinate { get; set; }
 }
