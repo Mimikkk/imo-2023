@@ -46,6 +46,7 @@ public partial class MainWindow : Window {
     HistorySlider.PropertyChanged += (_, change) => {
       if (change.Property.Name != "Value") return;
       var (prev, next) = ((double)change.OldValue!, (double)change.NewValue!);
+
       if (prev > next) FollowNodeBackwards();
       else FollowNodeForwards();
 
@@ -53,19 +54,10 @@ public partial class MainWindow : Window {
       ChartRefresh();
     };
 
-    StepBackButton.Click += (_, _) => {
-      if (HistoryStep < 0) return;
-
-      HistorySlider.Value = HistoryStep - 1;
-    };
-    StepNextButton.Click += (_, _) => {
-      if (HistoryStep > HistorySlider.Maximum) return;
-
-      HistorySlider.Value = HistoryStep + 1;
-    };
+    StepBackButton.Click += (_, _) => HistorySlider.Value = HistoryStep - 1;
+    StepNextButton.Click += (_, _) => HistorySlider.Value = HistoryStep + 1;
     RunButton.Click += (_, _) => {
       _histories.Clear();
-
       if (SelectedAlgorithm == Algorithm.GreedyNearestNeighbour) {
         var observed = new ObservableList<Node>();
         var history = new List<List<Node>>();
