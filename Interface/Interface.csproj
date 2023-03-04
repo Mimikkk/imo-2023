@@ -27,4 +27,8 @@
         <HintPath>..\..\..\.nuget\packages\avalonia\11.0.0-preview5\lib\net6.0\Avalonia.Controls.dll</HintPath>
       </Reference>
     </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Algorithms\Algorithms.csproj" />
+    </ItemGroup>
 </Project>

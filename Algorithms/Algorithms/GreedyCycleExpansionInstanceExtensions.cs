@@ -1,3 +1,4 @@
+using System.Collections.ObjectModel;
 using imo_2023.DataStructures;
 
 namespace imo_2023.Algorithms;
@@ -9,7 +10,6 @@ public static class GreedyCycleExpansionInstanceExtensions {
 
     var cycle = new List<Node> { start, closest };
     var distance = instance.DistanceOf(cycle);
-
     while (cycle.Count < instance.Dimension) {
       var (previous, next, bestDistance) = (
         from first in cycle
