@@ -18,4 +18,6 @@ public record Node(int Index, int X, int Y) {
 
     return items[Random.Next(items.Length)];
   }
+
+  public static implicit operator (int X, int Y)(Node node) => (node.X, node.Y);
 }

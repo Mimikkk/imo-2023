@@ -49,6 +49,18 @@ public static class ChartMethods {
       ys: new[] { (double)node.Y }
     );
     scatter.MarkerStyle = new MarkerStyle(MarkerShape.OpenCircle, 10f);
+    return add;
+  }
+  public static AddPlottable Line(this AddPlottable add, Node from, Node to) {
+    var scatter = add.Scatter(
+      xs: new double[] { from.X, to.X },
+      ys: new double[] { from.Y, to.Y }
+    );
+    scatter.LineStyle.Pattern = LinePattern.Dash;
+    return add;
+  }
+  public static AddPlottable LinesTo(this AddPlottable add, Node from, IEnumerable<Node> to) {
+    foreach (var destination in to) add.Line(from, to: destination);
 
     return add;
   }

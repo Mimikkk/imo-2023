@@ -9,9 +9,7 @@ using Algorithms.Extensions;
 using Algorithms.Methods;
 using Avalonia.Controls;
 using Interface.Types;
-using ScottPlot;
-using ScottPlot.Plottables;
-using static Algorithms.Extensions.CoordExtensions;
+using static Algorithms.Extensions.IEnumerableExtensions;
 
 namespace Interface;
 
@@ -27,7 +25,16 @@ public partial class MainWindow : Window {
     InitializeComboBoxes();
     InitializeListeners();
     InitializeChart();
-    Chart.PointerMoved += (_, _) => ChartRefresh();
+    Chart.PointerMoved += (_, _) => {
+      ClosestNode = FindClosestNodeToMouse();
+      ChartRefresh();
+    };
+    Chart.PointerReleased += (_, _) => {
+      var mouse = Chart.Interaction.GetMouseCoordinates();
+      if (mouse.DistanceTo(ClosestNode!) < 125)
+        SelectedNode = SelectedNode == ClosestNode ? null : ClosestNode;
+      ChartRefresh();
+    };
   }
 
   private void InitializeListeners() {
@@ -118,6 +125,7 @@ public partial class MainWindow : Window {
   private void ChartRefresh() {
     Chart.Plot.Clear();
     Chart.Plot.Add.Scatter(Instance.Nodes, Instance);
+
     foreach (var history in _histories.Where(x => HistoryStep > 0)) {
       if (SelectedAlgorithm == Algorithm.GreedyCycleExpansion) {
         if (HistoryStep == (int)HistorySlider.Maximum) Chart.Plot.Add.Cycle(history.Last(), Instance);
@@ -127,13 +135,25 @@ public partial class MainWindow : Window {
         else Chart.Plot.Add.Path(history[HistoryStep - 1], Instance);
       }
     }
-    var closest = FindClosestNodeToMouse();
-    Chart.Plot.Add.Point(closest);
+    if (ClosestNode is not null) Chart.Plot.Add.Point(ClosestNode);
+    if (SelectedNode is not null) {
+
+      Chart.Plot.Add.Point(SelectedNode);
+
+      Chart.Plot.Add.LinesTo(SelectedNode,
+        Instance.Nodes.Except(Yield(SelectedNode))
+          .Where(node => node.InBounds(Chart.Plot.XAxis.Min, Chart.Plot.XAxis.Max, Chart.Plot.YAxis.Min, Chart.Plot.YAxis.Max)));
+    }
+
     var (mx, my) = Chart.Interaction.GetMouseCoordinates();
-    Title = $"Mouse - {mx} {my}: Node - {closest.Index} at {closest.X}, {closest.Y}";
+
+    Title = $"Mouse - {(int)mx}x, {(int)my}y";
+    if (SelectedNode is not null) Title += $" : Selected Node - {SelectedNode!.Index} at {SelectedNode.X}x, {SelectedNode.Y}y";
     Chart.Refresh();
   }
 
+  private Node? ClosestNode;
+  private Node? SelectedNode;
   private Instance Instance = null!;
   private string SelectedInstance => Instances.SelectedItem.As<Option>().Value;
   private string SelectedAlgorithm => Algorithms.SelectedItem.As<Option>().Value;
