@@ -50,12 +50,23 @@ public partial class MainWindow : Window {
 
     StepNextButton.Click += (_, _) => {
       if (HistoryStep > HistorySlider.Maximum) return;
+      if (HistoryStep > HistorySlider.Maximum - 1 && SelectedNode is not null) {
+        var e = _histories.FirstOrDefault(h => h[HistoryStep - 1].Last() == SelectedNode);
+        if (e is not null) SelectedNode = e[HistoryStep].Last();
+      }
+
       HistorySlider.Value = HistoryStep + 1;
       ChartRefresh();
     };
     StepBackButton.Click += (_, _) => {
       if (HistoryStep < 0) return;
+
+      if (HistoryStep > 1 && SelectedNode is not null) {
+        var e = _histories.FirstOrDefault(h => h[HistoryStep - 1].Last() == SelectedNode);
+        if (e is not null) SelectedNode = e[HistoryStep - 2].Last();
+      }
       HistorySlider.Value = HistoryStep - 1;
+
       ChartRefresh();
     };
     RunButton.Click += (_, _) => {
@@ -140,7 +151,7 @@ public partial class MainWindow : Window {
     if (SelectedNode is not null) {
 
       Chart.Plot.Add.Point(SelectedNode);
-      Chart.Plot.Add.LinesTo(SelectedNode, Instance.Nodes.Except(Yield(SelectedNode))
+      Chart.Plot.Add.DistanceTo(SelectedNode, Instance.Nodes.Except(Yield(SelectedNode))
         .Where(node => node.InBounds(Chart.Plot.XAxis.Min, Chart.Plot.XAxis.Max, Chart.Plot.YAxis.Min, Chart.Plot.YAxis.Max))
       );
     }

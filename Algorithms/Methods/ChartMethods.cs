@@ -51,18 +51,30 @@ public static class ChartMethods {
     scatter.MarkerStyle = new MarkerStyle(MarkerShape.OpenCircle, 10f);
     return add;
   }
-  public static AddPlottable Line(this AddPlottable add, Node from, Node to) {
+
+
+  public static AddPlottable DistanceTo(this AddPlottable add, Node from, Node to) {
+    add.Plottable(new Annotation(new Coordinates(to.X, to.Y), $"{from.DistanceTo(to)}"));
+    return add;
+  }
+  public static AddPlottable DistanceTo(this AddPlottable add, Node from, IEnumerable<Node> to) {
+    foreach (var destination in to) add.DistanceTo(from, to: destination);
+    return add;
+  }
+
+
+  public static AddPlottable LineTo(this AddPlottable add, Node from, Node to) {
     var scatter = add.Scatter(
       xs: new double[] { from.X, to.X },
       ys: new double[] { from.Y, to.Y }
     );
     scatter.LineStyle.Pattern = LinePattern.Dash;
-    add.Plottable(new Annotation(new Coordinates(to.X, to.Y), $"{from.DistanceTo(to)}"));
+    add.DistanceTo(from, to);
 
     return add;
   }
-  public static AddPlottable LinesTo(this AddPlottable add, Node from, IEnumerable<Node> to) {
-    foreach (var destination in to) add.Line(from, to: destination);
+  public static AddPlottable LineTo(this AddPlottable add, Node from, IEnumerable<Node> to) {
+    foreach (var destination in to) add.LineTo(from, to: destination);
 
     return add;
   }
