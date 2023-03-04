@@ -48,16 +48,6 @@ public partial class MainWindow : Window {
       ChartRefresh();
     };
 
-    StepNextButton.Click += (_, _) => {
-      if (HistoryStep > HistorySlider.Maximum) return;
-      if (HistoryStep > HistorySlider.Maximum - 1 && SelectedNode is not null) {
-        var e = _histories.FirstOrDefault(h => h[HistoryStep - 1].Last() == SelectedNode);
-        if (e is not null) SelectedNode = e[HistoryStep].Last();
-      }
-
-      HistorySlider.Value = HistoryStep + 1;
-      ChartRefresh();
-    };
     StepBackButton.Click += (_, _) => {
       if (HistoryStep < 0) return;
 
@@ -65,8 +55,19 @@ public partial class MainWindow : Window {
         var e = _histories.FirstOrDefault(h => h[HistoryStep - 1].Last() == SelectedNode);
         if (e is not null) SelectedNode = e[HistoryStep - 2].Last();
       }
+
       HistorySlider.Value = HistoryStep - 1;
 
+      ChartRefresh();
+    };
+    StepNextButton.Click += (_, _) => {
+      if (HistoryStep > HistorySlider.Maximum) return;
+      if (HistoryStep > 0 && HistoryStep < HistorySlider.Maximum && SelectedNode is not null) {
+        var e = _histories.FirstOrDefault(h => h[HistoryStep - 1].Last() == SelectedNode);
+        if (e is not null) SelectedNode = e[HistoryStep].Last();
+      }
+
+      HistorySlider.Value = HistoryStep + 1;
       ChartRefresh();
     };
     RunButton.Click += (_, _) => {
