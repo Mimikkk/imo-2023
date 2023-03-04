@@ -10,6 +10,8 @@ public class Annotation : IPlottable {
     Coordinate = coordinate;
   }
 
+  public Annotation()
+    : this(Coordinates.NaN, string.Empty) { }
 
   public void Render(SKSurface surface) {
     using var paint = new SKPaint { IsAntialias = true, TextAlign = SKTextAlign.Center };
@@ -17,7 +19,7 @@ public class Annotation : IPlottable {
     var width = paint.MeasureText(Text);
     var pixel = Axes.GetPixel(Coordinate);
 
-    paint.Color = SKColors.Navy;
+    paint.Color = Color;
     canvas.DrawRoundRect(pixel.X - width / 2 - 4, pixel.Y - paint.TextSize - 2, width + 8, paint.TextSize + 8, 2, 2, paint);
     paint.Color = SKColors.Wheat;
     canvas.DrawText(Text, pixel.X, pixel.Y, paint);
@@ -27,7 +29,7 @@ public class Annotation : IPlottable {
   public bool IsVisible { get; set; } = true;
   public IAxes Axes { get; set; } = ScottPlot.Axis.Axes.Default;
   public IEnumerable<LegendItem> LegendItems { get; } = Yield(new LegendItem());
-
-  private string Text { get; set; }
-  private Coordinates Coordinate { get; set; }
+  public string Text { get; set; }
+  public Coordinates Coordinate { get; set; }
+  public SKColor Color { get; set; } = SKColors.Navy;
 }

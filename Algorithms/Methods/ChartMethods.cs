@@ -1,6 +1,7 @@
 ﻿using Algorithms.DataStructures;
 using ScottPlot;
 using ScottPlot.Extensions;
+using SkiaSharp;
 
 namespace Algorithms.Methods;
 
@@ -53,12 +54,16 @@ public static class ChartMethods {
   }
 
 
-  public static AddPlottable DistanceTo(this AddPlottable add, Node from, Node to) {
-    add.Plottable(new Annotation(new Coordinates(to.X, to.Y), $"{from.DistanceTo(to)}"));
+  public static AddPlottable DistanceTo(this AddPlottable add, Node from, Node to, SKColor? color = null) {
+    add.Plottable(new Annotation {
+      Coordinate = to,
+      Text = $"{from.DistanceTo(to)}",
+      Color = color ?? SKColors.Navy
+    });
     return add;
   }
-  public static AddPlottable DistanceTo(this AddPlottable add, Node from, IEnumerable<Node> to) {
-    foreach (var destination in to) add.DistanceTo(from, to: destination);
+  public static AddPlottable DistanceTo(this AddPlottable add, Node from, IEnumerable<Node> to, SKColor? color = null) {
+    foreach (var destination in to) add.DistanceTo(from, to: destination, color);
     return add;
   }
 

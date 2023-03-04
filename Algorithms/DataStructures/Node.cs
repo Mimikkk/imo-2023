@@ -20,6 +20,7 @@ public record Node(int Index, int X, int Y) {
   }
 
   public static implicit operator (int X, int Y)(Node node) => (node.X, node.Y);
+  public static implicit operator Coordinates(Node node) => new(node.X, node.Y);
   public void Deconstruct(out int x, out int y) {
     x = X;
     y = Y;
