@@ -1,5 +1,3 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
@@ -14,12 +12,6 @@ using Interface.Types;
 namespace Interface;
 
 public partial class MainWindow : Window {
-
-  private string SelectedInstance => Instances.SelectedItem.As<Option>().Value;
-  private string SelectedAlgorithm => Algorithms.SelectedItem.As<Option>().Value;
-  private int CurrentHistoryStep => (int)HistorySlider.Value;
-  private readonly ObservableCollection<List<Node>> _history = new();
-  private Instance CurrentInstance = null!;
   public MainWindow() {
     InitializeComponent();
     InitializeComboBoxes();
@@ -28,32 +20,37 @@ public partial class MainWindow : Window {
   }
 
   private void InitializeListeners() {
-    _history.CollectionChanged += (_, _) => {
-      HistorySlider.Maximum = _history.Count;
-      HistorySlider.Value = _history.Count;
-    };
-
     HistoryText.Text = $"Krok: 0";
     HistorySlider.Minimum = 0;
-    HistorySlider.Maximum = 0;
     HistorySlider.PropertyChanged += (_, _) => {
-      HistoryText.Text = $"Krok: {CurrentHistoryStep}";
+      HistoryText.Text = $"Krok: {HistoryStep}";
       ChartRefresh();
     };
 
     StepNextButton.Click += (_, _) => {
-      if (CurrentHistoryStep >= _history.Count - 1) return;
-      HistorySlider.Value = CurrentHistoryStep + 1;
+      if (HistoryStep > Instance.Dimension) return;
+      HistorySlider.Value = HistoryStep + 1;
+      ChartRefresh();
     };
     StepBackButton.Click += (_, _) => {
-      if (CurrentHistoryStep <= 0) return;
-      HistorySlider.Value = CurrentHistoryStep - 1;
+      if (HistoryStep < 0) return;
+      HistorySlider.Value = HistoryStep - 1;
+      ChartRefresh();
     };
     RunButton.Click += (_, _) => {
       var observed = new ObservableList<Node>();
-      _history.Clear();
-      observed.Changed += (_, _) => _history.Add(observed.ToList());
-      CurrentInstance.SearchWithGreedyNearestNeighbour(observed);
+
+      _histories.Clear();
+      var first = new List<List<Node>>();
+      observed.Changed += (_, _) => first.Add(observed.ToList());
+
+      Debug.WriteLine(first.Count);
+      Instance.SearchWithGreedyNearestNeighbour(observed);
+      Debug.WriteLine(first.Count);
+      HistorySlider.Value = Instance.Dimension;
+      HistorySlider.Maximum = Instance.Dimension;
+
+      _histories.Add(first);
     };
   }
 
@@ -64,12 +61,14 @@ public partial class MainWindow : Window {
     };
     Instances.SelectedIndex = 0;
     Instances.SelectionChanged += (_, _) => {
-      CurrentInstance = Instance.Read(SelectedInstance);
-      _history.Clear();
+      Instance = Instance.Read(SelectedInstance);
+      HistorySlider.Value = 0;
+      HistorySlider.Maximum = 0;
+      _histories.Clear();
       ChartZoomIn();
       ChartRefresh();
     };
-    CurrentInstance = Instance.Read(SelectedInstance);
+    Instance = Instance.Read(SelectedInstance);
 
     Algorithms.Items = new List<Option> {
       new("Najbliższy sąsiad", "greedy-nearest-neighbor"),
@@ -86,19 +85,25 @@ public partial class MainWindow : Window {
 
   private void ChartRefresh() {
     Chart.Plot.Clear();
-    Chart.Plot.Add.Scatter(CurrentInstance.Nodes, CurrentInstance);
-    if (_history.ElementAtOrDefault(CurrentHistoryStep - 1) is { } nodes) {
-      if (nodes == _history.Last()) Chart.Plot.Add.Cycle(nodes, CurrentInstance);
-      else Chart.Plot.Add.Path(nodes, CurrentInstance);
+    Chart.Plot.Add.Scatter(Instance.Nodes, Instance);
+    foreach (var history in _histories.Where(x => HistoryStep > 0)) {
+      if (HistoryStep == Instance.Dimension) Chart.Plot.Add.Cycle(history.Last(), Instance);
+      else Chart.Plot.Add.Path(history[HistoryStep - 1], Instance);
     }
     Chart.Refresh();
   }
   private void ChartZoomIn() {
     Chart.Plot.SetAxisLimits(
       0,
-      CurrentInstance.Nodes.Max(x => x.X),
+      Instance.Nodes.Max(x => x.X),
       0,
-      CurrentInstance.Nodes.Max(x => x.Y)
+      Instance.Nodes.Max(x => x.Y)
     );
   }
+
+  private Instance Instance = null!;
+  private string SelectedInstance => Instances.SelectedItem.As<Option>().Value;
+  private string SelectedAlgorithm => Algorithms.SelectedItem.As<Option>().Value;
+  private int HistoryStep => (int)HistorySlider.Value;
+  private readonly ObservableCollection<List<List<Node>>> _histories = new();
 }
