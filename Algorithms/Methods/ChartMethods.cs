@@ -1,7 +1,5 @@
 ﻿using imo_2023.DataStructures;
-using Microsoft.VisualBasic.ApplicationServices;
 using ScottPlot;
-using ScottPlot.WinForms;
 
 namespace imo_2023.Methods;
 
@@ -24,10 +22,5 @@ internal static class ChartMethods {
     if (!Directory.Exists($"{ProjectDirectory}/resources/graphs")) Directory.CreateDirectory($"{ProjectDirectory}/resources/graphs");
 
     chart.SavePng($"{ProjectDirectory}/resources/graphs/{filename}.png", 1200, 800);
-  }
-  public static void View(this FormsPlot form, Plot chart) {
-    if (!Directory.Exists($"{ProjectDirectory}/resources/graphs")) Directory.CreateDirectory($"{ProjectDirectory}/resources/graphs");
-    form.Reset(chart);
-    form.Refresh();
   }
 }

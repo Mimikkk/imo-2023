@@ -1,0 +1,20 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:ScottPlot="clr-namespace:ScottPlot.Avalonia;assembly=ScottPlot.Avalonia"
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        x:Class="Interface.MainWindow"
+        Title="Interface">
+    <Grid ShowGridLines="True" RowDefinitions="*,Auto" ColumnDefinitions="*,Auto">
+        <ScottPlot:AvaPlot Grid.Row="0" Grid.Column="0" RelativePanel.Above="True" Name="Plot" Width="100" Height="100" />
+        <StackPanel Grid.Row="0" Grid.Column="1">
+            <TextBlock Padding="4">123: a, b</TextBlock>
+            <Button HorizontalContentAlignment="Center" Width="100">Poprzedni</Button>
+            <Button HorizontalContentAlignment="Center" Width="100">Następny</Button>
+        </StackPanel>
+        <StackPanel Background="#64748b" Grid.Row="1" Grid.ColumnSpan="2" Orientation="Horizontal">
+            <TextBlock Padding="2" Foreground="#cbd5e1">@2023 IMO - Inteligentne Metody Optymalizacji</TextBlock>
+        </StackPanel>
+    </Grid>
+</Window>

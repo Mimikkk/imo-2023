@@ -1,0 +1,24 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <TargetFramework>net7.0</TargetFramework>
+        <RootNamespace>imo_2023</RootNamespace>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Avalonia" Version="11.0.0-preview5" />
+        <PackageReference Include="Avalonia.Controls.DataGrid" Version="11.0.0-preview5" />
+        <PackageReference Include="Avalonia.Desktop" Version="11.0.0-preview5" />
+        <PackageReference Include="Avalonia.Diagnostics" Version="11.0.0-preview5" />
+        <PackageReference Include="Avalonia.ReactiveUI" Version="11.0.0-preview5" />
+        <PackageReference Include="ScottPlot" Version="5.0.2-beta" />
+        <PackageReference Include="ScottPlot.Avalonia" Version="5.0.2-beta" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <Folder Include="Resources\Graphs" />
+    </ItemGroup>
+</Project>
