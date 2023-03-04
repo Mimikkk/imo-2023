@@ -9,6 +9,7 @@ using Algorithms.Extensions;
 using Algorithms.Methods;
 using Avalonia.Controls;
 using Interface.Types;
+using ScottPlot;
 using static Algorithms.Extensions.IEnumerableExtensions;
 
 namespace Interface;
@@ -139,10 +140,9 @@ public partial class MainWindow : Window {
     if (SelectedNode is not null) {
 
       Chart.Plot.Add.Point(SelectedNode);
-
-      Chart.Plot.Add.LinesTo(SelectedNode,
-        Instance.Nodes.Except(Yield(SelectedNode))
-          .Where(node => node.InBounds(Chart.Plot.XAxis.Min, Chart.Plot.XAxis.Max, Chart.Plot.YAxis.Min, Chart.Plot.YAxis.Max)));
+      Chart.Plot.Add.LinesTo(SelectedNode, Instance.Nodes.Except(Yield(SelectedNode))
+        .Where(node => node.InBounds(Chart.Plot.XAxis.Min, Chart.Plot.XAxis.Max, Chart.Plot.YAxis.Min, Chart.Plot.YAxis.Max))
+      );
     }
 
     var (mx, my) = Chart.Interaction.GetMouseCoordinates();

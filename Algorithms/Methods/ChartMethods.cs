@@ -57,6 +57,8 @@ public static class ChartMethods {
       ys: new double[] { from.Y, to.Y }
     );
     scatter.LineStyle.Pattern = LinePattern.Dash;
+    add.Plottable(new Annotation(new Coordinates(to.X, to.Y), $"{from.DistanceTo(to)}"));
+
     return add;
   }
   public static AddPlottable LinesTo(this AddPlottable add, Node from, IEnumerable<Node> to) {
