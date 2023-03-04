@@ -10,6 +10,7 @@ using Algorithms.Methods;
 using Avalonia.Controls;
 using Interface.Types;
 using ScottPlot;
+using ScottPlot.Palettes;
 using static Algorithms.Extensions.IEnumerableExtensions;
 
 namespace Interface;
@@ -24,24 +25,15 @@ public partial class MainWindow : Window {
   public MainWindow() {
     InitializeComponent();
     InitializeComboBoxes();
-    InitializeListeners();
     InitializeChart();
-    Chart.PointerMoved += (_, _) => {
-      ClosestNode = FindClosestNodeToMouse();
-      ChartRefresh();
-    };
-    Chart.PointerReleased += (_, _) => {
-      var mouse = Chart.Interaction.GetMouseCoordinates();
-      if (mouse.DistanceTo(ClosestNode!) < 125)
-        SelectedNode = SelectedNode == ClosestNode ? null : ClosestNode;
-      ChartRefresh();
-    };
+    InitializeListeners();
   }
 
   private void InitializeListeners() {
     HistoryText.Text = $"Krok: 0";
     HistorySlider.Minimum = 0;
-    _histories.CollectionChanged += (_, _) => ChartRefresh();
+
+    Histories.CollectionChanged += (_, _) => ChartRefresh();
 
     HistorySlider.PropertyChanged += (_, change) => {
       if (change.Property.Name != "Value") return;
@@ -53,17 +45,16 @@ public partial class MainWindow : Window {
       HistoryText.Text = $"Krok: {HistoryStep}";
       ChartRefresh();
     };
-
     StepBackButton.Click += (_, _) => HistorySlider.Value = HistoryStep - 1;
     StepNextButton.Click += (_, _) => HistorySlider.Value = HistoryStep + 1;
     RunButton.Click += (_, _) => {
-      _histories.Clear();
+      Histories.Clear();
       if (SelectedAlgorithm == Algorithm.GreedyNearestNeighbour) {
         var observed = new ObservableList<Node>();
         var history = new List<List<Node>>();
         observed.Changed += (_, _) => history.Add(observed.ToList());
         Instance.SearchWithGreedyNearestNeighbour(observed);
-        _histories.Add(history);
+        Histories.Add(history);
         HistorySlider.Value = Instance.Dimension;
         HistorySlider.Maximum = Instance.Dimension;
       } else if (SelectedAlgorithm == Algorithm.DoubleGreedyNearestNeighbour) {
@@ -74,8 +65,8 @@ public partial class MainWindow : Window {
         firstObserved.Changed += (_, _) => firstHistory.Add(firstObserved.ToList());
         secondObserved.Changed += (_, _) => secondHistory.Add(secondObserved.ToList());
         Instance.SearchDoubleWithGreedyNearestNeighbour(firstObserved, secondObserved);
-        _histories.Add(firstHistory);
-        _histories.Add(secondHistory);
+        Histories.Add(firstHistory);
+        Histories.Add(secondHistory);
         HistorySlider.Value = Instance.Dimension / 2;
         HistorySlider.Maximum = Instance.Dimension / 2;
       } else if (SelectedAlgorithm == Algorithm.GreedyCycleExpansion) {
@@ -83,7 +74,7 @@ public partial class MainWindow : Window {
         var history = new List<List<Node>>();
         observed.Changed += (_, _) => history.Add(observed.ToList());
         Instance.SearchWithGreedyCycleExpansion(observed);
-        _histories.Add(history);
+        Histories.Add(history);
         HistorySlider.Value = Instance.Dimension;
         HistorySlider.Maximum = Instance.Dimension;
       }
@@ -102,7 +93,7 @@ public partial class MainWindow : Window {
       HistorySlider.Maximum = 0;
 
       Chart.Plot.AutoScale();
-      _histories.Clear();
+      Histories.Clear();
     };
     Instance = Instance.Read(SelectedInstance);
 
@@ -118,28 +109,53 @@ public partial class MainWindow : Window {
   private void InitializeChart() {
     Chart.Plot.AutoScale();
     ChartRefresh();
+
+    Chart.PointerMoved += (_, _) => {
+      ClosestNode = FindClosestNodeToMouse();
+      ChartRefresh();
+    };
+    Chart.PointerReleased += (_, _) => {
+      var mouse = Chart.Interaction.GetMouseCoordinates();
+      if (mouse.DistanceTo(ClosestNode!) < 125)
+        SelectedNode = SelectedNode == ClosestNode ? null : ClosestNode;
+      ChartRefresh();
+    };
   }
+
+  public IPalette Palette { get; set; } = (IPalette)new Category10();
 
   private void ChartRefresh() {
     Chart.Plot.Clear();
     Chart.Plot.Add.Scatter(Instance.Nodes, Instance);
 
-    foreach (var history in _histories.Where(x => HistoryStep > 0)) {
-      if (SelectedAlgorithm == Algorithm.GreedyCycleExpansion) {
-        if (HistoryStep == (int)HistorySlider.Maximum) Chart.Plot.Add.Cycle(history.Last(), Instance);
-        else Chart.Plot.Add.Cycle(history[HistoryStep - 1], Instance);
-      } else {
-        if (HistoryStep == (int)HistorySlider.Maximum) Chart.Plot.Add.Cycle(history.Last(), Instance);
-        else Chart.Plot.Add.Path(history[HistoryStep - 1], Instance);
+    if (HistoryStep > 0) {
+      foreach (var history in Histories) {
+        if (SelectedAlgorithm == Algorithm.GreedyCycleExpansion) {
+          if (HistoryStep == (int)HistorySlider.Maximum) Chart.Plot.Add.Cycle(history.Last(), Instance);
+          else Chart.Plot.Add.Cycle(history[HistoryStep - 1], Instance);
+        } else {
+          if (HistoryStep == (int)HistorySlider.Maximum) Chart.Plot.Add.Cycle(history.Last(), Instance);
+          else Chart.Plot.Add.Path(history[HistoryStep - 1], Instance);
+        }
       }
     }
+
     if (ClosestNode is not null) Chart.Plot.Add.Point(ClosestNode);
     if (SelectedNode is not null) {
-
       Chart.Plot.Add.Point(SelectedNode);
-      Chart.Plot.Add.DistanceTo(SelectedNode, Instance.Nodes.Except(Yield(SelectedNode))
-        .Where(node => node.InBounds(Chart.Plot.XAxis.Min, Chart.Plot.XAxis.Max, Chart.Plot.YAxis.Min, Chart.Plot.YAxis.Max))
-      );
+
+      if (HistoryStep > 0) {
+        var color = Chart.Plot.Plottables.Count;
+
+        var plotted = new List<Node>();
+        foreach (var history in Histories) {
+          var nodes = history[HistoryStep - 1].Except(Yield(SelectedNode)).ToList();
+
+          plotted.AddRange(nodes);
+          Chart.Plot.Add.DistanceTo(SelectedNode, nodes, Palette.GetColor(++color).ToSKColor());
+        }
+        Chart.Plot.Add.DistanceTo(SelectedNode, Instance.Nodes.Except(plotted).Except(Yield(SelectedNode)));
+      }
     }
 
     var (mx, my) = Chart.Interaction.GetMouseCoordinates();
@@ -151,13 +167,13 @@ public partial class MainWindow : Window {
 
   private void FollowNodeForwards() {
     if (HistoryStep <= 1 || !(HistoryStep - 1 < HistorySlider.Maximum) || SelectedNode is null) return;
-    var history = _histories.FirstOrDefault(h => h[HistoryStep - 2].Last() == SelectedNode);
+    var history = Histories.FirstOrDefault(h => h[HistoryStep - 2].Last() == SelectedNode);
     if (history is null) return;
     SelectedNode = history[HistoryStep - 1].Last();
   }
   private void FollowNodeBackwards() {
     if (HistoryStep <= 2 || SelectedNode is null) return;
-    var history = _histories.FirstOrDefault(h => h[HistoryStep].Last() == SelectedNode);
+    var history = Histories.FirstOrDefault(h => h[HistoryStep].Last() == SelectedNode);
     if (history is null) return;
     SelectedNode = history[HistoryStep - 1].Last();
   }
@@ -168,6 +184,6 @@ public partial class MainWindow : Window {
   private string SelectedInstance => Instances.SelectedItem.As<Option>().Value;
   private string SelectedAlgorithm => Algorithms.SelectedItem.As<Option>().Value;
   private int HistoryStep => (int)HistorySlider.Value;
-  private readonly ObservableCollection<List<List<Node>>> _histories = new();
+  private readonly ObservableCollection<List<List<Node>>> Histories = new();
 
 }

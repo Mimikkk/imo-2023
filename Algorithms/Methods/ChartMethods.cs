@@ -67,6 +67,9 @@ public static class ChartMethods {
     return add;
   }
 
+  public static (double minx, double maxx, double miny, double maxy) Bounds(this Plot chart)
+    => (chart.XAxis.Min, chart.XAxis.Max, chart.YAxis.Min, chart.YAxis.Max);
+
 
   public static AddPlottable LineTo(this AddPlottable add, Node from, Node to) {
     var scatter = add.Scatter(
