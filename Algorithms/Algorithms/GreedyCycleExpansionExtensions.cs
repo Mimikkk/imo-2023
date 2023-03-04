@@ -1,12 +1,13 @@
+using System.Diagnostics;
 using Algorithms.DataStructures;
 
 namespace Algorithms.Algorithms;
 
 public static class GreedyCycleExpansionExtensions {
   public static IEnumerable<Node>
-    SearchWithGreedyCycleExpansion(this Instance instance, IList<Node>? cycle = null) {
+    SearchWithGreedyCycleExpansion(this Instance instance, IList<Node>? cycle = null, int? start = null) {
     cycle ??= new List<Node>();
-    cycle.Add(Node.Choose(instance.Nodes));
+    cycle.Add(start is null ? Node.Choose(instance.Nodes) : instance.Nodes[start.Value]);
     cycle.Add(instance.ClosestTo(cycle.First()));
 
     var distance = instance.DistanceOf(cycle);
@@ -23,7 +24,7 @@ public static class GreedyCycleExpansionExtensions {
 
       var (previous, next, bestDistance) = distances.MinBy(x => x.distance);
 
-
+      Debug.WriteLine(distances.Count);
       // var (previous, next, bestDistance) = (
       //   from first in cycle
       //   from second in cycle.Except(Yield(first))
@@ -32,7 +33,7 @@ public static class GreedyCycleExpansionExtensions {
       //   select (first, considered, dist)).MinBy(d => d.dist);
 
       distance = bestDistance;
-      cycle.Insert(cycle.IndexOf(previous) -1, next);
+      cycle.Insert(cycle.IndexOf(previous), next);
     }
 
     return cycle;

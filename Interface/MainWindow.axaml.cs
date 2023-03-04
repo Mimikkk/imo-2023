@@ -5,6 +5,7 @@ using Algorithms.Algorithms;
 using Algorithms.DataStructures;
 using Algorithms.Extensions;
 using Algorithms.Methods;
+using Avalonia;
 using Avalonia.Controls;
 using Interface.Types;
 using ScottPlot;
@@ -72,12 +73,16 @@ public partial class MainWindow : Window {
         HistorySlider.Maximum = Instance.Dimension;
         HistorySlider.Value = Instance.Dimension;
         var observed = new ObservableList<Node>();
-        var history = new List<List<Node>>();
+        var history = new List<List<Node>> { new() };
         observed.Changed += (_, _) => history.Add(observed.ToList());
-        Instance.SearchWithGreedyCycleExpansion(observed);
+
+        int? startIndex = (int)StartIndex.Value == 0 ? null : (int)StartIndex.Value - 1;
+        Instance.SearchWithGreedyCycleExpansion(observed, startIndex);
+        history.Add(observed.ToList());
         Histories.Add(history);
       }
     };
+    ClearStartIndexButton.Click += (_, _) => StartIndex.Value = 0;
   }
 
   private void InitializeComboBoxes() {
@@ -90,11 +95,15 @@ public partial class MainWindow : Window {
       Instance = Instance.Read(SelectedInstance);
       HistorySlider.Value = 0;
       HistorySlider.Maximum = 0;
+      StartIndex.Maximum = Instance.Dimension;
 
       Chart.Plot.AutoScale();
       Histories.Clear();
     };
     Instance = Instance.Read(SelectedInstance);
+    StartIndex.Value = 0;
+    StartIndex.Minimum = 0;
+    StartIndex.Maximum = Instance.Dimension;
 
     Algorithms.Items = new List<Option> {
       new("Najbliższy sąsiad", Algorithm.GreedyNearestNeighbour),
@@ -128,8 +137,7 @@ public partial class MainWindow : Window {
 
     foreach (var history in Histories) {
       if (SelectedAlgorithm == Algorithm.GreedyCycleExpansion) {
-        if (HistoryStep == (int)HistorySlider.Maximum) Chart.Plot.Add.Cycle(history[HistoryStep], Instance);
-        else Chart.Plot.Add.Cycle(history[HistoryStep], Instance);
+        Chart.Plot.Add.Cycle(history[HistoryStep], Instance);
       } else {
         if (HistoryStep == (int)HistorySlider.Maximum) Chart.Plot.Add.Cycle(history[HistoryStep], Instance);
         else Chart.Plot.Add.Path(history[HistoryStep], Instance);
@@ -155,7 +163,7 @@ public partial class MainWindow : Window {
     var (mx, my) = Chart.Interaction.GetMouseCoordinates();
 
     Title = $"Mouse - {(int)mx}x, {(int)my}y";
-    if (SelectedNode is not null) Title += $" : Selected Node - {SelectedNode!.Index} at {SelectedNode.X}x, {SelectedNode.Y}y";
+    if (SelectedNode is not null) Title += $" : Wierzchołek - {SelectedNode.Index + 1} at {SelectedNode.X}x, {SelectedNode.Y}y";
     Chart.Refresh();
   }
 

@@ -3,12 +3,21 @@ using Algorithms.DataStructures;
 namespace Algorithms.Algorithms;
 
 public static class GreedyNearestNeighbourExtensions {
+  private static void AppendClosestHeadOrTail(this Instance instance, IList<Node> path, IEnumerable<Node> except) {
+    var excepted = except.ToArray();
+    var closestToTail = instance.ClosestTo(path.First(), excepted);
+    var closestToHead = instance.ClosestTo(path.Last(), excepted);
+
+    if (instance[closestToTail, path.First()] > instance[path.Last(), closestToHead]) path.Add(closestToHead);
+    else path.Insert(0, closestToTail);
+  }
+
   public static IEnumerable<Node>
     SearchWithGreedyNearestNeighbour(this Instance instance, IList<Node>? path = null) {
     path ??= new List<Node>();
 
     path.Add(Node.Choose(instance.Nodes));
-    while (path.Count < instance.Dimension) path.Add(instance.ClosestTo(path.Last(), path));
+    while (path.Count < instance.Dimension) instance.AppendClosestHeadOrTail(path, path);
 
     return path;
   }
@@ -21,15 +30,8 @@ public static class GreedyNearestNeighbourExtensions {
     second.Add(instance.FurthestTo(first.First()));
 
     while (first.Count < instance.Dimension / 2) {
-      var closestToTail = instance.ClosestTo(first.First(), first.Concat(second));
-      var closestToHead = instance.ClosestTo(first.Last(), first.Concat(second));
-      if (instance[closestToTail, first.First()] > instance[first.Last(), closestToHead]) first.Add(closestToHead);
-      else first.Insert(0, closestToTail);
-
-      closestToTail = instance.ClosestTo(second.First(), first.Concat(second));
-      closestToHead = instance.ClosestTo(second.Last(), first.Concat(second));
-      if (instance[closestToTail, second.First()] > instance[second.Last(), closestToHead]) second.Add(closestToHead);
-      else second.Insert(0, closestToTail);
+      instance.AppendClosestHeadOrTail(first, first.Concat(second));
+      instance.AppendClosestHeadOrTail(second, first.Concat(second));
     }
 
     return (first, second);
