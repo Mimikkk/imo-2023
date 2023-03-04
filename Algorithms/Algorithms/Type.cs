@@ -13,4 +13,6 @@ public class Algorithm : SmartEnum<Algorithm> {
     : base(name, _nextValue++) { }
 
   private static int _nextValue;
+
+  public static implicit operator string(Algorithm algorithm) => algorithm.Name;
 }
