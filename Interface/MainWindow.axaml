@@ -8,7 +8,7 @@
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:Class="Interface.MainWindow"
         Title="IMO - 2023">
-  <Grid Background="#3b82f6" ShowGridLines="True" RowDefinitions="*,Auto" ColumnDefinitions="*,Auto">
+  <Grid Background="#3b82f6" RowDefinitions="*,Auto" ColumnDefinitions="*,Auto">
     <ScottPlot:AvaPlot Grid.Row="0" Grid.Column="0" RelativePanel.Above="True" Name="Chart" />
     <StackPanel Grid.Row="0" Grid.Column="1" Spacing="4" Margin="8" Width="200">
       <Border CornerRadius="4" BorderBrush="#4f46e5" Background="#1e40af">
