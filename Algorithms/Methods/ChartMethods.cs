@@ -43,6 +43,16 @@ public static class ChartMethods {
     return add;
   }
 
+  public static AddPlottable Point(this AddPlottable add, Node node) {
+    var scatter = add.Scatter(
+      xs: new[] { (double)node.X },
+      ys: new[] { (double)node.Y }
+    );
+    scatter.MarkerStyle = new MarkerStyle(MarkerShape.OpenCircle, 10f);
+
+    return add;
+  }
+
   public static void Save(this Plot chart, string filename) {
     if (!Directory.Exists($"{ProjectDirectory}/resources/graphs")) Directory.CreateDirectory($"{ProjectDirectory}/resources/graphs");
 

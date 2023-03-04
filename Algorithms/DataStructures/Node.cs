@@ -1,3 +1,5 @@
+using ScottPlot;
+
 namespace Algorithms.DataStructures;
 
 public record Node(int Index, int X, int Y) {
@@ -9,6 +11,7 @@ public record Node(int Index, int X, int Y) {
       .Select(coords => new Node(coords[0] - 1, coords[1], coords[2]));
 
   public int DistanceTo(Node other) => (int)Math.Round(Math.Sqrt(Math.Pow(X - other.X, 2) + Math.Pow(Y - other.Y, 2)));
+  public int DistanceTo(Coordinates other) => (int)Math.Round(Math.Sqrt(Math.Pow(X - other.X, 2) + Math.Pow(Y - other.Y, 2)));
 
   public static Node Choose(IEnumerable<Node> nodes) {
     var items = nodes.ToArray();

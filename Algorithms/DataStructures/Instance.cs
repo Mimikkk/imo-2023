@@ -1,6 +1,6 @@
 namespace Algorithms.DataStructures;
 
-public record Instance(int Dimension, IReadOnlyList<Node> Nodes, int[,] Distances) {
+public record Instance(int Dimension, List<Node> Nodes, int[,] Distances) {
   public static Instance Read(string path) {
     var nodes = Node.From(File.ReadLines($"{ProjectDirectory}/resources/instances/{path}.tsp")
         .Skip(6)
