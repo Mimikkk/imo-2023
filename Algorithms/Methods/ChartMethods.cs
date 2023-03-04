@@ -12,7 +12,7 @@ public static class ChartMethods {
       xs: nodes.Select(node => (double)node.X).Append(nodes.First().X).ToArray(),
       ys: nodes.Select(node => (double)node.Y).Append(nodes.First().Y).ToArray()
     );
-    scatter.Label = $"Cycle length: {instance.DistanceOf(nodes.Append(nodes.First()))}";
+    scatter.Label = $"Długość cyklu: {instance.DistanceOf(nodes.Append(nodes.First()))}";
 
     return add;
   }
@@ -24,7 +24,7 @@ public static class ChartMethods {
       xs: nodes.Select(node => (double)node.X).ToArray(),
       ys: nodes.Select(node => (double)node.Y).ToArray()
     );
-    scatter.Label = $"Path length: {instance.DistanceOf(nodes.Append(nodes.First()))}";
+    scatter.Label = $"Długość ścieżki: {instance.DistanceOf(nodes.Append(nodes.First()))}";
 
     return add;
   }
@@ -38,7 +38,7 @@ public static class ChartMethods {
     );
 
     scatter.LineStyle.Width = 0.01f;
-    scatter.Label = $"Points in Instance: {instance.Nodes.Count}";
+    scatter.Label = $"Liczba punktów: {instance.Nodes.Count}";
 
     return add;
   }
