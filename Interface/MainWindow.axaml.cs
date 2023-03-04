@@ -50,6 +50,9 @@ public partial class MainWindow : Window {
     RunButton.Click += (_, _) => {
       Histories.Clear();
       if (SelectedAlgorithm == Algorithm.GreedyNearestNeighbour) {
+        HistorySlider.Maximum = Instance.Dimension;
+        HistorySlider.Value = Instance.Dimension;
+
         var observed = new ObservableList<Node>();
         var history = new List<List<Node>> { new() };
         observed.Changed += (_, _) => history.Add(observed.ToList());
@@ -57,9 +60,9 @@ public partial class MainWindow : Window {
         history.Add(observed.ToList());
 
         Histories.Add(history);
-        HistorySlider.Value = Instance.Dimension;
-        HistorySlider.Maximum = Instance.Dimension;
       } else if (SelectedAlgorithm == Algorithm.DoubleGreedyNearestNeighbour) {
+        HistorySlider.Maximum = Instance.Dimension / 2;
+        HistorySlider.Value = Instance.Dimension / 2;
         var firstObserved = new ObservableList<Node>();
         var secondObserved = new ObservableList<Node>();
         var firstHistory = new List<List<Node>> { new() };
@@ -71,16 +74,14 @@ public partial class MainWindow : Window {
         secondHistory.Add(secondObserved.ToList());
         Histories.Add(firstHistory);
         Histories.Add(secondHistory);
-        HistorySlider.Value = Instance.Dimension / 2;
-        HistorySlider.Maximum = Instance.Dimension / 2;
       } else if (SelectedAlgorithm == Algorithm.GreedyCycleExpansion) {
+        HistorySlider.Maximum = Instance.Dimension;
+        HistorySlider.Value = Instance.Dimension;
         var observed = new ObservableList<Node>();
         var history = new List<List<Node>>();
         observed.Changed += (_, _) => history.Add(observed.ToList());
         Instance.SearchWithGreedyCycleExpansion(observed);
         Histories.Add(history);
-        HistorySlider.Value = Instance.Dimension;
-        HistorySlider.Maximum = Instance.Dimension;
       }
     };
   }
@@ -133,10 +134,10 @@ public partial class MainWindow : Window {
 
     foreach (var history in Histories) {
       if (SelectedAlgorithm == Algorithm.GreedyCycleExpansion) {
-        if (HistoryStep + 1 == (int)HistorySlider.Maximum) Chart.Plot.Add.Cycle(history.Last(), Instance);
+        if (HistoryStep == (int)HistorySlider.Maximum) Chart.Plot.Add.Cycle(history.Last(), Instance);
         else Chart.Plot.Add.Cycle(history[HistoryStep], Instance);
       } else {
-        if (HistoryStep + 1 == (int)HistorySlider.Maximum) Chart.Plot.Add.Cycle(history.Last(), Instance);
+        if (HistoryStep == (int)HistorySlider.Maximum) Chart.Plot.Add.Cycle(history.Last(), Instance);
         else Chart.Plot.Add.Path(history[HistoryStep], Instance);
       }
     }
