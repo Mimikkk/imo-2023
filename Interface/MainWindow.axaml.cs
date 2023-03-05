@@ -164,7 +164,10 @@ public partial class MainWindow : Window {
     Chart.Plot.Add.Scatter(Instance.Nodes, Instance);
 
     foreach (var history in Histories) {
-      if (SelectedAlgorithm == Algorithm.GreedyCycleExpansion || SelectedAlgorithm == Algorithm.DoubleGreedyCycleExpansion) {
+      if (
+        SelectedAlgorithm == Algorithm.GreedyCycleExpansion
+        || SelectedAlgorithm == Algorithm.DoubleGreedyCycleExpansion
+        || SelectedAlgorithm == Algorithm.GreedyCycleExpansionWith2Regret) {
         Chart.Plot.Add.Cycle(history[HistoryStep], Instance);
       } else {
         if (HistoryStep == (int)HistorySlider.Maximum) Chart.Plot.Add.Cycle(history[HistoryStep], Instance);

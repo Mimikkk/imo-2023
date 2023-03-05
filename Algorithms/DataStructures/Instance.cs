@@ -1,3 +1,5 @@
+using System.Diagnostics;
+
 namespace Algorithms.DataStructures;
 
 public record Instance(int Dimension, List<Node> Nodes, int[,] Distances) {
@@ -40,9 +42,7 @@ public record Instance(int Dimension, List<Node> Nodes, int[,] Distances) {
     return Nodes.Except(except.Concat(Yield(node))).MaxBy(n => this[node, n])!;
   }
 
-  public int DistanceOf(IEnumerable<Node> cycle) {
-    var items = cycle.ToArray();
+  public int DistanceOf(IEnumerable<Node> cycle) =>
+    cycle.Edges().Sum(p => this[p.a, p.b]);
 
-    return this[items[0], items[^1]] + items.Pairwise().Sum(p => this[p.a, p.b]);
-  }
 }
