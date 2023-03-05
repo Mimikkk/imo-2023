@@ -4,14 +4,14 @@ using Algorithms.DataStructures;
 namespace Algorithms.Algorithms;
 
 public static class GreedyCycleExpansionExtensions {
-  private static (Node, Node, int) FindBestFitToDistance(this Instance instance, IList<Node> cycle, int distance, IEnumerable<Node> except) => Enumerable
+  private static (Node, Node, int) FindBestFitByLowestGain(this Instance instance, IList<Node> cycle, IEnumerable<Node> except) => Enumerable
     .Range(1, cycle.Count - 1)
     .Select(x => (x, x - 1))
     .Concat(Yield((0, cycle.Count - 1)))
-    .Select(p => (cycle[p.Item1], cycle[p.Item2], distance - instance[cycle[p.Item1], cycle[p.Item2]]))
+    .Select(p => (cycle[p.Item1], cycle[p.Item2]))
     .SelectMany(p => instance.Nodes.Except(cycle)
       .Except(except)
-      .Select(n => (p.Item1, n, p.Item3 + instance[n, p.Item1] + instance[n, p.Item2])))
+      .Select(n => (p.Item1, n, instance[n, p.Item1] + instance[n, p.Item2] - instance[p.Item1, p.Item2])))
     .MinBy(x => x.Item3);
 
   public static IEnumerable<Node>
@@ -20,9 +20,8 @@ public static class GreedyCycleExpansionExtensions {
     cycle.Add(start is null ? Node.Choose(instance.Nodes) : instance.Nodes[start.Value]);
     cycle.Add(instance.ClosestTo(cycle.First()));
 
-    var distance = instance.DistanceOf(cycle);
     while (cycle.Count < instance.Dimension) {
-      (var previous, var best, distance) = instance.FindBestFitToDistance(cycle, distance, cycle);
+      var (previous, best, _) = instance.FindBestFitByLowestGain(cycle, cycle);
 
       cycle.Insert(cycle.IndexOf(previous), best);
     }
@@ -39,13 +38,11 @@ public static class GreedyCycleExpansionExtensions {
     second.Add(instance.FurthestTo(first.First()));
     second.Add(instance.ClosestTo(second.First()));
 
-    var firstDistance = instance.DistanceOf(first);
-    var secondDistance = instance.DistanceOf(second);
     while (first.Count < instance.Dimension / 2) {
-      (var previous, var best, firstDistance) = instance.FindBestFitToDistance(first, firstDistance, second);
+      var (previous, best, _) = instance.FindBestFitByLowestGain(first, second);
       first.Insert(first.IndexOf(previous), best);
 
-      (previous, best, secondDistance) = instance.FindBestFitToDistance(second, secondDistance, first);
+      (previous, best, _) = instance.FindBestFitByLowestGain(second, first);
       second.Insert(second.IndexOf(previous), best);
     }
 

@@ -97,6 +97,17 @@ public partial class MainWindow : Window {
         secondHistory.Add(secondObserved.ToList());
         Histories.Add(firstHistory);
         Histories.Add(secondHistory);
+      } else if (SelectedAlgorithm == Algorithm.GreedyCycleExpansionWith2Regret) {
+        HistorySlider.Maximum = Instance.Dimension;
+        HistorySlider.Value = Instance.Dimension;
+        var observed = new ObservableList<Node>();
+        var history = new List<List<Node>> { new() };
+        observed.Changed += (_, _) => history.Add(observed.ToList());
+
+        int? startIndex = (int)StartIndex.Value == 0 ? null : (int)StartIndex.Value - 1;
+        Instance.SearchWithGreedyCycleExpansionWith2Regret(observed, startIndex);
+        history.Add(observed.ToList());
+        Histories.Add(history);
       }
     };
     ClearStartIndexButton.Click += (_, _) => StartIndex.Value = 0;
@@ -118,7 +129,7 @@ public partial class MainWindow : Window {
       Histories.Clear();
     };
     Instance = Instance.Read(SelectedInstance);
-    StartIndex.Value = 52;
+    StartIndex.Value = 53;
     StartIndex.Minimum = 0;
     StartIndex.Maximum = Instance.Dimension;
 
