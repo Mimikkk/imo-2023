@@ -82,6 +82,21 @@ public partial class MainWindow : Window {
         Instance.SearchWithGreedyCycleExpansion(observed, startIndex);
         history.Add(observed.ToList());
         Histories.Add(history);
+      } else if (SelectedAlgorithm == Algorithm.DoubleGreedyCycleExpansion) {
+        HistorySlider.Maximum = Instance.Dimension / 2;
+        HistorySlider.Value = Instance.Dimension / 2;
+        var firstObserved = new ObservableList<Node>();
+        var secondObserved = new ObservableList<Node>();
+        var firstHistory = new List<List<Node>> { new() };
+        var secondHistory = new List<List<Node>> { new() };
+        firstObserved.Changed += (_, _) => firstHistory.Add(firstObserved.ToList());
+        secondObserved.Changed += (_, _) => secondHistory.Add(secondObserved.ToList());
+        int? startIndex = (int)StartIndex.Value == 0 ? null : (int)StartIndex.Value - 1;
+        Instance.SearchDoubleWithGreedyCycleExpansion(firstObserved, secondObserved, startIndex);
+        firstHistory.Add(firstObserved.ToList());
+        secondHistory.Add(secondObserved.ToList());
+        Histories.Add(firstHistory);
+        Histories.Add(secondHistory);
       }
     };
     ClearStartIndexButton.Click += (_, _) => StartIndex.Value = 0;
@@ -111,6 +126,7 @@ public partial class MainWindow : Window {
       new("Najbliższy sąsiad", Algorithm.GreedyNearestNeighbour),
       new("Podwójny najbliższy sąsiad", Algorithm.DoubleGreedyNearestNeighbour),
       new("Rozszerzanie cyklu", Algorithm.GreedyCycleExpansion),
+      new("Podwójne Rozszerzanie cyklu", Algorithm.DoubleGreedyCycleExpansion),
       new("Rozszerzanie cyklu z 2-żalem", Algorithm.GreedyCycleExpansionWith2Regret),
     };
     Algorithms.SelectedIndex = 0;
@@ -137,7 +153,7 @@ public partial class MainWindow : Window {
     Chart.Plot.Add.Scatter(Instance.Nodes, Instance);
 
     foreach (var history in Histories) {
-      if (SelectedAlgorithm == Algorithm.GreedyCycleExpansion) {
+      if (SelectedAlgorithm == Algorithm.GreedyCycleExpansion || SelectedAlgorithm == Algorithm.DoubleGreedyCycleExpansion) {
         Chart.Plot.Add.Cycle(history[HistoryStep], Instance);
       } else {
         if (HistoryStep == (int)HistorySlider.Maximum) Chart.Plot.Add.Cycle(history[HistoryStep], Instance);
@@ -163,9 +179,9 @@ public partial class MainWindow : Window {
 
     var (mx, my) = Chart.Interaction.GetMouseCoordinates();
 
-    Title = $"Mouse - {(int)mx}x, {(int)my}y";
+    Title = $"Pozycja Myszy - {(int)mx}x, {(int)my}y";
     if (SelectedNode is not null) {
-      Title += $" : Wierzchołek - {SelectedNode.Index + 1} at {SelectedNode.X}x, {SelectedNode.Y}y";
+      Title += $" : Wierzchołek - {SelectedNode.Index + 1} - {SelectedNode.X}x, {SelectedNode.Y}y";
     }
     if (Histories.Count > 0 && SelectedNode is not null) {
       var contained = Histories.FirstOrDefault(x => x[HistoryStep].Contains(SelectedNode));
