@@ -26,6 +26,7 @@ public record Instance(int Dimension, List<Node> Nodes, int[,] Distances) {
 
 
   public int this[Node first, Node second] => Distances[first.Index, second.Index];
+  public int this[int first, int second] => Distances[first, second];
 
   public Node ClosestTo(Node node, IEnumerable<Node>? except = null) {
     except ??= new List<Node>();
