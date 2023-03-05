@@ -8,6 +8,7 @@ public class Algorithm : SmartEnum<Algorithm> {
   public static readonly Algorithm GreedyCycleExpansion = new();
   public static readonly Algorithm DoubleGreedyCycleExpansion = new();
   public static readonly Algorithm GreedyCycleExpansionWith2Regret = new();
+  public static readonly Algorithm DoubleGreedyCycleExpansionWith2Regret = new();
 
   public Algorithm()
     : base(_nextValue.ToString(), ++_nextValue) { }

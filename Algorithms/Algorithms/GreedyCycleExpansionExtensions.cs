@@ -9,8 +9,8 @@ public static class GreedyCycleExpansionExtensions {
     cycle.Edges()
       .SelectMany(p => instance.Nodes.Except(cycle)
         .Except(except)
-        .Select(n => (p.b, n, distance: instance[n, p.a] + instance[n, p.b] - instance[p.a, p.b])))
-      .MinBy(x => x.distance)
+        .Select(n => (p.b, n, cost: instance.InsertCost(p, n))))
+      .MinBy(x => x.cost)
       .DropLast();
 
   public static IEnumerable<Node>
@@ -27,8 +27,9 @@ public static class GreedyCycleExpansionExtensions {
 
     return cycle;
   }
+
   public static (IEnumerable<Node>, IEnumerable<Node>)
-    SearchDoubleWithGreedyCycleExpansion(this Instance instance, IList<Node>? first = null, IList<Node>? second = null, int? start = null) {
+    SearchWithGreedyCycleExpansion(this Instance instance, IList<Node>? first = null, IList<Node>? second = null, int? start = null) {
     first ??= new List<Node>();
     first.Add(start is null ? Node.Choose(instance.Nodes) : instance.Nodes[start.Value]);
     first.Add(instance.ClosestTo(first.First()));

@@ -29,20 +29,23 @@ public record Instance(int Dimension, List<Node> Nodes, int[,] Distances) {
 
   public int this[Node first, Node second] => Distances[first.Index, second.Index];
   public int this[int first, int second] => Distances[first, second];
+  public int this[(Node a, Node b) edge] => this[edge.a, edge.b];
 
   public Node ClosestTo(Node node, IEnumerable<Node>? except = null) {
     except ??= new List<Node>();
 
-    return Nodes.Except(except.Concat(Yield(node))).MinBy(n => this[node, n])!;
+    return Nodes.Except(except.Concat(Yield(node))).MinBy(n => this[n, node])!;
   }
 
   public Node FurthestTo(Node node, IEnumerable<Node>? except = null) {
     except ??= new List<Node>();
 
-    return Nodes.Except(except.Concat(Yield(node))).MaxBy(n => this[node, n])!;
+    return Nodes.Except(except.Concat(Yield(node))).MaxBy(n => this[n, node])!;
   }
 
   public int DistanceOf(IEnumerable<Node> cycle) =>
-    cycle.Edges().Sum(p => this[p.a, p.b]);
+    cycle.Edges().Sum(edge => this[edge]);
 
+  public int InsertCost((Node a, Node b) edge, Node node) =>
+    this[edge.a, node] + this[node, edge.b] - this[edge];
 }

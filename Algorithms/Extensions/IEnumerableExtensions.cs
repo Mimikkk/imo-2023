@@ -19,5 +19,5 @@ public static class IEnumerableExtensions {
     var items = cycle.ToArray();
 
     return items.Pairwise().Concat(Yield((items[0], items[^1])));
-  }
+  }  
 }
