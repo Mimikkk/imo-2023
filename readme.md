@@ -11,7 +11,7 @@ W ramach zadania należało:
 - [x] Zaimplementować algorytm zachłanny inspirowany najbliższego sąsiada.
     - [ ] Pseudokod
     - [ ] Opis
-- [ ] Zaimplementować algorytm zachłanny inspirowany metodą rozbudowy cyklu.
+- [x] Zaimplementować algorytm zachłanny inspirowany metodą rozbudowy cyklu.
     - [ ] Pseudokod
     - [ ] Opis
 - [ ] Zaimplementować algorytm zachłanny typu heurestyki z żalem na bazie algorytmu inspirowanego metodą rozbudowy cyklu
