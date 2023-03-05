@@ -7,8 +7,10 @@ using Algorithms.Extensions;
 using Algorithms.Methods;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Input;
 using Interface.Types;
 using ScottPlot;
+using ScottPlot.Control;
 using ScottPlot.Palettes;
 using static Algorithms.Extensions.IEnumerableExtensions;
 
@@ -101,7 +103,7 @@ public partial class MainWindow : Window {
       Histories.Clear();
     };
     Instance = Instance.Read(SelectedInstance);
-    StartIndex.Value = 0;
+    StartIndex.Value = 52;
     StartIndex.Minimum = 0;
     StartIndex.Maximum = Instance.Dimension;
 
@@ -129,7 +131,6 @@ public partial class MainWindow : Window {
       ChartRefresh();
     };
   }
-
 
   private void ChartRefresh() {
     Chart.Plot.Clear();
@@ -163,7 +164,17 @@ public partial class MainWindow : Window {
     var (mx, my) = Chart.Interaction.GetMouseCoordinates();
 
     Title = $"Mouse - {(int)mx}x, {(int)my}y";
-    if (SelectedNode is not null) Title += $" : Wierzchołek - {SelectedNode.Index + 1} at {SelectedNode.X}x, {SelectedNode.Y}y";
+    if (SelectedNode is not null) {
+      Title += $" : Wierzchołek - {SelectedNode.Index + 1} at {SelectedNode.X}x, {SelectedNode.Y}y";
+    }
+    if (Histories.Count > 0 && SelectedNode is not null) {
+      var contained = Histories.FirstOrDefault(x => x[HistoryStep].Contains(SelectedNode));
+      if (contained is not null) {
+        var index = contained[HistoryStep].IndexOf(SelectedNode);
+        Title += $" : Indeks - {index}";
+      }
+    }
+
     Chart.Refresh();
   }
 

@@ -39,5 +39,9 @@ public record Instance(int Dimension, List<Node> Nodes, int[,] Distances) {
     return Nodes.Except(except.Concat(Yield(node))).MaxBy(n => this[node, n])!;
   }
 
-  public int DistanceOf(IEnumerable<Node> path) => path.Pairwise().Sum(p => this[p.a, p.b]);
+  public int DistanceOf(IEnumerable<Node> cycle) {
+    var items = cycle.ToArray();
+
+    return this[items[0], items[^1]] + items.Pairwise().Sum(p => this[p.a, p.b]);
+  }
 }
