@@ -13,7 +13,7 @@ public static class GreedyRegretCycleExpansionExtensions {
         .OrderBy(n => n.cost)
         .ToList()
     )
-    .OrderByDescending(match => match.Skip(1).Take(depth - 1).Sum(p => match.First().cost - p.cost))
+    .OrderBy(match => match.Skip(1).Take(depth - 1).Sum(p => match.First().cost - p.cost))
     .First()
     .MinBy(match => match.cost)
     .DropLast();
