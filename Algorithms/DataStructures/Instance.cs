@@ -3,8 +3,8 @@ using System.Diagnostics;
 namespace Algorithms.DataStructures;
 
 public record Instance(int Dimension, List<Node> Nodes, int[,] Distances) {
-  public static Instance Read(string path) {
-    var nodes = Node.From(File.ReadLines($"{ProjectDirectory}/resources/instances/{path}.tsp")
+  public static Instance Read(string name) {
+    var nodes = Node.From(File.ReadLines($"{ProjectDirectory}/Resources/Instances/{name}.tsp")
         .Skip(6)
         .SkipLast(1))
       .ToList();
