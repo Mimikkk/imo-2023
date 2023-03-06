@@ -46,6 +46,7 @@ public partial class MainWindow : Window {
     StepNextButton.Click += (_, _) => HistorySlider.Value = HistoryStep + 1;
     RunButton.Click += (_, _) => {
       Histories.Clear();
+
       if (SelectedAlgorithm == Algorithm.GreedyNearestNeighbour) {
         HistorySlider.Maximum = Instance.Dimension;
         HistorySlider.Value = Instance.Dimension;
@@ -58,7 +59,8 @@ public partial class MainWindow : Window {
         history.Add(observed.ToList());
 
         Histories.Add(history);
-      } else if (SelectedAlgorithm == Algorithm.DoubleGreedyNearestNeighbour) {
+      }
+      else if (SelectedAlgorithm == Algorithm.DoubleGreedyNearestNeighbour) {
         HistorySlider.Maximum = Instance.Dimension / 2;
         HistorySlider.Value = Instance.Dimension / 2;
         var firstObserved = new ObservableList<Node>();
@@ -73,7 +75,8 @@ public partial class MainWindow : Window {
         secondHistory.Add(secondObserved.ToList());
         Histories.Add(firstHistory);
         Histories.Add(secondHistory);
-      } else if (SelectedAlgorithm == Algorithm.GreedyCycleExpansion) {
+      }
+      else if (SelectedAlgorithm == Algorithm.GreedyCycleExpansion) {
         HistorySlider.Maximum = Instance.Dimension;
         HistorySlider.Value = Instance.Dimension;
         var observed = new ObservableList<Node>();
@@ -84,7 +87,8 @@ public partial class MainWindow : Window {
         Instance.SearchWithGreedyCycleExpansion(observed, startIndex);
         history.Add(observed.ToList());
         Histories.Add(history);
-      } else if (SelectedAlgorithm == Algorithm.DoubleGreedyCycleExpansion) {
+      }
+      else if (SelectedAlgorithm == Algorithm.DoubleGreedyCycleExpansion) {
         HistorySlider.Maximum = Instance.Dimension / 2;
         HistorySlider.Value = Instance.Dimension / 2;
         var firstObserved = new ObservableList<Node>();
@@ -99,7 +103,8 @@ public partial class MainWindow : Window {
         secondHistory.Add(secondObserved.ToList());
         Histories.Add(firstHistory);
         Histories.Add(secondHistory);
-      } else if (SelectedAlgorithm == Algorithm.GreedyCycleExpansionWith2Regret) {
+      }
+      else if (SelectedAlgorithm == Algorithm.GreedyCycleExpansionWith2Regret) {
         HistorySlider.Maximum = Instance.Dimension;
         HistorySlider.Value = Instance.Dimension;
         var observed = new ObservableList<Node>();
@@ -110,7 +115,8 @@ public partial class MainWindow : Window {
         Instance.SearchWithGreedyCycleExpansionWith2Regret(observed, startIndex);
         history.Add(observed.ToList());
         Histories.Add(history);
-      } else if (SelectedAlgorithm == Algorithm.DoubleGreedyCycleExpansionWith2Regret) {
+      }
+      else if (SelectedAlgorithm == Algorithm.DoubleGreedyCycleExpansionWith2Regret) {
         HistorySlider.Maximum = Instance.Dimension / 2;
         HistorySlider.Value = Instance.Dimension / 2;
         var firstObserved = new ObservableList<Node>();
@@ -188,7 +194,8 @@ public partial class MainWindow : Window {
         || SelectedAlgorithm == Algorithm.GreedyCycleExpansionWith2Regret
         || SelectedAlgorithm == Algorithm.DoubleGreedyCycleExpansionWith2Regret) {
         Chart.Plot.Add.Cycle(history[HistoryStep], Instance);
-      } else {
+      }
+      else {
         if (HistoryStep == (int)HistorySlider.Maximum) Chart.Plot.Add.Cycle(history[HistoryStep], Instance);
         else Chart.Plot.Add.Path(history[HistoryStep], Instance);
       }
@@ -207,6 +214,7 @@ public partial class MainWindow : Window {
         plotted.AddRange(nodes);
         Chart.Plot.Add.DistanceTo(SelectedNode, nodes, Palette.GetColor(++color).ToSKColor());
       }
+
       Chart.Plot.Add.DistanceTo(SelectedNode, Instance.Nodes.Except(plotted).Except(Yield(SelectedNode)));
     }
 
@@ -216,6 +224,7 @@ public partial class MainWindow : Window {
     if (SelectedNode is not null) {
       Title += $" : Wierzchołek - {SelectedNode.Index + 1} - {SelectedNode.X}x, {SelectedNode.Y}y";
     }
+
     if (Histories.Count > 0 && SelectedNode is not null) {
       var contained = Histories.FirstOrDefault(x => x[HistoryStep].Contains(SelectedNode));
       if (contained is not null) {
