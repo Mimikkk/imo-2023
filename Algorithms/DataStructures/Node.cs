@@ -34,4 +34,10 @@ public record Node(int Index, int X, int Y) {
     var (x, y) = this;
     return x >= minx && x < maxx && y >= miny && y < maxy;
   }
+
+  public int SquareMagnitude => X * X + Y * Y;
+  public double Magnitude => Math.Sqrt(SquareMagnitude);
+  public static Node operator +(Node first, Node second) => new(-1, first.X + second.X, first.Y + second.Y);
+  public static Node operator -(Node first, Node second) => first + -second;
+  public static Node operator -(Node node) => new(-1, node.X, -node.Y);
 }

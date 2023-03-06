@@ -32,7 +32,7 @@ public static class ChartMethods {
     return add;
   }
 
-  public static AddPlottable Scatter(this AddPlottable add, IEnumerable<Node> nodes, Instance instance) {
+  public static AddPlottable Scatter(this AddPlottable add, IEnumerable<Node> nodes) {
     nodes = nodes.ToArray();
 
     var scatter = add.Scatter(
@@ -41,7 +41,7 @@ public static class ChartMethods {
     );
 
     scatter.LineStyle.Width = 0.01f;
-    scatter.Label = $"Liczba punktów: {instance.Nodes.Count}";
+    scatter.Label = $"Liczba punktów: {nodes.Count()}";
 
     return add;
   }

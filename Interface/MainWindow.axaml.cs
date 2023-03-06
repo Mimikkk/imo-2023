@@ -1,5 +1,7 @@
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Linq;
 using Algorithms.Algorithms;
 using Algorithms.DataStructures;
@@ -59,8 +61,7 @@ public partial class MainWindow : Window {
         history.Add(observed.ToList());
 
         Histories.Add(history);
-      }
-      else if (SelectedAlgorithm == Algorithm.DoubleGreedyNearestNeighbour) {
+      } else if (SelectedAlgorithm == Algorithm.DoubleGreedyNearestNeighbour) {
         HistorySlider.Maximum = Instance.Dimension / 2;
         HistorySlider.Value = Instance.Dimension / 2;
         var firstObserved = new ObservableList<Node>();
@@ -75,8 +76,7 @@ public partial class MainWindow : Window {
         secondHistory.Add(secondObserved.ToList());
         Histories.Add(firstHistory);
         Histories.Add(secondHistory);
-      }
-      else if (SelectedAlgorithm == Algorithm.GreedyCycleExpansion) {
+      } else if (SelectedAlgorithm == Algorithm.GreedyCycleExpansion) {
         HistorySlider.Maximum = Instance.Dimension;
         HistorySlider.Value = Instance.Dimension;
         var observed = new ObservableList<Node>();
@@ -87,8 +87,7 @@ public partial class MainWindow : Window {
         Instance.SearchWithGreedyCycleExpansion(observed, startIndex);
         history.Add(observed.ToList());
         Histories.Add(history);
-      }
-      else if (SelectedAlgorithm == Algorithm.DoubleGreedyCycleExpansion) {
+      } else if (SelectedAlgorithm == Algorithm.DoubleGreedyCycleExpansion) {
         HistorySlider.Maximum = Instance.Dimension / 2;
         HistorySlider.Value = Instance.Dimension / 2;
         var firstObserved = new ObservableList<Node>();
@@ -103,8 +102,7 @@ public partial class MainWindow : Window {
         secondHistory.Add(secondObserved.ToList());
         Histories.Add(firstHistory);
         Histories.Add(secondHistory);
-      }
-      else if (SelectedAlgorithm == Algorithm.GreedyCycleExpansionWith2Regret) {
+      } else if (SelectedAlgorithm == Algorithm.GreedyCycleExpansionWith2Regret) {
         HistorySlider.Maximum = Instance.Dimension;
         HistorySlider.Value = Instance.Dimension;
         var observed = new ObservableList<Node>();
@@ -115,8 +113,7 @@ public partial class MainWindow : Window {
         Instance.SearchWithGreedyCycleExpansionWith2Regret(observed, startIndex);
         history.Add(observed.ToList());
         Histories.Add(history);
-      }
-      else if (SelectedAlgorithm == Algorithm.DoubleGreedyCycleExpansionWith2Regret) {
+      } else if (SelectedAlgorithm == Algorithm.DoubleGreedyCycleExpansionWith2Regret) {
         HistorySlider.Maximum = Instance.Dimension / 2;
         HistorySlider.Value = Instance.Dimension / 2;
         var firstObserved = new ObservableList<Node>();
@@ -185,62 +182,71 @@ public partial class MainWindow : Window {
 
   private void ChartRefresh() {
     Chart.Plot.Clear();
-    Chart.Plot.Add.Scatter(Instance.Nodes, Instance);
 
-    foreach (var history in Histories) {
-      if (
-        SelectedAlgorithm == Algorithm.GreedyCycleExpansion
-        || SelectedAlgorithm == Algorithm.DoubleGreedyCycleExpansion
-        || SelectedAlgorithm == Algorithm.GreedyCycleExpansionWith2Regret
-        || SelectedAlgorithm == Algorithm.DoubleGreedyCycleExpansionWith2Regret) {
-        Chart.Plot.Add.Cycle(history[HistoryStep], Instance);
-      }
-      else {
-        if (HistoryStep == (int)HistorySlider.Maximum) Chart.Plot.Add.Cycle(history[HistoryStep], Instance);
-        else Chart.Plot.Add.Path(history[HistoryStep], Instance);
-      }
-    }
+    Chart.Plot.Add.Scatter(Instance.Nodes);
+    Chart.Plot.Add.Cycle(Instance.Nodes.Hull(), Instance);
+    Histories.ToList().ForEach(HandleRenderStrategy);
+    HandleRenderClosestNode();
+    HandleRenderSelectedNode();
 
-    if (ClosestNode is not null) Chart.Plot.Add.Point(ClosestNode);
-    if (SelectedNode is not null) {
-      Chart.Plot.Add.Point(SelectedNode);
+    HandleUpdateTitle();
+    Chart.Refresh();
+  }
 
-      var color = Chart.Plot.Plottables.Count;
-
-      var plotted = new List<Node>();
-      foreach (var history in Histories) {
-        var nodes = history[HistoryStep].Except(Yield(SelectedNode)).ToList();
-
-        plotted.AddRange(nodes);
-        Chart.Plot.Add.DistanceTo(SelectedNode, nodes, Palette.GetColor(++color).ToSKColor());
-      }
-
-      Chart.Plot.Add.DistanceTo(SelectedNode, Instance.Nodes.Except(plotted).Except(Yield(SelectedNode)));
-    }
-
+  private void HandleUpdateTitle() {
     var (mx, my) = Chart.Interaction.GetMouseCoordinates();
 
     Title = $"Pozycja Myszy - {(int)mx}x, {(int)my}y";
-    if (SelectedNode is not null) {
-      Title += $" : Wierzchołek - {SelectedNode.Index + 1} - {SelectedNode.X}x, {SelectedNode.Y}y";
+    if (SelectedNode is null) return;
+    Title += $" : Wierzchołek - {SelectedNode.Index + 1} - {SelectedNode.X}x, {SelectedNode.Y}y";
+    var contained = Histories.FirstOrDefault(x => x[HistoryStep].Contains(SelectedNode));
+    if (contained is null) return;
+    var index = contained[HistoryStep].IndexOf(SelectedNode);
+    Title += $" : Indeks - {index}";
+  }
+
+  private void HandleRenderSelectedNode() {
+    if (SelectedNode is null) return;
+    Chart.Plot.Add.Point(SelectedNode);
+
+    var color = Chart.Plot.Plottables.Count;
+
+    var plotted = new List<Node>();
+    foreach (var history in Histories) {
+      var nodes = history[HistoryStep].Except(Yield(SelectedNode)).ToList();
+
+      plotted.AddRange(nodes);
+      Chart.Plot.Add.DistanceTo(SelectedNode, nodes, Palette.GetColor(++color).ToSKColor());
     }
 
-    if (Histories.Count > 0 && SelectedNode is not null) {
-      var contained = Histories.FirstOrDefault(x => x[HistoryStep].Contains(SelectedNode));
-      if (contained is not null) {
-        var index = contained[HistoryStep].IndexOf(SelectedNode);
-        Title += $" : Indeks - {index}";
+    Chart.Plot.Add.DistanceTo(SelectedNode, Instance.Nodes.Except(plotted).Except(Yield(SelectedNode)));
+  }
+
+  private void HandleRenderClosestNode() {
+    if (ClosestNode is null) return;
+    Chart.Plot.Add.Point(ClosestNode);
+  }
+
+  private void HandleRenderStrategy(IReadOnlyList<List<Node>> history) {
+    switch (SelectedAlgorithm.Type) {
+      case Algorithm.StrategyType.CycleBased: {
+        Chart.Plot.Add.Cycle(history[HistoryStep], Instance);
+        return;
       }
+      case Algorithm.StrategyType.PathBased: {
+        if (HistoryStep == (int)HistorySlider.Maximum) Chart.Plot.Add.Cycle(history[HistoryStep], Instance);
+        else Chart.Plot.Add.Path(history[HistoryStep], Instance);
+        return;
+      }
+      default: throw new ArgumentOutOfRangeException(nameof(SelectedAlgorithm));
     }
-
-    Chart.Refresh();
   }
 
   private Node? ClosestNode;
   private Node? SelectedNode;
   private Instance Instance = null!;
   private string SelectedInstance => Instances.SelectedItem.As<Option>().Value;
-  private string SelectedAlgorithm => Algorithms.SelectedItem.As<Option>().Value;
+  private Algorithm SelectedAlgorithm => Algorithm.FromName(Algorithms.SelectedItem.As<Option>().Value);
   private int HistoryStep => (int)HistorySlider.Value;
   private readonly ObservableCollection<List<List<Node>>> Histories = new();
   private readonly IPalette Palette = new Category10();
