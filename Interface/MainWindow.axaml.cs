@@ -53,7 +53,8 @@ public partial class MainWindow : Window {
         var observed = new ObservableList<Node>();
         var history = new List<List<Node>> { new() };
         observed.Changed += (_, _) => history.Add(observed.ToList());
-        Instance.SearchWithGreedyNearestNeighbour(observed);
+        int? startIndex = (int)StartIndex.Value == 0 ? null : (int)StartIndex.Value - 1;
+        Instance.SearchWithGreedyNearestNeighbour(observed, startIndex);
         history.Add(observed.ToList());
 
         Histories.Add(history);
@@ -66,7 +67,8 @@ public partial class MainWindow : Window {
         var secondHistory = new List<List<Node>> { new() };
         firstObserved.Changed += (_, _) => firstHistory.Add(firstObserved.ToList());
         secondObserved.Changed += (_, _) => secondHistory.Add(secondObserved.ToList());
-        Instance.SearchWithGreedyNearestNeighbour(firstObserved, secondObserved);
+        int? startIndex = (int)StartIndex.Value == 0 ? null : (int)StartIndex.Value - 1;
+        Instance.SearchWithGreedyNearestNeighbour(firstObserved, secondObserved, startIndex);
         firstHistory.Add(firstObserved.ToList());
         secondHistory.Add(secondObserved.ToList());
         Histories.Add(firstHistory);
