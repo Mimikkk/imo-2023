@@ -51,23 +51,15 @@ public static class GreedyCycleExpansionExtensions {
     return (first, second);
   }
 
-  // public static IEnumerable<IEnumerable<Node>>
-  //   SearchWithGreedyCycleExpansion(this Instance instance, IEnumerable<IList<Node>> cycles, int? start = null) {
-  //   var cycle = new List<Node>();
-  //   cycle.Add(start is null ? Node.Choose(instance.Nodes) : instance.Nodes[start.Value]);
-  //   cycle.Add(instance.ClosestTo(cycle.First()));
-  //
-  //   while (cycle.Count < instance.Dimension) {
-  //     var (previous, best) = instance.FindBestFitByLowestGain(cycle, cycle);
-  //
-  //     cycle.Insert(cycle.IndexOf(previous), best);
-  //   }
-  //
-  //   return cycle.Split();
-  // }
-  //
-  // private static IEnumerable<Node> ChooseNFurthestNodes(this Instance instance, int count) {
-    // var convexHull = instance.Nodes.Hull().ToList();
-    // return chosen;
-  // }
+  public static IEnumerable<IEnumerable<Node>>
+    SearchWithGreedyCycleExpansion(this Instance instance, IEnumerable<IList<Node>> cycles, int? start = null) {
+    var hull = instance.Nodes.Hull();
+    var count = 5;
+    var nodes = new List<Node> { Node.Choose(hull) };
+    var maximal = 0;
+    while (nodes.Count < count) {
+    }
+
+    return new List<IEnumerable<Node>>();
+  }
 }

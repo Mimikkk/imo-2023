@@ -14,7 +14,7 @@ public static class IEnumerableExtensions {
     if (it.MoveNext()) previous = it.Current;
     while (it.MoveNext()) yield return (previous!, previous = it.Current);
   }
-public static IEnumerable<IEnumerable<T>> Combinations<T>(this IEnumerable<T> items, int count) {
+  public static IEnumerable<IEnumerable<T>> Combinations<T>(this IEnumerable<T> items, int count) {
     var enumerable = items as T[] ?? items.ToArray();
     if (count == 1)
       foreach (var item in enumerable)
@@ -31,17 +31,13 @@ public static IEnumerable<IEnumerable<T>> Combinations<T>(this IEnumerable<T> it
     return items.Pairwise().Concat(Yield((items.Last(), items.First())));
   }
 
-  private enum GeometricRelation {
-    LeftOf,
-    RightOf,
-    OnTheLine
-  }
+  private enum GeometricRelation : byte { LeftOf, RightOf, Collinear }
 
   private static GeometricRelation CalculateRelation(Node a, Node b, Node c) =>
     ((float)(a.X - c.X) * (b.Y - c.Y) - (a.Y - c.Y) * (b.X - c.X)) switch {
-      < 0.00001f and > -0.00001f => GeometricRelation.OnTheLine,
-      < 0 => GeometricRelation.RightOf,
-      _ => GeometricRelation.LeftOf
+      < 0.00001f and > -0.00001f => GeometricRelation.Collinear,
+      < 0                        => GeometricRelation.RightOf,
+      _                          => GeometricRelation.LeftOf
     };
 
   public static IEnumerable<Node> Hull(this IEnumerable<Node> nodes) {
@@ -56,7 +52,7 @@ public static IEnumerable<IEnumerable<T>> Combinations<T>(this IEnumerable<T> it
       var next = points.First();
       foreach (var node in points.Skip(1))
         switch (CalculateRelation(hull.Last(), next, node)) {
-          case GeometricRelation.OnTheLine:
+          case GeometricRelation.Collinear:
             collinear.Add(node);
             break;
           case GeometricRelation.RightOf:
@@ -83,64 +79,7 @@ public static IEnumerable<IEnumerable<T>> Combinations<T>(this IEnumerable<T> it
       points.Remove(next);
     }
 
-    return hull;}
-
-
-  public static List<Node> Hull(this IEnumerable<Node> nodes) {
-    nodes = nodes.ToList();
-    if (nodes.Count() <= 3) return nodes.ToList();
-
-    var hull = new List<Node> { nodes.MinBy(n => n.X)! };
-    var points = nodes.Except(hull).ToList();
-
-    var current = hull.First();
-    var counter = 0;
-    var collinear = new List<Node>();
-    while (true) {
-      if (counter == 2) points.Add(hull[0]);
-      var next = Node.Choose(points);
-
-      var (a, b) = (current, next);
-      foreach (var node in points.Except(Yield(next)))
-        switch (Ccw(a, b, node)) {
-          case GeometryRelation.Collinear:
-            collinear.Add(node);
-            break;
-          case GeometryRelation.RightOf:
-            (next, b) = (node, node);
-            collinear.Clear();
-            break;
-        }
-
-      if (next.Equals(hull.First())) return hull;
-
-      if (collinear.Count > 0) {
-        collinear.Add(next);
-
-        collinear = collinear
-          .Select(n => n - current)
-          .OrderBy(n => n.SquareMagnitude)
-          .ToList();
-
-        hull.AddRange(collinear);
-        current = collinear.Last();
-        points.RemoveAll(collinear.Contains);
-        collinear.Clear();
-      } else {
-        hull.Add(next);
-        points.Remove(next);
-        current = next;
-      }
-
-      counter += 1;
-    }
+    return hull;
   }
 
-  private enum GeometryRelation : byte { LeftOf, RightOf, Collinear }
-  private static GeometryRelation Ccw(Node a, Node b, Node p) =>
-    (float)((a.X - p.X) * (b.Y - p.Y) - (a.Y - p.Y) * (b.X - p.X)) switch {
-      < 0.00001f and > -0.00001f => GeometryRelation.Collinear,
-      < 0f                       => GeometryRelation.RightOf,
-      _                          => GeometryRelation.LeftOf
-    };
 }

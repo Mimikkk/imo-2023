@@ -183,9 +183,10 @@ public partial class MainWindow : Window {
   private void ChartRefresh() {
     Chart.Plot.Clear();
 
-    Chart.Plot.Add.Scatter(Instance.Nodes);
-    Chart.Plot.Add.Cycle(Instance.Nodes.Hull(), Instance);
-    Histories.ToList().ForEach(HandleRenderStrategy);
+    Chart.Plot.Add.Scatter(_instance.Nodes);
+    Chart.Plot.Add.Cycle(_instance.Nodes.Hull(), _instance);
+
+    _histories.ToList().ForEach(HandleRenderStrategy);
     HandleRenderClosestNode();
     HandleRenderSelectedNode();
 
@@ -197,17 +198,17 @@ public partial class MainWindow : Window {
     var (mx, my) = Chart.Interaction.GetMouseCoordinates();
 
     Title = $"Pozycja Myszy - {(int)mx}x, {(int)my}y";
-    if (SelectedNode is null) return;
-    Title += $" : Wierzchołek - {SelectedNode.Index + 1} - {SelectedNode.X}x, {SelectedNode.Y}y";
-    var contained = Histories.FirstOrDefault(x => x[HistoryStep].Contains(SelectedNode));
+    if (_selectedNode is null) return;
+    Title += $" : Wierzchołek - {_selectedNode.Index + 1} - {_selectedNode.X}x, {_selectedNode.Y}y";
+    var contained = _histories.FirstOrDefault(x => x[HistoryStep].Contains(_selectedNode));
     if (contained is null) return;
-    var index = contained[HistoryStep].IndexOf(SelectedNode);
+    var index = contained[HistoryStep].IndexOf(_selectedNode);
     Title += $" : Indeks - {index}";
   }
 
   private void HandleRenderSelectedNode() {
-    if (SelectedNode is null) return;
-    Chart.Plot.Add.Point(SelectedNode);
+    if (_selectedNode is null) return;
+    Chart.Plot.Add.Point(_selectedNode);
 
     var color = Chart.Plot.Plottables.Count;
 
@@ -223,19 +224,19 @@ public partial class MainWindow : Window {
   }
 
   private void HandleRenderClosestNode() {
-    if (ClosestNode is null) return;
-    Chart.Plot.Add.Point(ClosestNode);
+    if (_closestNode is null) return;
+    Chart.Plot.Add.Point(_closestNode);
   }
 
   private void HandleRenderStrategy(IReadOnlyList<List<Node>> history) {
     switch (SelectedAlgorithm.Type) {
       case Algorithm.StrategyType.CycleBased: {
-        Chart.Plot.Add.Cycle(history[HistoryStep], Instance);
+        Chart.Plot.Add.Cycle(history[HistoryStep], _instance);
         return;
       }
       case Algorithm.StrategyType.PathBased: {
-        if (HistoryStep == (int)HistorySlider.Maximum) Chart.Plot.Add.Cycle(history[HistoryStep], Instance);
-        else Chart.Plot.Add.Path(history[HistoryStep], Instance);
+        if (HistoryStep == (int)HistorySlider.Maximum) Chart.Plot.Add.Cycle(history[HistoryStep], _instance);
+        else Chart.Plot.Add.Path(history[HistoryStep], _instance);
         return;
       }
       default: throw new ArgumentOutOfRangeException(nameof(SelectedAlgorithm));
