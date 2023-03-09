@@ -21,7 +21,7 @@ namespace Interface;
 public partial class MainWindow : Window {
   private Node FindClosestNodeToMouse() {
     var mouse = Chart.Interaction.GetMouseCoordinates();
-    var closest = Instance.Nodes.MinBy(node => node.DistanceTo(mouse))!;
+    var closest = _instance.Nodes.MinBy(node => node.DistanceTo(mouse))!;
     return closest;
   }
 
@@ -36,7 +36,7 @@ public partial class MainWindow : Window {
     HistoryText.Text = $"Krok: 0";
     HistorySlider.Minimum = 0;
 
-    Histories.CollectionChanged += (_, _) => ChartRefresh();
+    _histories.CollectionChanged += (_, _) => ChartRefresh();
 
     HistorySlider.PropertyChanged += (_, change) => {
       if (change.Property.Name != "Value") return;
@@ -47,23 +47,23 @@ public partial class MainWindow : Window {
     StepBackButton.Click += (_, _) => HistorySlider.Value = HistoryStep - 1;
     StepNextButton.Click += (_, _) => HistorySlider.Value = HistoryStep + 1;
     RunButton.Click += (_, _) => {
-      Histories.Clear();
+      _histories.Clear();
 
       if (SelectedAlgorithm == Algorithm.GreedyNearestNeighbour) {
-        HistorySlider.Maximum = Instance.Dimension;
-        HistorySlider.Value = Instance.Dimension;
+        HistorySlider.Maximum = _instance.Dimension;
+        HistorySlider.Value = _instance.Dimension;
 
         var observed = new ObservableList<Node>();
         var history = new List<List<Node>> { new() };
         observed.Changed += (_, _) => history.Add(observed.ToList());
         int? startIndex = (int)StartIndex.Value == 0 ? null : (int)StartIndex.Value - 1;
-        Instance.SearchWithGreedyNearestNeighbour(observed, startIndex);
+        _instance.SearchWithGreedyNearestNeighbour(observed, startIndex);
         history.Add(observed.ToList());
 
-        Histories.Add(history);
+        _histories.Add(history);
       } else if (SelectedAlgorithm == Algorithm.DoubleGreedyNearestNeighbour) {
-        HistorySlider.Maximum = Instance.Dimension / 2;
-        HistorySlider.Value = Instance.Dimension / 2;
+        HistorySlider.Maximum = _instance.Dimension / 2;
+        HistorySlider.Value = _instance.Dimension / 2;
         var firstObserved = new ObservableList<Node>();
         var secondObserved = new ObservableList<Node>();
         var firstHistory = new List<List<Node>> { new() };
@@ -71,25 +71,25 @@ public partial class MainWindow : Window {
         firstObserved.Changed += (_, _) => firstHistory.Add(firstObserved.ToList());
         secondObserved.Changed += (_, _) => secondHistory.Add(secondObserved.ToList());
         int? startIndex = (int)StartIndex.Value == 0 ? null : (int)StartIndex.Value - 1;
-        Instance.SearchWithGreedyNearestNeighbour(firstObserved, secondObserved, startIndex);
+        _instance.SearchWithGreedyNearestNeighbour(firstObserved, secondObserved, startIndex);
         firstHistory.Add(firstObserved.ToList());
         secondHistory.Add(secondObserved.ToList());
-        Histories.Add(firstHistory);
-        Histories.Add(secondHistory);
+        _histories.Add(firstHistory);
+        _histories.Add(secondHistory);
       } else if (SelectedAlgorithm == Algorithm.GreedyCycleExpansion) {
-        HistorySlider.Maximum = Instance.Dimension;
-        HistorySlider.Value = Instance.Dimension;
+        HistorySlider.Maximum = _instance.Dimension;
+        HistorySlider.Value = _instance.Dimension;
         var observed = new ObservableList<Node>();
         var history = new List<List<Node>> { new() };
         observed.Changed += (_, _) => history.Add(observed.ToList());
 
         int? startIndex = (int)StartIndex.Value == 0 ? null : (int)StartIndex.Value - 1;
-        Instance.SearchWithGreedyCycleExpansion(observed, startIndex);
+        _instance.SearchWithGreedyCycleExpansion(observed, startIndex);
         history.Add(observed.ToList());
-        Histories.Add(history);
+        _histories.Add(history);
       } else if (SelectedAlgorithm == Algorithm.DoubleGreedyCycleExpansion) {
-        HistorySlider.Maximum = Instance.Dimension / 2;
-        HistorySlider.Value = Instance.Dimension / 2;
+        HistorySlider.Maximum = _instance.Dimension / 2;
+        HistorySlider.Value = _instance.Dimension / 2;
         var firstObserved = new ObservableList<Node>();
         var secondObserved = new ObservableList<Node>();
         var firstHistory = new List<List<Node>> { new() };
@@ -97,25 +97,25 @@ public partial class MainWindow : Window {
         firstObserved.Changed += (_, _) => firstHistory.Add(firstObserved.ToList());
         secondObserved.Changed += (_, _) => secondHistory.Add(secondObserved.ToList());
         int? startIndex = (int)StartIndex.Value == 0 ? null : (int)StartIndex.Value - 1;
-        Instance.SearchWithGreedyCycleExpansion(firstObserved, secondObserved, startIndex);
+        _instance.SearchWithGreedyCycleExpansion(firstObserved, secondObserved, startIndex);
         firstHistory.Add(firstObserved.ToList());
         secondHistory.Add(secondObserved.ToList());
-        Histories.Add(firstHistory);
-        Histories.Add(secondHistory);
+        _histories.Add(firstHistory);
+        _histories.Add(secondHistory);
       } else if (SelectedAlgorithm == Algorithm.GreedyCycleExpansionWith2Regret) {
-        HistorySlider.Maximum = Instance.Dimension;
-        HistorySlider.Value = Instance.Dimension;
+        HistorySlider.Maximum = _instance.Dimension;
+        HistorySlider.Value = _instance.Dimension;
         var observed = new ObservableList<Node>();
         var history = new List<List<Node>> { new() };
         observed.Changed += (_, _) => history.Add(observed.ToList());
 
         int? startIndex = (int)StartIndex.Value == 0 ? null : (int)StartIndex.Value - 1;
-        Instance.SearchWithGreedyCycleExpansionWith2Regret(observed, startIndex);
+        _instance.SearchWithGreedyCycleExpansionWith2Regret(observed, startIndex);
         history.Add(observed.ToList());
-        Histories.Add(history);
+        _histories.Add(history);
       } else if (SelectedAlgorithm == Algorithm.DoubleGreedyCycleExpansionWith2Regret) {
-        HistorySlider.Maximum = Instance.Dimension / 2;
-        HistorySlider.Value = Instance.Dimension / 2;
+        HistorySlider.Maximum = _instance.Dimension / 2;
+        HistorySlider.Value = _instance.Dimension / 2;
         var firstObserved = new ObservableList<Node>();
         var secondObserved = new ObservableList<Node>();
         var firstHistory = new List<List<Node>> { new() };
@@ -123,11 +123,11 @@ public partial class MainWindow : Window {
         firstObserved.Changed += (_, _) => firstHistory.Add(firstObserved.ToList());
         secondObserved.Changed += (_, _) => secondHistory.Add(secondObserved.ToList());
         int? startIndex = (int)StartIndex.Value == 0 ? null : (int)StartIndex.Value - 1;
-        Instance.SearchWithGreedyCycleExpansionWith2Regret(firstObserved, secondObserved, startIndex);
+        _instance.SearchWithGreedyCycleExpansionWith2Regret(firstObserved, secondObserved, startIndex);
         firstHistory.Add(firstObserved.ToList());
         secondHistory.Add(secondObserved.ToList());
-        Histories.Add(firstHistory);
-        Histories.Add(secondHistory);
+        _histories.Add(firstHistory);
+        _histories.Add(secondHistory);
       }
     };
     ClearStartIndexButton.Click += (_, _) => StartIndex.Value = 0;
@@ -140,18 +140,18 @@ public partial class MainWindow : Window {
     };
     Instances.SelectedIndex = 0;
     Instances.SelectionChanged += (_, _) => {
-      Instance = Instance.Read(SelectedInstance);
+      _instance = Instance.Read(SelectedInstance);
       HistorySlider.Value = 0;
       HistorySlider.Maximum = 0;
-      StartIndex.Maximum = Instance.Dimension;
+      StartIndex.Maximum = _instance.Dimension;
 
       Chart.Plot.AutoScale();
-      Histories.Clear();
+      _histories.Clear();
     };
-    Instance = Instance.Read(SelectedInstance);
+    _instance = Instance.Read(SelectedInstance);
     StartIndex.Value = 53;
     StartIndex.Minimum = 0;
-    StartIndex.Maximum = Instance.Dimension;
+    StartIndex.Maximum = _instance.Dimension;
 
     Algorithms.Items = new List<Option> {
       new("Najbliższy sąsiad", Algorithm.GreedyNearestNeighbour),
@@ -169,13 +169,13 @@ public partial class MainWindow : Window {
     ChartRefresh();
 
     Chart.PointerMoved += (_, _) => {
-      ClosestNode = FindClosestNodeToMouse();
+      _closestNode = FindClosestNodeToMouse();
       ChartRefresh();
     };
     Chart.PointerReleased += (_, _) => {
       var mouse = Chart.Interaction.GetMouseCoordinates();
-      if (mouse.DistanceTo(ClosestNode!) < 125)
-        SelectedNode = SelectedNode == ClosestNode ? null : ClosestNode;
+      if (mouse.DistanceTo(_closestNode!) < 125)
+        _selectedNode = _selectedNode == _closestNode ? null : _closestNode;
       ChartRefresh();
     };
   }
@@ -212,14 +212,14 @@ public partial class MainWindow : Window {
     var color = Chart.Plot.Plottables.Count;
 
     var plotted = new List<Node>();
-    foreach (var history in Histories) {
-      var nodes = history[HistoryStep].Except(Yield(SelectedNode)).ToList();
+    foreach (var history in _histories) {
+      var nodes = history[HistoryStep].Except(Yield(_selectedNode)).ToList();
 
       plotted.AddRange(nodes);
-      Chart.Plot.Add.DistanceTo(SelectedNode, nodes, Palette.GetColor(++color).ToSKColor());
+      Chart.Plot.Add.DistanceTo(_selectedNode, nodes, _palette.GetColor(++color).ToSKColor());
     }
 
-    Chart.Plot.Add.DistanceTo(SelectedNode, Instance.Nodes.Except(plotted).Except(Yield(SelectedNode)));
+    Chart.Plot.Add.DistanceTo(_selectedNode, _instance.Nodes.Except(plotted).Except(Yield(_selectedNode)));
   }
 
   private void HandleRenderClosestNode() {
@@ -242,12 +242,12 @@ public partial class MainWindow : Window {
     }
   }
 
-  private Node? ClosestNode;
-  private Node? SelectedNode;
-  private Instance Instance = null!;
+  private Node? _closestNode;
+  private Node? _selectedNode;
+  private Instance _instance = null!;
   private string SelectedInstance => Instances.SelectedItem.As<Option>().Value;
   private Algorithm SelectedAlgorithm => Algorithm.FromName(Algorithms.SelectedItem.As<Option>().Value);
   private int HistoryStep => (int)HistorySlider.Value;
-  private readonly ObservableCollection<List<List<Node>>> Histories = new();
-  private readonly IPalette Palette = new Category10();
+  private readonly ObservableCollection<List<List<Node>>> _histories = new();
+  private readonly IPalette _palette = new Category10();
 }

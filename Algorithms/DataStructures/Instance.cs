@@ -44,6 +44,9 @@ public record Instance(int Dimension, List<Node> Nodes, int[,] Distances) {
     return Nodes.Except(except.Concat(Yield(node))).MaxBy(n => this[n, node])!;
   }
 
+  public IEnumerable<Node> ChooseFurthest(int count) =>
+    Nodes.Hull().Combinations(count).MaxBy(nodes => nodes.Edges().Sum(edge => this[edge]))!;
+
   public int DistanceOf(IEnumerable<Node> cycle) =>
     cycle.Edges().Sum(edge => this[edge]);
 
