@@ -15,10 +15,22 @@ public static class IEnumerableExtensions {
     while (it.MoveNext()) yield return (previous!, previous = it.Current);
   }
 
+  public static IEnumerable<IEnumerable<T>> Combinations<T>(this IEnumerable<T> items, int count) {
+    var enumerable = items as T[] ?? items.ToArray();
+    if (count == 1)
+      foreach (var item in enumerable)
+        yield return Yield(item);
+
+    foreach (var (element, i) in enumerable.Select((item, index) => (item, index + 1))) {
+      foreach (var result in Combinations(enumerable.Skip(i), count - 1))
+        yield return Yield(element).Concat(result);
+    }
+  }
+
   public static IEnumerable<(Node a, Node b)> Edges(this IEnumerable<Node> cycle) {
     var items = cycle.ToArray();
 
-    return items.Pairwise().Concat(Yield((items[0], items[^1])));
+    return items.Pairwise().Concat(Yield((items.Last(), items.First())));
   }
 
   private enum GeometricRelation {
@@ -60,7 +72,7 @@ public static class IEnumerableExtensions {
         collinear.Add(next);
 
         collinear = collinear
-          .OrderBy(n => (n - hull.Last()).SquareMagnitude())
+          .OrderBy(n => (n - hull.Last()).SquareMagnitude)
           .ToList();
 
         hull.AddRange(collinear);

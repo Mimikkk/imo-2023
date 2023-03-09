@@ -187,6 +187,8 @@ public partial class MainWindow : Window {
     Chart.Plot.Clear();
     Chart.Plot.Add.Scatter(_instance.Nodes, _instance);
     Chart.Plot.Add.Cycle(_instance.Nodes.Hull(), _instance);
+    var farthest = _instance.ChooseFurthest(5);
+    Chart.Plot.Add.Scatter(farthest, _instance);
 
     foreach (var history in _histories) {
       if (

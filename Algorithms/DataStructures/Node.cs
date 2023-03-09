@@ -2,7 +2,7 @@ using ScottPlot;
 
 namespace Algorithms.DataStructures;
 
-public record Node(int Index, int X, int Y) {
+public record Node(int Index, int X, int Y) : IComparable {
   private static readonly Random Random = new();
 
   public static IEnumerable<Node> From(IEnumerable<string> descriptors) =>
@@ -39,10 +39,17 @@ public record Node(int Index, int X, int Y) {
     return x >= minx && x < maxx && y >= miny && y < maxy;
   }
 
-  public double SquareMagnitude() => X * X + Y * Y;
-  public double Magnitude() => Math.Sqrt(SquareMagnitude());
+  public double SquareMagnitude => X * X + Y * Y;
+  public double Magnitude => Math.Sqrt(SquareMagnitude);
 
   public static Node operator -(Node node) => new(-1, -node.X, -node.Y);
   public static Node operator -(Node first, Node other) => first + -other;
   public static Node operator +(Node first, Node other) => new(-1, first.X + other.X, first.Y + other.Y);
+
+  public int CompareTo(object? obj) {
+    return -1;
+  }
+
+  public int CompareTo(Node node) =>
+    node.X == X && Y == node.Y ? 0 : SquareMagnitude >= node.SquareMagnitude ? 1 : -1;
 }
