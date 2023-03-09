@@ -66,8 +66,8 @@ public static class GreedyCycleExpansionExtensions {
   //   return cycle.Split();
   // }
   //
-  // private IEnumerable<Node> ChooseNFurthestNodes(this Instance instance, int count) {
-  //   var convexHull = instance.Hull().ToList();
-  //   return chosen;
+  // private static IEnumerable<Node> ChooseNFurthestNodes(this Instance instance, int count) {
+    // var convexHull = instance.Nodes.Hull().ToList();
+    // return chosen;
   // }
 }
