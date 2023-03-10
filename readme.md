@@ -15,6 +15,17 @@ W ramach zadania należało:
   przy wykorzystaniu 2-żal (2-regret) oraz uwzględnieniem wag.
 - [ ] Eksperymenty obliczeniowe na każdej instancji poprzez 100 krotne uruchomienie algorytmu i przedstawienie wyników.
 
+### Dodatek
+
+W ramach zadania studenci również zaimplementowali interfejs graficzny do wyświetlania i manipulowania wynikami.
+
+- Interfejs pozwala na wybór instancji, algorytmu, parametrów algorytmu, zapis wyniku do pliku.
+- Parametryzacji podlega wielkość populacji oraz wagi takie jak k-żal, waga dodatkowa żalu.
+- Wszystkie algorytmy zostały zaimplementowane również w 3 wersjach.
+    - Wersja Single ( pojedyńczy agent )
+    - Wersja Double ( oczekiwana - dwóch agentów )
+    - Wersja Multiple ( wielu agentów )
+
 ## Implementacja zapisu obrazu.
 
 Obrazy są zapisywane do postaci png za pomocą biblioteki ScottPlot.
