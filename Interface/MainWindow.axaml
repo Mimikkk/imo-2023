@@ -40,14 +40,32 @@
         </ComboBox>
       </Panel>
       <Button Name="RunButton" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center">Rozpocznij</Button>
-      <Panel>
+      <Panel Name="ParameterStartIndexBox">
         <TextBlock Margin="8 -8 0 0" ZIndex="1" FontSize="12">Rozpocznij od</TextBlock>
-        <Button Name="ClearStartIndexButton"
+        <Button Name="ClearParameterStartIndexButton"
                 Padding="0 0 0 0" Margin="110 0 0 0" ZIndex="1" Height="18" Width="18"
                 HorizontalContentAlignment="Center" FontSize="12">
           X
         </Button>
-        <NumericUpDown Name="StartIndex" />
+        <NumericUpDown Minimum="0" Name="ParameterStartIndex" />
+      </Panel>
+      <Panel Name="ParameterPopulationSizeBox">
+        <TextBlock Margin="8 -8 0 0" ZIndex="1" FontSize="12">Rozmiar populacji</TextBlock>
+        <Button Name="ClearParameterPopulationSizeButton"
+                Padding="0 0 0 0" Margin="110 0 0 0" ZIndex="1" Height="18" Width="18"
+                HorizontalContentAlignment="Center" FontSize="12">
+          X
+        </Button>
+        <NumericUpDown Minimum="1" Name="ParameterPopulationSize" />
+      </Panel>
+      <Panel Name="ParameterRegretBox">
+        <TextBlock Margin="8 -8 0 0" ZIndex="1" FontSize="12">Rozmiar k-żalu</TextBlock>
+        <Button Name="ClearParameterRegretButton"
+                Padding="0 0 0 0" Margin="110 0 0 0" ZIndex="1" Height="18" Width="18"
+                HorizontalContentAlignment="Center" FontSize="12">
+          X
+        </Button>
+        <NumericUpDown Minimum="1" Name="ParameterRegret" />
       </Panel>
     </StackPanel>
     <StackPanel Background="#6366f1" Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2" Orientation="Horizontal">

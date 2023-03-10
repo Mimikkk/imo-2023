@@ -6,6 +6,7 @@
 	<s:String x:Key="/Default/Environment/AssemblyExplorer/XmlDocument/@EntryValue">&lt;AssemblyExplorer&gt;&#xD;
   &lt;Assembly Path="C:\Users\HououinKyouma\.nuget\packages\scottplot\5.0.2-beta\lib\net6.0\ScottPlot.dll" /&gt;&#xD;
   &lt;Assembly Path="c:\program files\dotnet\shared\Microsoft.NETCore.App\7.0.0\System.Linq.dll" /&gt;&#xD;
+  &lt;Assembly Path="C:\Users\HououinKyouma\.nuget\packages\system.reactive\5.0.0\lib\net5.0\System.Reactive.dll" /&gt;&#xD;
 &lt;/AssemblyExplorer&gt;</s:String>
 	<s:Boolean x:Key="/Default/UserDictionary/Words/=cyklu/@EntryIndexedValue">True</s:Boolean>
 	<s:Boolean x:Key="/Default/UserDictionary/Words/=Krok/@EntryIndexedValue">True</s:Boolean>

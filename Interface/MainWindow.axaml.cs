@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
+using System.Reactive.Linq;
 using Algorithms.Algorithms;
 using Algorithms.DataStructures;
 using Algorithms.Extensions;
@@ -19,12 +20,6 @@ using static Algorithms.Extensions.IEnumerableExtensions;
 namespace Interface;
 
 public partial class MainWindow : Window {
-  private Node FindClosestNodeToMouse() {
-    var mouse = Chart.Interaction.GetMouseCoordinates();
-    var closest = _instance.Nodes.MinBy(node => node.DistanceTo(mouse))!;
-    return closest;
-  }
-
   public MainWindow() {
     InitializeComponent();
     InitializeComboBoxes();
@@ -36,6 +31,7 @@ public partial class MainWindow : Window {
     HistoryText.Text = $"Krok: 0";
     HistorySlider.Minimum = 0;
 
+
     _histories.CollectionChanged += (_, _) => ChartRefresh();
 
     HistorySlider.PropertyChanged += (_, change) => {
@@ -46,91 +42,14 @@ public partial class MainWindow : Window {
     };
     StepBackButton.Click += (_, _) => HistorySlider.Value = HistoryStep - 1;
     StepNextButton.Click += (_, _) => HistorySlider.Value = HistoryStep + 1;
-    RunButton.Click += (_, _) => {
-      _histories.Clear();
+    RunButton.Click += (_, _) => HandleRunCommand();
 
-      if (SelectedAlgorithm == Algorithm.GreedyNearestNeighbour) {
-        HistorySlider.Maximum = _instance.Dimension;
-        HistorySlider.Value = _instance.Dimension;
-
-        var observed = new ObservableList<Node>();
-        var history = new List<List<Node>> { new() };
-        observed.Changed += (_, _) => history.Add(observed.ToList());
-        int? startIndex = (int)StartIndex.Value == 0 ? null : (int)StartIndex.Value - 1;
-        _instance.SearchWithGreedyNearestNeighbour(observed, startIndex);
-        history.Add(observed.ToList());
-
-        _histories.Add(history);
-      } else if (SelectedAlgorithm == Algorithm.DoubleGreedyNearestNeighbour) {
-        HistorySlider.Maximum = _instance.Dimension / 2;
-        HistorySlider.Value = _instance.Dimension / 2;
-        var firstObserved = new ObservableList<Node>();
-        var secondObserved = new ObservableList<Node>();
-        var firstHistory = new List<List<Node>> { new() };
-        var secondHistory = new List<List<Node>> { new() };
-        firstObserved.Changed += (_, _) => firstHistory.Add(firstObserved.ToList());
-        secondObserved.Changed += (_, _) => secondHistory.Add(secondObserved.ToList());
-        int? startIndex = (int)StartIndex.Value == 0 ? null : (int)StartIndex.Value - 1;
-        _instance.SearchWithGreedyNearestNeighbour(firstObserved, secondObserved, startIndex);
-        firstHistory.Add(firstObserved.ToList());
-        secondHistory.Add(secondObserved.ToList());
-        _histories.Add(firstHistory);
-        _histories.Add(secondHistory);
-      } else if (SelectedAlgorithm == Algorithm.GreedyCycleExpansion) {
-        HistorySlider.Maximum = _instance.Dimension;
-        HistorySlider.Value = _instance.Dimension;
-        var observed = new ObservableList<Node>();
-        var history = new List<List<Node>> { new() };
-        observed.Changed += (_, _) => history.Add(observed.ToList());
-
-        int? startIndex = (int)StartIndex.Value == 0 ? null : (int)StartIndex.Value - 1;
-        _instance.SearchWithGreedyCycleExpansion(observed, startIndex);
-        history.Add(observed.ToList());
-        _histories.Add(history);
-      } else if (SelectedAlgorithm == Algorithm.DoubleGreedyCycleExpansion) {
-        HistorySlider.Maximum = _instance.Dimension / 2;
-        HistorySlider.Value = _instance.Dimension / 2;
-        var firstObserved = new ObservableList<Node>();
-        var secondObserved = new ObservableList<Node>();
-        var firstHistory = new List<List<Node>> { new() };
-        var secondHistory = new List<List<Node>> { new() };
-        firstObserved.Changed += (_, _) => firstHistory.Add(firstObserved.ToList());
-        secondObserved.Changed += (_, _) => secondHistory.Add(secondObserved.ToList());
-        int? startIndex = (int)StartIndex.Value == 0 ? null : (int)StartIndex.Value - 1;
-        _instance.SearchWithGreedyCycleExpansion(firstObserved, secondObserved, startIndex);
-        firstHistory.Add(firstObserved.ToList());
-        secondHistory.Add(secondObserved.ToList());
-        _histories.Add(firstHistory);
-        _histories.Add(secondHistory);
-      } else if (SelectedAlgorithm == Algorithm.GreedyCycleExpansionWith2Regret) {
-        HistorySlider.Maximum = _instance.Dimension;
-        HistorySlider.Value = _instance.Dimension;
-        var observed = new ObservableList<Node>();
-        var history = new List<List<Node>> { new() };
-        observed.Changed += (_, _) => history.Add(observed.ToList());
-
-        int? startIndex = (int)StartIndex.Value == 0 ? null : (int)StartIndex.Value - 1;
-        _instance.SearchWithGreedyCycleExpansionWith2Regret(observed, startIndex);
-        history.Add(observed.ToList());
-        _histories.Add(history);
-      } else if (SelectedAlgorithm == Algorithm.DoubleGreedyCycleExpansionWith2Regret) {
-        HistorySlider.Maximum = _instance.Dimension / 2;
-        HistorySlider.Value = _instance.Dimension / 2;
-        var firstObserved = new ObservableList<Node>();
-        var secondObserved = new ObservableList<Node>();
-        var firstHistory = new List<List<Node>> { new() };
-        var secondHistory = new List<List<Node>> { new() };
-        firstObserved.Changed += (_, _) => firstHistory.Add(firstObserved.ToList());
-        secondObserved.Changed += (_, _) => secondHistory.Add(secondObserved.ToList());
-        int? startIndex = (int)StartIndex.Value == 0 ? null : (int)StartIndex.Value - 1;
-        _instance.SearchWithGreedyCycleExpansionWith2Regret(firstObserved, secondObserved, startIndex);
-        firstHistory.Add(firstObserved.ToList());
-        secondHistory.Add(secondObserved.ToList());
-        _histories.Add(firstHistory);
-        _histories.Add(secondHistory);
-      }
-    };
-    ClearStartIndexButton.Click += (_, _) => StartIndex.Value = 0;
+    ClearParameterStartIndexButton.Click += (_, _) => ParameterStartIndex.Value = 0;
+    ParameterStartIndex.Value = 0;
+    ClearParameterRegretButton.Click += (_, _) => ParameterRegret.Value = 2;
+    ParameterRegret.Value = 2;
+    ClearParameterPopulationSizeButton.Click += (_, _) => ParameterPopulationSize.Value = 1;
+    ParameterPopulationSize.Value = 1;
   }
 
   private void InitializeComboBoxes() {
@@ -143,23 +62,45 @@ public partial class MainWindow : Window {
       _instance = Instance.Read(SelectedInstance);
       HistorySlider.Value = 0;
       HistorySlider.Maximum = 0;
-      StartIndex.Maximum = _instance.Dimension;
+      ParameterStartIndex.Maximum = _instance.Dimension;
 
       Chart.Plot.AutoScale();
       _histories.Clear();
     };
     _instance = Instance.Read(SelectedInstance);
-    StartIndex.Value = 53;
-    StartIndex.Minimum = 0;
-    StartIndex.Maximum = _instance.Dimension;
+    ParameterStartIndex.Maximum = _instance.Dimension;
+
+    Algorithms.SelectionChanged += (_, _) => {
+      ParameterRegretBox.IsVisible = SelectedAlgorithm == Algorithm.NGreedyCycleExpansionWithKRegret;
+      ParameterRegret.Value = 2;
+    };
+
+    Instances.SelectionChanged += (_, _) => {
+      _instance = Instance.Read(SelectedInstance);
+      HistorySlider.Value = 0;
+      HistorySlider.Maximum = 0;
+      ParameterStartIndex.Maximum = _instance.Dimension;
+
+      Chart.Plot.AutoScale();
+      _histories.Clear();
+    };
+
+    ParameterStartIndex.ValueChanged += (_, _) => {
+      if (SelectedParameterStartIndex > 2) {
+        ParameterPopulationSize.IsEnabled = false;
+        ParameterPopulationSize.Value = Math.Min(2, ParameterPopulationSize.Value);
+      } else ParameterPopulationSize.IsEnabled = true;
+    };
+    ParameterPopulationSize.ValueChanged += (_, _) => {
+      if (SelectedParameterPopulationSize > 2) {
+        ParameterStartIndex.Maximum = _instance.Nodes.Hull().Count();
+      }
+    };
 
     Algorithms.Items = new List<Option> {
-      new("Najbliższy sąsiad", Algorithm.GreedyNearestNeighbour),
-      new("Podwójny najbliższy sąsiad", Algorithm.DoubleGreedyNearestNeighbour),
-      new("Rozszerzanie cyklu", Algorithm.GreedyCycleExpansion),
-      new("Podwójne Rozszerzanie cyklu", Algorithm.DoubleGreedyCycleExpansion),
-      new("Rozszerzanie cyklu z 2-żalem", Algorithm.GreedyCycleExpansionWith2Regret),
-      new("Podwójne Rozszerzanie cyklu z 2-żalem", Algorithm.DoubleGreedyCycleExpansionWith2Regret),
+      new("Wieloraki Najbliższy sąsiad", Algorithm.NGreedyNearestNeighbour),
+      new("Wielorakie Rozszerzanie cyklu", Algorithm.NGreedyCycleExpansion),
+      new("Wielorakie Rozszerzanie cyklu z k-żalem", Algorithm.NGreedyCycleExpansionWithKRegret),
     };
     Algorithms.SelectedIndex = 0;
   }
@@ -169,13 +110,11 @@ public partial class MainWindow : Window {
     ChartRefresh();
 
     Chart.PointerMoved += (_, _) => {
-      _closestNode = FindClosestNodeToMouse();
+      UpdateClosestNode();
       ChartRefresh();
     };
     Chart.PointerReleased += (_, _) => {
-      var mouse = Chart.Interaction.GetMouseCoordinates();
-      if (mouse.DistanceTo(_closestNode!) < 125)
-        _selectedNode = _selectedNode == _closestNode ? null : _closestNode;
+      UpdateSelectedNode();
       ChartRefresh();
     };
   }
@@ -184,7 +123,6 @@ public partial class MainWindow : Window {
     Chart.Plot.Clear();
 
     Chart.Plot.Add.Scatter(_instance.Nodes);
-    Chart.Plot.Add.Cycle(_instance.Nodes.Hull(), _instance);
 
     _histories.ToList().ForEach(HandleRenderStrategy);
     HandleRenderClosestNode();
@@ -243,8 +181,24 @@ public partial class MainWindow : Window {
     }
   }
 
-  private Node? _closestNode;
-  private Node? _selectedNode;
+  private void HandleRunCommand() {
+    _histories.Clear();
+
+    var histories = Enumerable.Range(0, SelectedParameterPopulationSize).Select(_ => new List<List<Node>> { new() }).ToList();
+    var configuration = new SearchConfiguration(
+      histories.Select(history =>
+        new ObservableList<Node>(items => history.Add(items.ToList()))
+      ),
+      SelectedParameterRegret,
+      SelectedParameterStartIndex
+    );
+    SelectedAlgorithm.Search(_instance, configuration);
+
+    histories.ForEach(_histories.Add);
+    HistorySlider.Maximum = histories.MinBy(x => x.Count)!.Count - 1;
+    HistorySlider.Value = HistorySlider.Maximum;
+  }
+
   private Instance _instance = null!;
   private string SelectedInstance => Instances.SelectedItem.As<Option>().Value;
   private Algorithm SelectedAlgorithm => Algorithm.FromName(Algorithms.SelectedItem.As<Option>().Value);

@@ -1,6 +1,7 @@
 using System.Diagnostics;
 using Algorithms.DataStructures;
 using Algorithms.Extensions;
+using static Algorithms.Algorithms.Algorithm;
 
 namespace Algorithms.Algorithms;
 
@@ -51,15 +52,21 @@ public static class GreedyCycleExpansionExtensions {
     return (first, second);
   }
 
-  public static IEnumerable<IEnumerable<Node>>
-    SearchWithGreedyCycleExpansion(this Instance instance, IEnumerable<IList<Node>> cycles, int? start = null) {
-    var hull = instance.Nodes.Hull();
-    var count = 5;
-    var nodes = new List<Node> { Node.Choose(hull) };
-    var maximal = 0;
-    while (nodes.Count < count) {
-    }
 
-    return new List<IEnumerable<Node>>();
+  public static IEnumerable<IEnumerable<Node>> Search(this Instance instance, SearchConfiguration configuration) {
+    var paths = configuration.population.ToArray();
+
+    var points = instance.ChooseFurthest(paths.Length);
+    foreach (var (path, point) in paths.Zip(points)) path.Add(point);
+    foreach (var path in paths) instance.ClosestTo(path.First(), paths.Flatten());
+
+    var count = paths.Flatten().Count();
+    while (true) {
+      foreach (var path in paths) {
+        var (previous, best) = instance.FindBestFitByLowestGain(path, paths.Flatten().Except(path));
+        path.Insert(path.IndexOf(previous), best);
+        if (++count == instance.Dimension) return paths;
+      }
+    }
   }
 }

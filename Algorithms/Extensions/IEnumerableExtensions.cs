@@ -3,9 +3,8 @@
 namespace Algorithms.Extensions;
 
 public static class IEnumerableExtensions {
-  public static IEnumerable<T> Yield<T>(T item) {
-    yield return item;
-  }
+  public static IEnumerable<T> Yield<T>(T item) { yield return item; }
+  public static IEnumerable<T> Flatten<T>(this IEnumerable<IEnumerable<T>> items) => items.SelectMany(x => x);
 
   public static IEnumerable<(T a, T b)> Pairwise<T>(this IEnumerable<T> source) {
     var previous = default(T);
@@ -19,6 +18,8 @@ public static class IEnumerableExtensions {
     if (count == 1)
       foreach (var item in enumerable)
         yield return Yield(item);
+    if (count > enumerable.Length)
+      yield return enumerable;
 
     foreach (var (element, i) in enumerable.Select((item, index) => (item, index + 1))) {
       foreach (var result in Combinations(enumerable.Skip(i), count - 1))

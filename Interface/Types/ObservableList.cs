@@ -5,6 +5,8 @@ using System.Collections.Generic;
 namespace Interface.Types;
 
 public class ObservableList<T> : IList<T> {
+  public ObservableList(Action<ObservableList<T>> action) => Changed += (_, _) => action.Invoke(this);
+
   private readonly List<T> _list = new();
   public event EventHandler? Changed;
 

@@ -1,5 +1,6 @@
 using Algorithms.DataStructures;
 using Algorithms.Extensions;
+using static Algorithms.Algorithms.Algorithm;
 
 namespace Algorithms.Algorithms;
 
@@ -60,4 +61,22 @@ public static class GreedyRegretCycleExpansionExtensions {
   public static (IEnumerable<Node>, IEnumerable<Node>)
     SearchWithGreedyCycleExpansionWith2Regret(this Instance instance, IList<Node>? first = null, IList<Node>? second = null, int? start = null)
     => SearchWithGreedyCycleExpansionWithKRegret(instance, 2, first, second, start);
+
+  public static IEnumerable<IEnumerable<Node>>  Search(this Instance instance, SearchConfiguration configuration) {
+    var paths = configuration.population.ToArray();
+    var regret = configuration.regret!.Value;
+
+    var points = instance.ChooseFurthest(paths.Length);
+    foreach (var (path, point) in paths.Zip(points)) path.Add(point);
+    foreach (var path in paths) instance.ClosestTo(path.First(), paths.Flatten());
+
+    var count = paths.Flatten().Count();
+    while (true) {
+      foreach (var path in paths) {
+        var (previous, best) = FindFitsByRegretGain(instance, path, paths.Flatten(), regret);
+        path.Insert(path.IndexOf(previous), best);
+        if (++count == instance.Dimension) return paths;
+      }
+    }
+  }
 }
