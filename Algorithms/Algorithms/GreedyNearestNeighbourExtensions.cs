@@ -4,14 +4,19 @@ using Algorithms.DataStructures;
 namespace Algorithms.Algorithms;
 
 public static class GreedyNearestNeighbourExtensions {
-  private static void
-    AppendClosestHeadOrTail(this Instance instance, IList<Node> path, IEnumerable<Node> except) {
-    var excepted = except.ToArray();
-    var closestToTail = instance.ClosestTo(path.First(), excepted);
-    var closestToHead = instance.ClosestTo(path.Last(), excepted);
+  public static IEnumerable<IEnumerable<Node>>
+    Search(this Instance instance, SearchConfiguration configuration) {
+    var population = configuration.population.ToArray();
+    var hullSize = instance.Nodes.Hull().Count();
+    if (population.Length > hullSize) throw new ArgumentOutOfRangeException(nameof(configuration));
 
-    if (instance[closestToTail, path.First()] > instance[path.Last(), closestToHead]) path.Add(closestToHead);
-    else path.Insert(0, closestToTail);
+    return population.Length switch {
+      < 0 => throw new ArgumentOutOfRangeException(nameof(configuration)),
+      0   => Enumerable.Empty<IEnumerable<Node>>(),
+      1   => instance.SearchSingle(population.First(), configuration.start),
+      2   => instance.SearchDouble(population.First(), population.Last(), configuration.start),
+      _   => instance.SearchMultiple(population, configuration.start)
+    };
   }
 
   private static IEnumerable<IEnumerable<Node>>
@@ -59,18 +64,13 @@ public static class GreedyNearestNeighbourExtensions {
     }
   }
 
-  public static IEnumerable<IEnumerable<Node>>
-    Search(this Instance instance, SearchConfiguration configuration) {
-    var population = configuration.population.ToArray();
-    var hullSize = instance.Nodes.Hull().Count();
-    if (population.Length > hullSize) throw new ArgumentOutOfRangeException(nameof(configuration));
+  private static void
+    AppendClosestHeadOrTail(this Instance instance, IList<Node> path, IEnumerable<Node> except) {
+    var excepted = except.ToArray();
+    var closestToTail = instance.ClosestTo(path.First(), excepted);
+    var closestToHead = instance.ClosestTo(path.Last(), excepted);
 
-    return population.Length switch {
-      < 0 => throw new ArgumentOutOfRangeException(nameof(configuration)),
-      0   => Enumerable.Empty<IEnumerable<Node>>(),
-      1   => instance.SearchSingle(population.First(), configuration.start),
-      2   => instance.SearchDouble(population.First(), population.Last(), configuration.start),
-      _   => instance.SearchMultiple(population, configuration.start)
-    };
+    if (instance[closestToTail, path.First()] > instance[path.Last(), closestToHead]) path.Add(closestToHead);
+    else path.Insert(0, closestToTail);
   }
 }

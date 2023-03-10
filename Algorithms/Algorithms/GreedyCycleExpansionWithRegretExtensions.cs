@@ -1,23 +1,28 @@
 using Algorithms.DataStructures;
 using Algorithms.Extensions;
-using static Algorithms.Algorithms.Algorithm;
 
 namespace Algorithms.Algorithms;
 
 public static class GreedyRegretCycleExpansionExtensions {
-  private static (Node, Node) FindFitsByRegretGain(this Instance instance, IList<Node> cycle, IEnumerable<Node> except, int depth) => instance.Nodes
-    .Except(cycle)
-    .Except(except)
-    .Select(candidate =>
-      cycle.Edges()
-        .Select(edge => (edge.b, candidate, cost: instance.InsertCost(edge, candidate)))
-        .OrderBy(n => n.cost)
-        .ToList()
-    )
-    .OrderBy(match => match.Skip(1).Take(depth - 1).Sum(p => match.First().cost - p.cost))
-    .First()
-    .MinBy(match => match.cost)
-    .DropLast();
+  public static IEnumerable<IEnumerable<Node>>
+    Search(this Instance instance, SearchConfiguration configuration) {
+    var population = configuration.population.ToArray();
+
+    if (configuration.regret is null)
+      throw new ArgumentNullException(nameof(configuration.regret), "Regret must be specified for greedy regret cycle expansion with k-regrets.");
+
+    var hullSize = instance.Nodes.Hull().Count();
+    if (population.Length > hullSize) throw new ArgumentOutOfRangeException(nameof(configuration));
+
+    var regret = configuration.regret.Value;
+    return population.Length switch {
+      < 0 => throw new ArgumentOutOfRangeException(nameof(configuration), "Population must be non-negative."),
+      0   => Enumerable.Empty<IEnumerable<Node>>(),
+      1   => instance.SearchSingle(population.First(), configuration.start, regret),
+      2   => instance.SearchDouble(population.First(), population.Last(), configuration.start, regret),
+      _   => instance.SearchMultiple(configuration.population, regret)
+    };
+  }
 
   private static IEnumerable<IEnumerable<Node>>
     SearchSingle(this Instance instance, IList<Node>? cycle, int? start, int regret) {
@@ -72,23 +77,17 @@ public static class GreedyRegretCycleExpansionExtensions {
     }
   }
 
-  public static IEnumerable<IEnumerable<Node>>
-    Search(this Instance instance, SearchConfiguration configuration) {
-    var population = configuration.population.ToArray();
-
-    if (configuration.regret is null)
-      throw new ArgumentNullException(nameof(configuration.regret), "Regret must be specified for greedy regret cycle expansion with k-regrets.");
-
-    var hullSize = instance.Nodes.Hull().Count();
-    if (population.Length > hullSize) throw new ArgumentOutOfRangeException(nameof(configuration));
-
-    var regret = configuration.regret.Value;
-    return population.Length switch {
-      < 0 => throw new ArgumentOutOfRangeException(nameof(configuration), "Population must be non-negative."),
-      0   => Enumerable.Empty<IEnumerable<Node>>(),
-      1   => instance.SearchSingle(population.First(), configuration.start, regret),
-      2   => instance.SearchDouble(population.First(), population.Last(), configuration.start, regret),
-      _   => instance.SearchMultiple(configuration.population, regret)
-    };
-  }
+  private static (Node previous, Node best) FindFitsByRegretGain(this Instance instance, IList<Node> cycle, IEnumerable<Node> except, int depth) => instance.Nodes
+    .Except(cycle)
+    .Except(except)
+    .Select(candidate =>
+      cycle.Edges()
+        .Select(edge => (edge.b, candidate, cost: instance.InsertCost(edge, candidate)))
+        .OrderBy(n => n.cost)
+        .ToList()
+    )
+    .OrderBy(match => match.Skip(1).Take(depth - 1).Sum(p => match.First().cost - p.cost))
+    .First()
+    .MinBy(match => match.cost)
+    .DropLast();
 }

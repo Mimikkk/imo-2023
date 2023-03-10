@@ -5,22 +5,23 @@ using Algorithms.Extensions;
 namespace Algorithms.Algorithms;
 
 public static class GreedyCycleExpansionExtensions {
-  private static (Node previous, Node best)
-    FindBestFitByLowestGain(this Instance instance, IList<Node> cycle, IEnumerable<Node> except) =>
-    cycle.Edges()
-      .SelectMany(p => instance.Nodes
-        .Except(cycle)
-        .Except(except)
-        .Select(n => (p.b, n, cost: instance.InsertCost(p, n))))
-      .MinBy(x => x.cost)
-      .DropLast();
 
-  private static void
-    FindAndAppendBestFit(this Instance instance, IList<Node> cycle, IEnumerable<Node> except) {
-    var (previous, best) = instance.FindBestFitByLowestGain(cycle, except);
-    cycle.Insert(cycle.IndexOf(previous), best);
+  public static IEnumerable<IEnumerable<Node>>
+    Search(this Instance instance, SearchConfiguration configuration) {
+    var population = configuration.population.ToArray();
+    var hullSize = instance.Nodes.Hull().Count();
+    if (population.Length > hullSize) throw new ArgumentOutOfRangeException(nameof(configuration));
+    Debug.WriteLine("HHH");
+    Debug.WriteLine(population.Length);
+
+    return population.Length switch {
+      < 0 => throw new ArgumentOutOfRangeException(nameof(configuration)),
+      0   => Enumerable.Empty<IEnumerable<Node>>(),
+      1   => SearchSingle(instance, population.First(), configuration.start),
+      2   => SearchDouble(instance, population.First(), population.Last(), configuration.start),
+      _   => instance.SearchMultiple(configuration.population)
+    };
   }
-
   private static IEnumerable<IEnumerable<Node>>
     SearchSingle(Instance instance, IList<Node>? cycle, int? start) {
     Debug.WriteLine("Sin");
@@ -69,20 +70,19 @@ public static class GreedyCycleExpansionExtensions {
     }
   }
 
-  public static IEnumerable<IEnumerable<Node>>
-    Search(this Instance instance, SearchConfiguration configuration) {
-    var population = configuration.population.ToArray();
-    var hullSize = instance.Nodes.Hull().Count();
-    if (population.Length > hullSize) throw new ArgumentOutOfRangeException(nameof(configuration));
-    Debug.WriteLine("HHH");
-    Debug.WriteLine(population.Length);
+  private static (Node previous, Node best)
+    FindBestFitByLowestGain(this Instance instance, IList<Node> cycle, IEnumerable<Node> except) =>
+    cycle.Edges()
+      .SelectMany(p => instance.Nodes
+        .Except(cycle)
+        .Except(except)
+        .Select(n => (p.b, n, cost: instance.InsertCost(p, n))))
+      .MinBy(x => x.cost)
+      .DropLast();
 
-    return population.Length switch {
-      < 0 => throw new ArgumentOutOfRangeException(nameof(configuration)),
-      0   => Enumerable.Empty<IEnumerable<Node>>(),
-      1   => SearchSingle(instance, population.First(), configuration.start),
-      2   => SearchDouble(instance, population.First(), population.Last(), configuration.start),
-      _   => instance.SearchMultiple(configuration.population)
-    };
+  private static void
+    FindAndAppendBestFit(this Instance instance, IList<Node> cycle, IEnumerable<Node> except) {
+    var (previous, best) = instance.FindBestFitByLowestGain(cycle, except);
+    cycle.Insert(cycle.IndexOf(previous), best);
   }
 }
