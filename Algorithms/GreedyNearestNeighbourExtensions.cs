@@ -60,7 +60,6 @@ internal static class GreedyNearestNeighbourExtensions {
     while (true) {
       foreach (var path in paths) {
         instance.AppendClosestHeadOrTail(path, paths.Flatten());
-        Debug.WriteLine(paths.Flatten().Count());
         if (paths.Flatten().Count() == instance.Dimension) return paths;
       }
     }

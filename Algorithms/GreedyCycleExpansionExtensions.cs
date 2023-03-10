@@ -11,8 +11,6 @@ internal static class GreedyCycleExpansionExtensions {
     var population = configuration.population.ToArray();
     var hullSize = instance.Nodes.Hull().Count();
     if (population.Length > hullSize) throw new ArgumentOutOfRangeException(nameof(configuration));
-    Debug.WriteLine("HHH");
-    Debug.WriteLine(population.Length);
 
     return population.Length switch {
       < 0 => throw new ArgumentOutOfRangeException(nameof(configuration)),
@@ -24,7 +22,6 @@ internal static class GreedyCycleExpansionExtensions {
   }
   private static IEnumerable<IEnumerable<Node>>
     SearchSingle(Instance instance, IList<Node>? cycle, int? start) {
-    Debug.WriteLine("Sin");
     cycle ??= new List<Node>();
     cycle.Add(start is null ? Node.Choose(instance.Nodes) : instance.Nodes[start.Value]);
     cycle.Add(instance.ClosestTo(cycle.First()));
