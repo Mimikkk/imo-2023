@@ -1,9 +1,10 @@
-using Algorithms.DataStructures;
-using Algorithms.Extensions;
+using Algorithms.Structures;
+using Domain.Extensions;
+using Domain.Structures;
 
-namespace Algorithms.Algorithms;
+namespace Algorithms;
 
-public static class GreedyRegretCycleExpansionExtensions {
+internal static class GreedyRegretCycleExpansionExtensions {
   public static IEnumerable<IEnumerable<Node>>
     Search(this Instance instance, SearchConfiguration configuration) {
     var population = configuration.population.ToArray();

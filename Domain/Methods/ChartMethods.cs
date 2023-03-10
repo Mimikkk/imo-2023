@@ -1,9 +1,8 @@
-﻿using Algorithms.DataStructures;
+﻿using Domain.Structures;
 using ScottPlot;
-using ScottPlot.Extensions;
 using SkiaSharp;
 
-namespace Algorithms.Methods;
+namespace Domain.Methods;
 
 public static class ChartMethods {
   public static AddPlottable Cycle(this AddPlottable add, IEnumerable<Node> cycle, Instance instance) {

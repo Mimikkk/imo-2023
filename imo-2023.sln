@@ -4,6 +4,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Algorithms", "Algorithms\Al
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Interface", "Interface\Interface.csproj", "{5620DE40-3F43-49AD-921B-F252242EDCAB}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domain", "Domain\Domain.csproj", "{BD08AF48-35CE-4BD2-A52F-732E5B8BC062}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -18,5 +20,9 @@ Global
 		{5620DE40-3F43-49AD-921B-F252242EDCAB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5620DE40-3F43-49AD-921B-F252242EDCAB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5620DE40-3F43-49AD-921B-F252242EDCAB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BD08AF48-35CE-4BD2-A52F-732E5B8BC062}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BD08AF48-35CE-4BD2-A52F-732E5B8BC062}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BD08AF48-35CE-4BD2-A52F-732E5B8BC062}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BD08AF48-35CE-4BD2-A52F-732E5B8BC062}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

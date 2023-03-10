@@ -1,9 +1,11 @@
 using System.Diagnostics;
-using Algorithms.DataStructures;
+using Algorithms.Structures;
+using Domain.Extensions;
+using Domain.Structures;
 
-namespace Algorithms.Algorithms;
+namespace Algorithms;
 
-public static class GreedyNearestNeighbourExtensions {
+internal static class GreedyNearestNeighbourExtensions {
   public static IEnumerable<IEnumerable<Node>>
     Search(this Instance instance, SearchConfiguration configuration) {
     var population = configuration.population.ToArray();

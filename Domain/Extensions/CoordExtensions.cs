@@ -1,7 +1,7 @@
-﻿using Algorithms.DataStructures;
+﻿using Domain.Structures;
 using ScottPlot;
 
-namespace Algorithms.Extensions;
+namespace Domain.Extensions;
 
 public static class CoordExtensions {
   public static void Deconstruct(this Coordinates coord, out double x, out double y) {

@@ -4,23 +4,24 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Reactive.Linq;
-using Algorithms.Algorithms;
-using Algorithms.DataStructures;
-using Algorithms.Extensions;
-using Algorithms.Methods;
+using Algorithms;
+using Algorithms.Structures;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
+using Domain.Extensions;
+using Domain.Methods;
+using Domain.Structures;
 using Interface.Types;
 using ScottPlot;
 using ScottPlot.Control;
 using ScottPlot.Palettes;
 using static System.Linq.Enumerable;
-using static Algorithms.Extensions.IEnumerableExtensions;
+using static Domain.Extensions.IEnumerableExtensions;
 
 namespace Interface;
 
-public partial class MainWindow : Window {
+public sealed partial class MainWindow : Window {
   public MainWindow() {
     InitializeComponent();
     InitializeComboBoxes();

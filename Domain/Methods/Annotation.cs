@@ -2,7 +2,7 @@
 using ScottPlot.Axis;
 using SkiaSharp;
 
-namespace Algorithms.Methods;
+namespace Domain.Methods;
 
 public class Annotation : IPlottable {
   public Annotation(Coordinates coordinate, string text) {

@@ -1,4 +1,4 @@
-﻿namespace Algorithms.Extensions;
+﻿namespace Domain.Extensions;
 
 public static class MatrixExtensions {
   public static T[] ReadRow<T>(this T[,] matrix, int row) {

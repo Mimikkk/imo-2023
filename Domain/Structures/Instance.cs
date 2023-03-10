@@ -1,11 +1,8 @@
-using System.Diagnostics;
-using System.Numerics;
-
-namespace Algorithms.DataStructures;
+namespace Domain.Structures;
 
 public record Instance(int Dimension, List<Node> Nodes, int[,] Distances) {
   public static Instance Read(string name) {
-    var nodes = Node.From(File.ReadLines($"{ProjectDirectory}/Resources/Instances/{name}.tsp")
+    var nodes = Node.From(File.ReadLines(Path.Combine(InstanceDirectory, $"{name}.tsp"))
         .Skip(6)
         .SkipLast(1))
       .ToList();
@@ -57,4 +54,6 @@ public record Instance(int Dimension, List<Node> Nodes, int[,] Distances) {
 
   public int InsertCost((Node a, Node b) edge, Node node) =>
     this[edge.a, node] + this[node, edge.b] - this[edge];
+
+  private static readonly string InstanceDirectory = Path.Combine(ResourcesDirectory, "Instances");
 }

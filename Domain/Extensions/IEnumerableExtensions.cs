@@ -1,6 +1,6 @@
-﻿using Algorithms.DataStructures;
+﻿using Domain.Structures;
 
-namespace Algorithms.Extensions;
+namespace Domain.Extensions;
 
 public static class IEnumerableExtensions {
   public static IEnumerable<T> Yield<T>(params T[] items) => items;

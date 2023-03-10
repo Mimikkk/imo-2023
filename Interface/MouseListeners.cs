@@ -1,10 +1,10 @@
 using System.Linq;
-using Algorithms.DataStructures;
-using Algorithms.Extensions;
+using Domain.Extensions;
+using Domain.Structures;
 
 namespace Interface;
 
-public partial class MainWindow {
+public sealed partial class MainWindow {
   private void UpdateClosestNode() {
     var mouse = Chart.Interaction.GetMouseCoordinates();
     _closestNode = _instance.Nodes.MinBy(node => node.DistanceTo(mouse))!;

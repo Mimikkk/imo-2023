@@ -1,6 +1,6 @@
 using ScottPlot;
 
-namespace Algorithms.DataStructures;
+namespace Domain.Structures;
 
 public record Node(int Index, int X, int Y) : IComparable {
   private static readonly Random Random = new();

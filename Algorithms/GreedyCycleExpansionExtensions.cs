@@ -1,11 +1,11 @@
 using System.Diagnostics;
-using Algorithms.DataStructures;
-using Algorithms.Extensions;
+using Algorithms.Structures;
+using Domain.Extensions;
+using Domain.Structures;
 
-namespace Algorithms.Algorithms;
+namespace Algorithms;
 
-public static class GreedyCycleExpansionExtensions {
-
+internal static class GreedyCycleExpansionExtensions {
   public static IEnumerable<IEnumerable<Node>>
     Search(this Instance instance, SearchConfiguration configuration) {
     var population = configuration.population.ToArray();

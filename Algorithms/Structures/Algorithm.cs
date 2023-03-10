@@ -1,10 +1,9 @@
-using System.Collections;
-using Algorithms.DataStructures;
 using Ardalis.SmartEnum;
+using Domain.Structures;
 
-namespace Algorithms.Algorithms;
+namespace Algorithms.Structures;
 
-public class Algorithm : SmartEnum<Algorithm> {
+public sealed class Algorithm : SmartEnum<Algorithm> {
   public static readonly Algorithm NGreedyNearestNeighbour = new(StrategyType.PathBased, GreedyNearestNeighbourExtensions.Search);
   public static readonly Algorithm NGreedyCycleExpansion = new(StrategyType.CycleBased, GreedyCycleExpansionExtensions.Search);
   public static readonly Algorithm NGreedyCycleExpansionWithKRegret = new(StrategyType.CycleBased, GreedyRegretCycleExpansionExtensions.Search);
