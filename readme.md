@@ -65,9 +65,9 @@ ostatnich elementów do pierwszych.
 - Wybierz wierzchołek najbliższy do ostatniego wierzcholka drugiej ścieżki i dodaj do drugiej ścieżki.
 - **powtarzaj**
     - Wstaw do pierwszego cyklu w najlepsze miejsce wierzchołek, który nie należy do cyklu pierwszego, ani drugiego
-      powodujący najmniejszy wzrost długości cyklu.
+      powodujący najmniejszy wzrost długości pierwszego cyklu.
     - Wstaw do drugiego cyklu w najlepsze miejsce wierzchołek, który nie należy do cyklu pierwszego, ani drugiego
-      powodujący najmniejszy wzrost długości cyklu.
+      powodujący najmniejszy wzrost długości drugiego cyklu.
 - **dopóki** nie zostały dodane wszystkie wierzchołki.
 
 ### Opis
@@ -91,6 +91,23 @@ jest dokonywane przez
 dodanie do długości cyklu długości dwóch krawędzi do a i b oraz odjęta od tej wartości długość krawędzi między a i b. Ta
 wartość jest
 minimalizowana. I tak się dzieje do momentu, gdy wszystkie elementy zostaną dodane do cykli.
+
+## Implementacja algorytmu zachłannego typu heurestyki z żalem na bazie algorytmu inspirowanego metodą rozbudowy cyklu
+
+### Pseudokod
+
+- Wybierz losowo lub na podstawie przekazanego indeksu wierzchołek startowy pierwszej ścieżki.
+- Wybierz wierzchołek najbliższy do pierwszego wierzcholka pierwszej ścieżki i dodaj do pierwszej ścieżki.
+- Utwórz początek ścieżki przez wybór wierzchołka najdalszego do pierwszego wierzchołka pierwszej ścieżki.
+- Wybierz wierzchołek najbliższy do ostatniego wierzcholka drugiej ścieżki i dodaj do drugiej ścieżki.
+- **powtarzaj**
+    - Wstaw do pierwszego cyklu w najlepsze miejsce wierzchołek, który nie należy do cyklu pierwszego, ani drugiego
+      powodujący najmniejszy wzrost długości pierwszego cyklu, a jego żal między opcjami jest największy.
+    - Wstaw do drugiego cyklu w najlepsze miejsce wierzchołek, który nie należy do cyklu pierwszego, ani drugiego
+      powodujący najmniejszy wzrost długości drugiego cyklu, a jego żal między opcjami jest największy.
+- **dopóki** nie zostały dodane wszystkie wierzchołki.
+
+### Opis
 
 ## Eksperyment
 
