@@ -8,16 +8,18 @@ namespace Algorithms;
 internal static class GreedyCycleExpansionExtensions {
   public static IEnumerable<IEnumerable<Node>>
     Search(this Instance instance, SearchConfiguration configuration) {
-    var population = configuration.population.ToArray();
+    var population = configuration.Population.ToArray();
+    var start = configuration.Start;
+
     var hullSize = instance.Nodes.Hull().Count();
     if (population.Length > hullSize) throw new ArgumentOutOfRangeException(nameof(configuration));
 
     return population.Length switch {
       < 0 => throw new ArgumentOutOfRangeException(nameof(configuration)),
       0   => Enumerable.Empty<IEnumerable<Node>>(),
-      1   => SearchSingle(instance, population.First(), configuration.start),
-      2   => SearchDouble(instance, population.First(), population.Last(), configuration.start),
-      _   => instance.SearchMultiple(configuration.population)
+      1   => SearchSingle(instance, population.First(), start),
+      2   => SearchDouble(instance, population.First(), population.Last(), start),
+      _   => instance.SearchMultiple(population)
     };
   }
   private static IEnumerable<IEnumerable<Node>>

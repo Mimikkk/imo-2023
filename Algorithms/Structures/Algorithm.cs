@@ -7,6 +7,8 @@ public sealed class Algorithm : SmartEnum<Algorithm> {
   public static readonly Algorithm NGreedyNearestNeighbour = new(StrategyType.PathBased, GreedyNearestNeighbourExtensions.Search);
   public static readonly Algorithm NGreedyCycleExpansion = new(StrategyType.CycleBased, GreedyCycleExpansionExtensions.Search);
   public static readonly Algorithm NGreedyCycleExpansionWithKRegret = new(StrategyType.CycleBased, GreedyRegretCycleExpansionExtensions.Search);
+  public static readonly Algorithm NGreedyCycleExpansionWithKRegretAndWeight =
+    new(StrategyType.CycleBased, GreedyWeightedRegretCycleExpansionExtensions.Search);
 
   public Algorithm(StrategyType strategyType, Func<Instance, SearchConfiguration, IEnumerable<IEnumerable<Node>>> search)
     : base(_nextValue.ToString(), ++_nextValue) {

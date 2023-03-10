@@ -8,16 +8,18 @@ namespace Algorithms;
 internal static class GreedyNearestNeighbourExtensions {
   public static IEnumerable<IEnumerable<Node>>
     Search(this Instance instance, SearchConfiguration configuration) {
-    var population = configuration.population.ToArray();
+    var population = configuration.Population.ToArray();
+    var start = configuration.Start;
+
     var hullSize = instance.Nodes.Hull().Count();
     if (population.Length > hullSize) throw new ArgumentOutOfRangeException(nameof(configuration));
 
     return population.Length switch {
       < 0 => throw new ArgumentOutOfRangeException(nameof(configuration)),
       0   => Enumerable.Empty<IEnumerable<Node>>(),
-      1   => instance.SearchSingle(population.First(), configuration.start),
-      2   => instance.SearchDouble(population.First(), population.Last(), configuration.start),
-      _   => instance.SearchMultiple(population, configuration.start)
+      1   => SearchSingle(instance, population.First(), start),
+      2   => SearchDouble(instance, population.First(), population.Last(), start),
+      _   => instance.SearchMultiple(population)
     };
   }
 
@@ -47,13 +49,9 @@ internal static class GreedyNearestNeighbourExtensions {
   }
 
   private static IEnumerable<IEnumerable<Node>>
-    SearchMultiple(this Instance instance, IEnumerable<IList<Node>> paths, int? start) {
+    SearchMultiple(this Instance instance, IEnumerable<IList<Node>> paths) {
     paths = paths.ToArray();
 
-    if (start is not null) {
-      var hull = instance.Nodes.Hull();
-      paths.First().Add(Node.Choose(hull));
-    }
     var points = instance.ChooseFurthest(paths.Count());
     foreach (var (path, point) in paths.Zip(points)) path.Add(point);
 
