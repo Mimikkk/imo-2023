@@ -210,7 +210,7 @@ public sealed partial class MainWindow : Window {
   }
 
   private IList<Node> _instanceHull = null!;
-  private Instance _instance;
+  private Instance _instance = null!;
   private string SelectedInstance => Instances.SelectedItem.As<Option>().Value;
   private Algorithm SelectedAlgorithm => Algorithm.FromName(Algorithms.SelectedItem.As<Option>().Value);
   private int HistoryStep => (int)HistorySlider.Value;
