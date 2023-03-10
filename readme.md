@@ -86,11 +86,11 @@ Później cykle są rozbudowywane w taki sposób, że wstawiany jest element, kt
 najmniejszy wzrost
 długości cyklu. Element do wstawienia jest wybierany na podstawie przejrzenia wszystkich nieprzypisanych do cykli
 wierzchołków i wybrania
-takiego, który po przejrzeniu każdej z krawędzi cyklu powoduje najmniejszy wzrost długości. Obliczenie wzrostu cyklu
-jest dokonywane przez
-dodanie do długości cyklu długości dwóch krawędzi do a i b oraz odjęta od tej wartości długość krawędzi między a i b. Ta
-wartość jest
-minimalizowana. I tak się dzieje do momentu, gdy wszystkie elementy zostaną dodane do cykli.
+takiego, który po przejrzeniu każdej z krawędzi cyklu powoduje najmniejszy wzrost żalu. Obliczenie żalu opcji odbywa się
+przez odnalezienie wszystkich opcji wstawienia, posortowania ich kosztu jak w metodzie rozbudowywania cyklu, a następnie wyliczenie wartości przez 
+sumę różnic pierwszego z posortowanych elementów o k-1 kolejne. Ta wartość jest minimalizowana i na podstawie tej sortowana jest przestrzeń opcji. 
+po czym wybierana jest pierwsza opcja ( najmniejszy żal ).
+ I tak się dzieje do momentu, gdy wszystkie elementy zostaną dodane do cykli.
 
 ## Implementacja algorytmu zachłannego typu heurestyki z żalem na bazie algorytmu inspirowanego metodą rozbudowy cyklu
 
