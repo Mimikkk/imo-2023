@@ -10,6 +10,9 @@ W ramach zadania należało:
 - [x] Zaimplementować algorytm zachłanny inspirowany metodą rozbudowy cyklu.
 - [x] Zaimplementować algorytm zachłanny typu heurestyki z żalem na bazie algorytmu inspirowanego metodą rozbudowy cyklu
   przy wykorzystaniu 2-żal (2-regret).
+- [x] **Dodatkowo** Zaimplementować algorytm zachłanny typu heurestyki z żalem na bazie algorytmu inspirowanego metodą
+  rozbudowy cyklu
+  przy wykorzystaniu 2-żal (2-regret) oraz uwzględnieniem wag.
 - [ ] Eksperymenty obliczeniowe na każdej instancji poprzez 100 krotne uruchomienie algorytmu i przedstawienie wyników.
 
 ## Implementacja zapisu obrazu.
@@ -86,13 +89,13 @@ Później cykle są rozbudowywane w taki sposób, że wstawiany jest element, kt
 najmniejszy wzrost
 długości cyklu. Element do wstawienia jest wybierany na podstawie przejrzenia wszystkich nieprzypisanych do cykli
 wierzchołków i wybrania
-takiego, który po przejrzeniu każdej z krawędzi cyklu powoduje najmniejszy wzrost żalu. Obliczenie żalu opcji odbywa się
-przez odnalezienie wszystkich opcji wstawienia, posortowania ich kosztu jak w metodzie rozbudowywania cyklu, a następnie wyliczenie wartości przez 
-sumę różnic pierwszego z posortowanych elementów o k-1 kolejne. Ta wartość jest minimalizowana i na podstawie tej sortowana jest przestrzeń opcji. 
-po czym wybierana jest pierwsza opcja ( najmniejszy żal ).
- I tak się dzieje do momentu, gdy wszystkie elementy zostaną dodane do cykli.
+takiego, który po przejrzeniu każdej z krawędzi cyklu powoduje najmniejszy wzrost długości. Obliczenie wzrostu cyklu
+jest dokonywane przez
+dodanie do długości cyklu długości dwóch krawędzi do a i b oraz odjęta od tej wartości długość krawędzi między a i b. Ta
+wartość jest
+minimalizowana. I tak się dzieje do momentu, gdy wszystkie elementy zostaną dodane do cykli.
 
-## Implementacja algorytmu zachłannego typu heurestyki z żalem na bazie algorytmu inspirowanego metodą rozbudowy cyklu
+## Implementacja algorytmu zachłannego typu heurestyki z żalem na bazie algorytmu inspirowanego metodą rozbudowy cyklu przy wykorzystaniu 2-żal (2-regret)
 
 ### Pseudokod
 
@@ -108,6 +111,69 @@ po czym wybierana jest pierwsza opcja ( najmniejszy żal ).
 - **dopóki** nie zostały dodane wszystkie wierzchołki.
 
 ### Opis
+
+Początkowo jest wybierany element losowy lub na podstawie predefiniowanego indeksu i dodawany do pierwszego cyklu.
+Następnie jest wybierany najbliższy element do pierwszego elementu i dodawany do pierwszego cyklu.
+Najbliższy element to taki, który ma najmniejszą wartość w prekalkulowanej macierzy odległości i nie jest elementem
+zabronionym ( na początku pierwszy element ).
+Następnie jest wybierany element najdalszy do pierwszego elementu i dodawany do drugieog cyklu. Po tym jest wybierany
+najbliższy
+element do ostatniego elementu drugiego cyklu i dodawany do ścieżki. Element najbliższy jest definiowany analogicznie
+przez najmniejszą
+wartość w macierzy odległości i nie jest elementem zabronionym ( elementy cyklu piewrszego i element pierwszy cyklu
+drugiego ).
+Później cykle są rozbudowywane w taki sposób, że wstawiany jest element, który nie należy do żadnego z cykli i powoduje
+najmniejszy wzrost
+długości cyklu. Element do wstawienia jest wybierany na podstawie przejrzenia wszystkich nieprzypisanych do cykli
+wierzchołków i wybrania
+takiego, który po przejrzeniu każdej z krawędzi cyklu powoduje najmniejszy wzrost żalu. Obliczenie żalu opcji odbywa się
+przez odnalezienie wszystkich opcji wstawienia, posortowania ich kosztu jak w metodzie rozbudowywania cyklu, a następnie
+wyliczenie wartości przez
+sumę różnic pierwszego z posortowanych elementów o k-1 kolejne. Ta wartość jest minimalizowana i na podstawie tej
+sortowana jest przestrzeń opcji.
+po czym wybierana jest pierwsza opcja ( najmniejszy żal ).
+I tak się dzieje do momentu, gdy wszystkie elementy zostaną dodane do cykli.
+
+## Implementacja algorytmu zachłannego typu heurestyki z żalem na bazie algorytmu inspirowanego metodą rozbudowy cyklu przy wykorzystaniu 2-żal (2-regret) oraz uwzględnieniem wag.
+
+### Pseudokod
+
+- Wybierz losowo lub na podstawie przekazanego indeksu wierzchołek startowy pierwszej ścieżki.
+- Wybierz wierzchołek najbliższy do pierwszego wierzcholka pierwszej ścieżki i dodaj do pierwszej ścieżki.
+- Utwórz początek ścieżki przez wybór wierzchołka najdalszego do pierwszego wierzchołka pierwszej ścieżki.
+- Wybierz wierzchołek najbliższy do ostatniego wierzcholka drugiej ścieżki i dodaj do drugiej ścieżki.
+- **powtarzaj**
+    - Wstaw do pierwszego cyklu w najlepsze miejsce wierzchołek, który nie należy do cyklu pierwszego, ani drugiego
+      powodujący najmniejszy wzrost długości pierwszego cyklu, a jego żal między opcjami jest największy.
+    - Wstaw do drugiego cyklu w najlepsze miejsce wierzchołek, który nie należy do cyklu pierwszego, ani drugiego
+      powodujący najmniejszy wzrost długości drugiego cyklu, a jego żal między opcjami jest największy.
+- **dopóki** nie zostały dodane wszystkie wierzchołki.
+
+### Opis
+
+Początkowo jest wybierany element losowy lub na podstawie predefiniowanego indeksu i dodawany do pierwszego cyklu.
+Następnie jest wybierany najbliższy element do pierwszego elementu i dodawany do pierwszego cyklu.
+Najbliższy element to taki, który ma najmniejszą wartość w prekalkulowanej macierzy odległości i nie jest elementem
+zabronionym ( na początku pierwszy element ).
+Następnie jest wybierany element najdalszy do pierwszego elementu i dodawany do drugieog cyklu. Po tym jest wybierany
+najbliższy
+element do ostatniego elementu drugiego cyklu i dodawany do ścieżki. Element najbliższy jest definiowany analogicznie
+przez najmniejszą
+wartość w macierzy odległości i nie jest elementem zabronionym ( elementy cyklu piewrszego i element pierwszy cyklu
+drugiego ).
+Później cykle są rozbudowywane w taki sposób, że wstawiany jest element, który nie należy do żadnego z cykli i powoduje
+najmniejszy wzrost
+długości cyklu. Element do wstawienia jest wybierany na podstawie przejrzenia wszystkich nieprzypisanych do cykli
+wierzchołków i wybrania
+takiego, który po przejrzeniu każdej z krawędzi cyklu powoduje najmniejszy wzrost żalu wraz z dodatkową wagą najlepszego
+rozszerzenia cyklu.
+Obliczenie żalu opcji odbywa się przez odnalezienie wszystkich opcji wstawienia, posortowania ich kosztu jak w metodzie
+rozbudowywania cyklu, a następnie
+wyliczenie wartości przez
+sumę różnic pierwszego z posortowanych elementów o k-1 kolejne. Ta wartość jest minimalizowana i na podstawie tej
+sortowana jest przestrzeń opcji.
+po czym wybierana jest pierwsza opcja ( najmniejszy żal plus waga z najlepszej opcji włożenia )
+I tak się dzieje do momentu, gdy wszystkie elementy zostaną dodane do cykli.
 
 ## Eksperyment
 
