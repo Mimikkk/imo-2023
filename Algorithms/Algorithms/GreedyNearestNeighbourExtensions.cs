@@ -1,10 +1,11 @@
+using System.Diagnostics;
 using Algorithms.DataStructures;
-using static Algorithms.Algorithms.Algorithm;
 
 namespace Algorithms.Algorithms;
 
 public static class GreedyNearestNeighbourExtensions {
-  private static void AppendClosestHeadOrTail(this Instance instance, IList<Node> path, IEnumerable<Node> except) {
+  private static void
+    AppendClosestHeadOrTail(this Instance instance, IList<Node> path, IEnumerable<Node> except) {
     var excepted = except.ToArray();
     var closestToTail = instance.ClosestTo(path.First(), excepted);
     var closestToHead = instance.ClosestTo(path.Last(), excepted);
@@ -13,19 +14,18 @@ public static class GreedyNearestNeighbourExtensions {
     else path.Insert(0, closestToTail);
   }
 
-  public static IEnumerable<Node>
-    SearchWithGreedyNearestNeighbour(this Instance instance, IList<Node>? path = null, int? start = null) {
+  private static IEnumerable<IEnumerable<Node>>
+    SearchSingle(this Instance instance, IList<Node>? path, int? start) {
     path ??= new List<Node>();
     path.Add(start is null ? Node.Choose(instance.Nodes) : instance.Nodes[start.Value]);
 
     while (path.Count < instance.Dimension) instance.AppendClosestHeadOrTail(path, path);
 
-    return path;
+    return Yield(path);
   }
 
-  public static (IEnumerable<Node>, IEnumerable<Node>)
-    SearchWithGreedyNearestNeighbour(this Instance instance, IList<Node>? first = null, IList<Node>? second = null,
-      int? start = null) {
+  private static IEnumerable<IEnumerable<Node>>
+    SearchDouble(this Instance instance, IList<Node>? first, IList<Node>? second, int? start) {
     first ??= new List<Node>();
     first.Add(start is null ? Node.Choose(instance.Nodes) : instance.Nodes[start.Value]);
     second ??= new List<Node>();
@@ -36,21 +36,41 @@ public static class GreedyNearestNeighbourExtensions {
       instance.AppendClosestHeadOrTail(second, first.Concat(second));
     }
 
-    return (first, second);
+    return Yield(first, second);
   }
 
-  public static IEnumerable<IEnumerable<Node>>  Search(this Instance instance, SearchConfiguration configuration) {
-    var paths = configuration.population.ToArray();
+  private static IEnumerable<IEnumerable<Node>>
+    SearchMultiple(this Instance instance, IEnumerable<IList<Node>> paths, int? start) {
+    paths = paths.ToArray();
 
-    var points = instance.ChooseFurthest(paths.Length);
+    if (start is not null) {
+      var hull = instance.Nodes.Hull();
+      paths.First().Add(Node.Choose(hull));
+    }
+    var points = instance.ChooseFurthest(paths.Count());
     foreach (var (path, point) in paths.Zip(points)) path.Add(point);
 
-    var count = paths.Flatten().Count();
     while (true) {
       foreach (var path in paths) {
         instance.AppendClosestHeadOrTail(path, paths.Flatten());
-        if (++count == instance.Dimension) return paths;
+        Debug.WriteLine(paths.Flatten().Count());
+        if (paths.Flatten().Count() == instance.Dimension) return paths;
       }
     }
+  }
+
+  public static IEnumerable<IEnumerable<Node>>
+    Search(this Instance instance, SearchConfiguration configuration) {
+    var population = configuration.population.ToArray();
+    var hullSize = instance.Nodes.Hull().Count();
+    if (population.Length > hullSize) throw new ArgumentOutOfRangeException(nameof(configuration));
+
+    return population.Length switch {
+      < 0 => throw new ArgumentOutOfRangeException(nameof(configuration)),
+      0   => Enumerable.Empty<IEnumerable<Node>>(),
+      1   => instance.SearchSingle(population.First(), configuration.start),
+      2   => instance.SearchDouble(population.First(), population.Last(), configuration.start),
+      _   => instance.SearchMultiple(population, configuration.start)
+    };
   }
 }

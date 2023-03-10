@@ -19,22 +19,22 @@ public static class GreedyRegretCycleExpansionExtensions {
     .MinBy(match => match.cost)
     .DropLast();
 
-  public static IEnumerable<Node>
-    SearchWithGreedyCycleExpansionWithKRegret(this Instance instance, int regret, IList<Node>? first = null, int? start = null) {
-    first ??= new List<Node>();
-    first.Add(start is null ? Node.Choose(instance.Nodes) : instance.Nodes[start.Value]);
-    first.Add(instance.ClosestTo(first.First()));
+  private static IEnumerable<IEnumerable<Node>>
+    SearchSingle(this Instance instance, IList<Node>? cycle, int? start, int regret) {
+    cycle ??= new List<Node>();
+    cycle.Add(start is null ? Node.Choose(instance.Nodes) : instance.Nodes[start.Value]);
+    cycle.Add(instance.ClosestTo(cycle.First()));
 
-    while (first.Count < instance.Dimension) {
-      var (previous, best) = FindFitsByRegretGain(instance, first, first, regret);
-      first.Insert(first.IndexOf(previous), best);
+    while (cycle.Count < instance.Dimension) {
+      var (previous, best) = FindFitsByRegretGain(instance, cycle, cycle, regret);
+      cycle.Insert(cycle.IndexOf(previous), best);
     }
 
-    return first;
+    return Yield(cycle);
   }
 
-  public static (IEnumerable<Node>, IEnumerable<Node>)
-    SearchWithGreedyCycleExpansionWithKRegret(this Instance instance, int regret, IList<Node>? first = null, IList<Node>? second = null, int? start = null) {
+  private static IEnumerable<IEnumerable<Node>>
+    SearchDouble(this Instance instance, IList<Node>? first, IList<Node>? second, int? start, int regret) {
     first ??= new List<Node>();
     first.Add(start is null ? Node.Choose(instance.Nodes) : instance.Nodes[start.Value]);
     first.Add(instance.ClosestTo(first.First()));
@@ -51,32 +51,44 @@ public static class GreedyRegretCycleExpansionExtensions {
       second.Insert(second.IndexOf(previous), best);
     }
 
-    return (first, second);
+    return Yield(first, second);
   }
 
-  public static IEnumerable<Node>
-    SearchWithGreedyCycleExpansionWith2Regret(this Instance instance, IList<Node>? cycle = null, int? start = null)
-    => SearchWithGreedyCycleExpansionWithKRegret(instance, 2, cycle, start);
+  public static IEnumerable<IEnumerable<Node>>
+    SearchMultiple(this Instance instance, IEnumerable<IList<Node>> cycles, int regret) {
+    cycles = cycles.ToArray();
 
-  public static (IEnumerable<Node>, IEnumerable<Node>)
-    SearchWithGreedyCycleExpansionWith2Regret(this Instance instance, IList<Node>? first = null, IList<Node>? second = null, int? start = null)
-    => SearchWithGreedyCycleExpansionWithKRegret(instance, 2, first, second, start);
+    var points = instance.ChooseFurthest(cycles.Count());
+    foreach (var (path, point) in cycles.Zip(points)) path.Add(point);
+    foreach (var path in cycles) instance.ClosestTo(path.First(), cycles.Flatten());
 
-  public static IEnumerable<IEnumerable<Node>>  Search(this Instance instance, SearchConfiguration configuration) {
-    var paths = configuration.population.ToArray();
-    var regret = configuration.regret!.Value;
-
-    var points = instance.ChooseFurthest(paths.Length);
-    foreach (var (path, point) in paths.Zip(points)) path.Add(point);
-    foreach (var path in paths) instance.ClosestTo(path.First(), paths.Flatten());
-
-    var count = paths.Flatten().Count();
+    var count = cycles.Flatten().Count();
     while (true) {
-      foreach (var path in paths) {
-        var (previous, best) = FindFitsByRegretGain(instance, path, paths.Flatten(), regret);
+      foreach (var path in cycles) {
+        var (previous, best) = FindFitsByRegretGain(instance, path, cycles.Flatten(), regret);
         path.Insert(path.IndexOf(previous), best);
-        if (++count == instance.Dimension) return paths;
+        if (++count == instance.Dimension) return cycles;
       }
     }
+  }
+
+  public static IEnumerable<IEnumerable<Node>>
+    Search(this Instance instance, SearchConfiguration configuration) {
+    var population = configuration.population.ToArray();
+
+    if (configuration.regret is null)
+      throw new ArgumentNullException(nameof(configuration.regret), "Regret must be specified for greedy regret cycle expansion with k-regrets.");
+
+    var hullSize = instance.Nodes.Hull().Count();
+    if (population.Length > hullSize) throw new ArgumentOutOfRangeException(nameof(configuration));
+
+    var regret = configuration.regret.Value;
+    return population.Length switch {
+      < 0 => throw new ArgumentOutOfRangeException(nameof(configuration), "Population must be non-negative."),
+      0   => Enumerable.Empty<IEnumerable<Node>>(),
+      1   => instance.SearchSingle(population.First(), configuration.start, regret),
+      2   => instance.SearchDouble(population.First(), population.Last(), configuration.start, regret),
+      _   => instance.SearchMultiple(configuration.population, regret)
+    };
   }
 }

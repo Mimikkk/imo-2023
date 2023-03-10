@@ -3,7 +3,7 @@
 namespace Algorithms.Extensions;
 
 public static class IEnumerableExtensions {
-  public static IEnumerable<T> Yield<T>(T item) { yield return item; }
+  public static IEnumerable<T> Yield<T>(params T[] items) => items;
   public static IEnumerable<T> Flatten<T>(this IEnumerable<IEnumerable<T>> items) => items.SelectMany(x => x);
 
   public static IEnumerable<(T a, T b)> Pairwise<T>(this IEnumerable<T> source) {
