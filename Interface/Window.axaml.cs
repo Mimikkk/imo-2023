@@ -15,6 +15,7 @@ using Interface.Types;
 using ScottPlot;
 using ScottPlot.Control;
 using ScottPlot.Palettes;
+using SkiaSharp;
 using static System.Linq.Enumerable;
 using static Domain.Extensions.IEnumerableExtensions;
 
@@ -62,6 +63,34 @@ public sealed partial class MainWindow : Window {
           return results.Sum(nodes => _instance.DistanceOf(nodes));
         });
       HandleRunCommand();
+    };
+    FindWorstButton.Click += (_, _) => {
+      ParameterStartIndex.Value = Range((int)ParameterStartIndex.Minimum + 1, (int)ParameterStartIndex.Maximum - 1)
+        .MaxBy(start => {
+          var configuration = new SearchConfiguration(
+            Range(0, SelectedParameterPopulationSize).Select(_ => new List<Node>()),
+            SelectedParameterRegret,
+            start
+          );
+
+          var results = SelectedAlgorithm.Search(_instance, configuration);
+          return results.Sum(nodes => _instance.DistanceOf(nodes));
+        });
+      HandleRunCommand();
+    };
+    CalculateAverageButton.Click += (_, _) => {
+      _calculatedAverage = Range((int)ParameterStartIndex.Minimum + 1, (int)ParameterStartIndex.Maximum - 1)
+        .Average(start => {
+          var configuration = new SearchConfiguration(
+            Range(0, SelectedParameterPopulationSize).Select(_ => new List<Node>()),
+            SelectedParameterRegret,
+            start
+          );
+
+          var results = SelectedAlgorithm.Search(_instance, configuration);
+          return results.Sum(nodes => _instance.DistanceOf(nodes));
+        });
+      ChartRefresh();
     };
   }
 
@@ -136,6 +165,7 @@ public sealed partial class MainWindow : Window {
     HandleRenderClosestNode();
     HandleRenderSelectedNode();
 
+    HandleRenderAverageCycleDistance();
     HandleUpdateTitle();
     Chart.Refresh();
   }
@@ -151,6 +181,13 @@ public sealed partial class MainWindow : Window {
     if (contained is null) return;
     var index = contained[HistoryStep].IndexOf(_selectedNode);
     Title += $" : Indeks - {index}";
+  }
+
+  private void HandleRenderAverageCycleDistance() {
+    if (_calculatedAverage is 0) return;
+    var scatter = Chart.Plot.Add.Scatter(xs: new double[] { 0 }, ys: new double[] { 0 });
+    scatter.IsVisible = false;
+    scatter.Label = $"Przeciętna długość: {_calculatedAverage:F2}";
   }
 
   private void HandleRenderSelectedNode() {
@@ -209,6 +246,7 @@ public sealed partial class MainWindow : Window {
     HistorySlider.Value = HistorySlider.Maximum;
   }
 
+  private double _calculatedAverage = 0;
   private IList<Node> _instanceHull = null!;
   private Instance _instance = null!;
   private string SelectedInstance => Instances.SelectedItem.As<Option>().Value;

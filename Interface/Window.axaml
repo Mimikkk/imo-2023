@@ -67,6 +67,13 @@
             <NumericUpDown Minimum="1" Name="ParameterRegret" />
           </Panel>
           <Button Name="RunButton" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center">Rozpocznij</Button>
+          <Button Name="CalculateAverageButton" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center">
+            Oblicz średnią
+          </Button>
+          <Button Margin="0 4 0 0" Name="FindWorstButton" HorizontalAlignment="Stretch"
+                  HorizontalContentAlignment="Center">
+            Znajdź najgorsze
+          </Button>
           <Button Name="FindBestButton" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center">Znajdź najlepsze</Button>
         </StackPanel>
       </Border>
