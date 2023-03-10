@@ -34,11 +34,11 @@
 
     <ItemGroup>
       <Compile Update="MouseListeners.cs">
-        <DependentUpon>MainWindow.axaml</DependentUpon>
+        <DependentUpon>Window.axaml</DependentUpon>
         <SubType>Code</SubType>
       </Compile>
       <Compile Update="Parameters.cs">
-        <DependentUpon>MainWindow.axaml</DependentUpon>
+        <DependentUpon>Window.axaml</DependentUpon>
         <SubType>Code</SubType>
       </Compile>
     </ItemGroup>

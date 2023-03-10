@@ -1,6 +1,6 @@
 namespace Domain.Structures;
 
-public record Instance(int Dimension, List<Node> Nodes, int[,] Distances) {
+public sealed record Instance(int Dimension, List<Node> Nodes, int[,] Distances) {
   public static Instance Read(string name) {
     var nodes = Node.From(File.ReadLines(Path.Combine(InstanceDirectory, $"{name}.tsp"))
         .Skip(6)

@@ -2,7 +2,7 @@ using ScottPlot;
 
 namespace Domain.Structures;
 
-public record Node(int Index, int X, int Y) : IComparable {
+public sealed record Node(int Index, int X, int Y) : IComparable {
   private static readonly Random Random = new();
 
   public static IEnumerable<Node> From(IEnumerable<string> descriptors) =>

@@ -4,7 +4,7 @@ using SkiaSharp;
 
 namespace Domain.Methods;
 
-public class Annotation : IPlottable {
+public sealed class Annotation : IPlottable {
   public Annotation(Coordinates coordinate, string text) {
     Text = text;
     Coordinate = coordinate;

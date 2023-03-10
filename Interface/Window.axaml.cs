@@ -191,7 +191,7 @@ public sealed partial class MainWindow : Window {
       SelectedParameterRegret,
       SelectedParameterStartIndex
     );
-    var x = SelectedAlgorithm.Search(_instance, configuration);
+    SelectedAlgorithm.Search(_instance, configuration);
 
     histories.ForEach(_histories.Add);
     HistorySlider.Maximum = histories.MaxBy(x => x.Count)!.Count - 1;
@@ -199,7 +199,7 @@ public sealed partial class MainWindow : Window {
   }
 
   private IList<Node> _instanceHull = null!;
-  private Instance _instance = null!;
+  private Instance _instance;
   private string SelectedInstance => Instances.SelectedItem.As<Option>().Value;
   private Algorithm SelectedAlgorithm => Algorithm.FromName(Algorithms.SelectedItem.As<Option>().Value);
   private int HistoryStep => (int)HistorySlider.Value;

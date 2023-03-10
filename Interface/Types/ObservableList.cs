@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace Interface.Types;
 
-public class ObservableList<T> : IList<T> {
+public sealed class ObservableList<T> : IList<T> {
   public ObservableList(Action<ObservableList<T>> action) => Changed += (_, _) => action.Invoke(this);
 
   private readonly List<T> _list = new();
