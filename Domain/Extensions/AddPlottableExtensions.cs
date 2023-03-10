@@ -2,9 +2,9 @@
 using ScottPlot;
 using SkiaSharp;
 
-namespace Domain.Methods;
+namespace Domain.Extensions;
 
-public static class ChartMethods {
+public static class AddPlottableExtensions {
   public static AddPlottable Cycle(this AddPlottable add, IEnumerable<Node> cycle, Instance instance) {
     var nodes = cycle as Node[] ?? cycle.ToArray();
     if (nodes.Length < 1) return add;
@@ -88,9 +88,4 @@ public static class ChartMethods {
     return add;
   }
 
-  public static void Save(this Plot chart, string filename) {
-    if (!Directory.Exists($"{ProjectDirectory}/resources/graphs")) Directory.CreateDirectory($"{ProjectDirectory}/resources/graphs");
-
-    chart.SavePng($"{ProjectDirectory}/resources/graphs/{filename}.png", 1200, 800);
-  }
 }

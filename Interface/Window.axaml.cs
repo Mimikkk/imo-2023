@@ -10,7 +10,6 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Domain.Extensions;
-using Domain.Methods;
 using Domain.Structures;
 using Interface.Types;
 using ScottPlot;
