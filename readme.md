@@ -55,6 +55,43 @@ początek, w przeciwnym wypadku na koniec.
 I tak się dzieje do momentu, gdy wszystkie elementy zostaną dodane do ścieżek. Po czym tworzony jest cykl z
 ostatnich elementów do pierwszych.
 
+## Implementacja algorytmu zachłannego inspirowanego metodą rozbudowy cyklu.
+
+### Pseudokod
+
+- Wybierz losowo lub na podstawie przekazanego indeksu wierzchołek startowy pierwszej ścieżki.
+- Wybierz wierzchołek najbliższy do pierwszego wierzcholka pierwszej ścieżki i dodaj do pierwszej ścieżki.
+- Utwórz początek ścieżki przez wybór wierzchołka najdalszego do pierwszego wierzchołka pierwszej ścieżki.
+- Wybierz wierzchołek najbliższy do ostatniego wierzcholka drugiej ścieżki i dodaj do drugiej ścieżki.
+- **powtarzaj**
+    - Wstaw do pierwszego cyklu w najlepsze miejsce wierzchołek, który nie należy do cyklu pierwszego, ani drugiego
+      powodujący najmniejszy wzrost długości cyklu.
+    - Wstaw do drugiego cyklu w najlepsze miejsce wierzchołek, który nie należy do cyklu pierwszego, ani drugiego
+      powodujący najmniejszy wzrost długości cyklu.
+- **dopóki** nie zostały dodane wszystkie wierzchołki.
+
+### Opis
+
+Początkowo jest wybierany element losowy lub na podstawie predefiniowanego indeksu i dodawany do pierwszego cyklu.
+Następnie jest wybierany najbliższy element do pierwszego elementu i dodawany do pierwszego cyklu.
+Najbliższy element to taki, który ma najmniejszą wartość w prekalkulowanej macierzy odległości i nie jest elementem
+zabronionym ( na początku pierwszy element ).
+Następnie jest wybierany element najdalszy do pierwszego elementu i dodawany do drugieog cyklu. Po tym jest wybierany
+najbliższy
+element do ostatniego elementu drugiego cyklu i dodawany do ścieżki. Element najbliższy jest definiowany analogicznie
+przez najmniejszą
+wartość w macierzy odległości i nie jest elementem zabronionym ( elementy cyklu piewrszego i element pierwszy cyklu
+drugiego ).
+Później cykle są rozbudowywane w taki sposób, że wstawiany jest element, który nie należy do żadnego z cykli i powoduje
+najmniejszy wzrost
+długości cyklu. Element do wstawienia jest wybierany na podstawie przejrzenia wszystkich nieprzypisanych do cykli
+wierzchołków i wybrania
+takiego, który po przejrzeniu każdej z krawędzi cyklu powoduje najmniejszy wzrost długości. Obliczenie wzrostu cyklu
+jest dokonywane przez
+dodanie do długości cyklu długości dwóch krawędzi do a i b oraz odjęta od tej wartości długość krawędzi między a i b. Ta
+wartość jest
+minimalizowana. I tak się dzieje do momentu, gdy wszystkie elementy zostaną dodane do cykli.
+
 ## Eksperyment
 
 Poprzez eksperymenty obliczeniowe chcemy sprawdzić, które z heurystyk konstrukcyjnych odnajduje najlepsze rozwiązanie. W
