@@ -78,7 +78,8 @@ internal static class GreedyRegretCycleExpansionExtensions {
     }
   }
 
-  private static (Node previous, Node best) FindFitsByRegretGain(this Instance instance, IList<Node> cycle, IEnumerable<Node> except, int depth) => instance.Nodes
+  private static (Node previous, Node best) FindFitsByRegretGain(this Instance instance, IList<Node> cycle, IEnumerable<Node> except, int depth) => instance
+    .Nodes
     .Except(cycle)
     .Except(except)
     .Select(candidate =>
@@ -87,7 +88,7 @@ internal static class GreedyRegretCycleExpansionExtensions {
         .OrderBy(n => n.cost)
         .ToList()
     )
-    .OrderBy(match => match.Skip(1).Take(depth - 1).Sum(p => match.First().cost - p.cost))
+    .OrderBy(match => match.Skip(1).Take(depth - 1).Aggregate(0, (acc, a) => acc + (match.First().cost - a.cost)))
     .First()
     .MinBy(match => match.cost)
     .DropLast();

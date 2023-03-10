@@ -17,8 +17,6 @@
           <Slider Name="HistorySlider" IsSnapToTickEnabled="True" TickFrequency="1" TickPlacement="BottomRight" />
         </StackPanel>
       </Border>
-      <Button Name="StepBackButton" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center">Poprzedni</Button>
-      <Button Name="StepNextButton" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center">Następny</Button>
       <Panel>
         <TextBlock Margin="8 -8 0 0" ZIndex="1" FontSize="12">Instancja</TextBlock>
         <ComboBox Name="Instances" HorizontalAlignment="Stretch" SelectedIndex="0">
@@ -39,34 +37,39 @@
           </ComboBox.ItemTemplate>
         </ComboBox>
       </Panel>
-      <Button Name="RunButton" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center">Rozpocznij</Button>
-      <Panel Name="ParameterStartIndexBox">
-        <TextBlock Margin="8 -8 0 0" ZIndex="1" FontSize="12">Rozpocznij od</TextBlock>
-        <Button Name="ClearParameterStartIndexButton"
-                Padding="0 0 0 0" Margin="110 0 0 0" ZIndex="1" Height="18" Width="18"
-                HorizontalContentAlignment="Center" FontSize="12">
-          X
-        </Button>
-        <NumericUpDown Minimum="0" Name="ParameterStartIndex" />
-      </Panel>
-      <Panel Name="ParameterPopulationSizeBox">
-        <TextBlock Margin="8 -8 0 0" ZIndex="1" FontSize="12">Rozmiar populacji</TextBlock>
-        <Button Name="ClearParameterPopulationSizeButton"
-                Padding="0 0 0 0" Margin="110 0 0 0" ZIndex="1" Height="18" Width="18"
-                HorizontalContentAlignment="Center" FontSize="12">
-          X
-        </Button>
-        <NumericUpDown Minimum="1" Name="ParameterPopulationSize" />
-      </Panel>
-      <Panel Name="ParameterRegretBox">
-        <TextBlock Margin="8 -8 0 0" ZIndex="1" FontSize="12">Rozmiar k-żalu</TextBlock>
-        <Button Name="ClearParameterRegretButton"
-                Padding="0 0 0 0" Margin="110 0 0 0" ZIndex="1" Height="18" Width="18"
-                HorizontalContentAlignment="Center" FontSize="12">
-          X
-        </Button>
-        <NumericUpDown Minimum="1" Name="ParameterRegret" />
-      </Panel>
+      <Border VerticalAlignment="Bottom" Padding="4" CornerRadius="4" BorderBrush="#4f46e5" Background="#1e40af">
+        <StackPanel Spacing="4">
+          <Panel Name="ParameterStartIndexBox">
+            <TextBlock Margin="8 -8 0 0" ZIndex="1" FontSize="12">Rozpocznij od</TextBlock>
+            <Button Name="ClearParameterStartIndexButton"
+                    Padding="0 0 0 0" Margin="100 0 0 0" ZIndex="1" Height="18" Width="18"
+                    HorizontalContentAlignment="Center" FontSize="12">
+              X
+            </Button>
+            <NumericUpDown Minimum="0" Name="ParameterStartIndex" />
+          </Panel>
+          <Panel Name="ParameterPopulationSizeBox">
+            <TextBlock Margin="8 -8 0 0" ZIndex="1" FontSize="12">Rozmiar populacji</TextBlock>
+            <Button Name="ClearParameterPopulationSizeButton"
+                    Padding="0 0 0 0" Margin="100 0 0 0" ZIndex="1" Height="18" Width="18"
+                    HorizontalContentAlignment="Center" FontSize="12">
+              X
+            </Button>
+            <NumericUpDown Minimum="1" Name="ParameterPopulationSize" />
+          </Panel>
+          <Panel Name="ParameterRegretBox">
+            <TextBlock Margin="8 -8 0 0" ZIndex="1" FontSize="12">Rozmiar k-żalu</TextBlock>
+            <Button Name="ClearParameterRegretButton"
+                    Padding="0 0 0 0" Margin="100 0 0 0" ZIndex="1" Height="18" Width="18"
+                    HorizontalContentAlignment="Center" FontSize="12">
+              X
+            </Button>
+            <NumericUpDown Minimum="1" Name="ParameterRegret" />
+          </Panel>
+          <Button Name="RunButton" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center">Rozpocznij</Button>
+          <Button Name="FindBestButton" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center">Znajdź najlepsze</Button>
+        </StackPanel>
+      </Border>
     </StackPanel>
     <StackPanel Background="#6366f1" Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2" Orientation="Horizontal">
       <TextBlock Padding="2" Foreground="#c7d2fe">@2023 IMO - Inteligentne Metody Optymalizacji</TextBlock>

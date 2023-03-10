@@ -41,8 +41,6 @@ public sealed partial class MainWindow : Window {
       HistoryText.Text = $"Krok: {HistoryStep}";
       ChartRefresh();
     };
-    StepBackButton.Click += (_, _) => HistorySlider.Value = HistoryStep - 1;
-    StepNextButton.Click += (_, _) => HistorySlider.Value = HistoryStep + 1;
     RunButton.Click += (_, _) => HandleRunCommand();
 
     ClearParameterStartIndexButton.Click += (_, _) => ParameterStartIndex.Value = 0;
@@ -51,6 +49,20 @@ public sealed partial class MainWindow : Window {
     ParameterRegret.Value = 2;
     ClearParameterPopulationSizeButton.Click += (_, _) => ParameterPopulationSize.Value = 1;
     ParameterPopulationSize.Value = 1;
+    FindBestButton.Click += (_, _) => {
+      ParameterStartIndex.Value = Range((int)ParameterStartIndex.Minimum + 1, (int)ParameterStartIndex.Maximum - 1)
+        .MinBy(start => {
+          var configuration = new SearchConfiguration(
+            Range(0, SelectedParameterPopulationSize).Select(_ => new List<Node>()),
+            SelectedParameterRegret,
+            start
+          );
+
+          var results = SelectedAlgorithm.Search(_instance, configuration);
+          return results.Sum(nodes => _instance.DistanceOf(nodes));
+        });
+      HandleRunCommand();
+    };
   }
 
   private void InitializeComboBoxes() {
@@ -94,9 +106,9 @@ public sealed partial class MainWindow : Window {
     };
 
     Algorithms.Items = new List<Option> {
-      new("Wieloraki Najbliższy sąsiad", Algorithm.NGreedyNearestNeighbour),
-      new("Wielorakie Rozszerzanie cyklu", Algorithm.NGreedyCycleExpansion),
-      new("Wielorakie Rozszerzanie cyklu z k-żalem", Algorithm.NGreedyCycleExpansionWithKRegret),
+      new("Najbliższy sąsiad", Algorithm.NGreedyNearestNeighbour),
+      new("Rozszerzanie cyklu", Algorithm.NGreedyCycleExpansion),
+      new("Rozszerzanie cyklu z k-żalem", Algorithm.NGreedyCycleExpansionWithKRegret),
     };
     Algorithms.SelectedIndex = 0;
   }
