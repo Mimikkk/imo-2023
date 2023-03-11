@@ -41,28 +41,28 @@ Wczytywanie instancji odbywa się za pomocą metody `Read` w klasie `Instance`.
 - Wczytywane są tylko współrzędne węzłów.
 - Po zaczytaniu pliku, tworzona jest macierz odległości między węzłami służąca do prekalkulacji obliczeń.
 
-## Implementacja algorytmu zachłannego inspirowanego najbliższego sąsiada.
+## Implementacja algorytmu zachłannego inspirowanego metodą najbliższego sąsiada.
 
 ### Pseudokod
 
-- Wybierz losowo lub na podstawie przekazanego indeksu wierzchołek startowy pierwszej ścieżki
-- Wybierz wierzchołek najdalszy do pierwszego wierzcholka pierwszej ścieżki
+- Wybierz losowo lub na podstawie przekazanego indeksu wierzchołek startowy pierwszej ścieżki.
+- Wybierz wierzchołek najdalszy do pierwszego wierzchołka pierwszej ścieżki.
 - **powtarzaj**
     - Dodaj do pierwszej ścieżki rozwiązania wierzchołek (i prowadzącą do niego krawędź) najbliższy, który nie jest
       zawarty w pierwszej ani drugiej ścieżce.
     - Dodaj do drugiej ścieżki rozwiązania wierzchołek (i prowadzącą do niego krawędź) najbliższy, który nie jest
       zawarty w pierwszej ani drugiej ścieżce.
 - **dopóki** nie zostały dodane wszystkie wierzchołki.
-- Dodaj do pierwszej ścieżki krawędź z ostatniego do pierwszego wierzchołka aby utworzyć wynikowy pierwszy cyl.
+- Dodaj do pierwszej ścieżki krawędź z ostatniego do pierwszego wierzchołka aby utworzyć wynikowy pierwszy cykl.
 - Dodaj do drugiej ścieżki krawędź z ostatniego do pierwszego wierzchołka aby utworzyć wynikowy drugi cyl.
 
 ### Opis
 
-Poczatkowo są wybierane 2 elementy o skrajnej odległości według prekalkulowanej macierzy odległości.
+Początkowo są wybierane 2 elementy o skrajnej odległości według prekalkulowanej macierzy odległości.
 Następnie dodawane są kolejne elementy, które są najbliżej wybranego elementu.
 Dodawanie elementów jest wykonywane dla obu ścieżek w kolejności pierwsza ścieżka, druga ścieżka.
 Element najbliższy do ścieżki jest odnajdowany przez najmniejszą wartość odległości do pierwszego lub ostatniego
-elementu w macierzy odległości dla elementów nie zawartch w pierwszej ani drugiej ścieżce.
+elementu w macierzy odległości dla elementów niezawartych w pierwszej ani drugiej ścieżce.
 Po wybraniu element jest dodawany do początku lub końca ścieżki na podstawie porównania odległości do pierwszego i
 ostatniego elementu w ścieżce. Jeżeli element jest bliższy do pierwszego elementu w ścieżce to jest dodawany na
 początek, w przeciwnym wypadku na koniec.
@@ -74,9 +74,9 @@ ostatnich elementów do pierwszych.
 ### Pseudokod
 
 - Wybierz losowo lub na podstawie przekazanego indeksu wierzchołek startowy pierwszej ścieżki.
-- Wybierz wierzchołek najbliższy do pierwszego wierzcholka pierwszej ścieżki i dodaj do pierwszej ścieżki.
-- Utwórz początek ścieżki przez wybór wierzchołka najdalszego do pierwszego wierzchołka pierwszej ścieżki.
-- Wybierz wierzchołek najbliższy do ostatniego wierzcholka drugiej ścieżki i dodaj do drugiej ścieżki.
+- Wybierz wierzchołek najbliższy do pierwszego wierzchołka pierwszej ścieżki i dodaj do pierwszej ścieżki.
+- Utwórz początek drugiej ścieżki przez wybór wierzchołka najdalszego do pierwszego wierzchołka pierwszej ścieżki.
+- Wybierz wierzchołek najbliższy do ostatniego wierzchołka drugiej ścieżki i dodaj do drugiej ścieżki.
 - **powtarzaj**
     - Wstaw do pierwszego cyklu w najlepsze miejsce wierzchołek, który nie należy do cyklu pierwszego, ani drugiego
       powodujący najmniejszy wzrost długości pierwszego cyklu.
@@ -90,11 +90,11 @@ Początkowo jest wybierany element losowy lub na podstawie predefiniowanego inde
 Następnie jest wybierany najbliższy element do pierwszego elementu i dodawany do pierwszego cyklu.
 Najbliższy element to taki, który ma najmniejszą wartość w prekalkulowanej macierzy odległości i nie jest elementem
 zabronionym ( na początku pierwszy element ).
-Następnie jest wybierany element najdalszy do pierwszego elementu i dodawany do drugieog cyklu. Po tym jest wybierany
+Następnie jest wybierany element najdalszy do pierwszego elementu i dodawany do drugiego cyklu. Po tym jest wybierany
 najbliższy
 element do ostatniego elementu drugiego cyklu i dodawany do ścieżki. Element najbliższy jest definiowany analogicznie
 przez najmniejszą
-wartość w macierzy odległości i nie jest elementem zabronionym ( elementy cyklu piewrszego i element pierwszy cyklu
+wartość w macierzy odległości i nie jest elementem zabronionym ( elementy cyklu pierwszego i element pierwszy cyklu
 drugiego ).
 Później cykle są rozbudowywane w taki sposób, że wstawiany jest element, który nie należy do żadnego z cykli i powoduje
 najmniejszy wzrost
@@ -102,7 +102,7 @@ długości cyklu. Element do wstawienia jest wybierany na podstawie przejrzenia 
 wierzchołków i wybrania
 takiego, który po przejrzeniu każdej z krawędzi cyklu powoduje najmniejszy wzrost długości. Obliczenie wzrostu cyklu
 jest dokonywane przez
-dodanie do długości cyklu długości dwóch krawędzi do a i b oraz odjęta od tej wartości długość krawędzi między a i b. Ta
+dodanie do długości cyklu długości dwóch krawędzi do a i b oraz odjętą od tej wartości długość krawędzi między a i b. Ta
 wartość jest
 minimalizowana. I tak się dzieje do momentu, gdy wszystkie elementy zostaną dodane do cykli.
 
@@ -111,9 +111,9 @@ minimalizowana. I tak się dzieje do momentu, gdy wszystkie elementy zostaną do
 ### Pseudokod
 
 - Wybierz losowo lub na podstawie przekazanego indeksu wierzchołek startowy pierwszej ścieżki.
-- Wybierz wierzchołek najbliższy do pierwszego wierzcholka pierwszej ścieżki i dodaj do pierwszej ścieżki.
+- Wybierz wierzchołek najbliższy do pierwszego wierzchołka pierwszej ścieżki i dodaj do pierwszej ścieżki.
 - Utwórz początek ścieżki przez wybór wierzchołka najdalszego do pierwszego wierzchołka pierwszej ścieżki.
-- Wybierz wierzchołek najbliższy do ostatniego wierzcholka drugiej ścieżki i dodaj do drugiej ścieżki.
+- Wybierz wierzchołek najbliższy do ostatniego wierzchołka drugiej ścieżki i dodaj do drugiej ścieżki.
 - **powtarzaj**
     - Wstaw do pierwszego cyklu w najlepsze miejsce wierzchołek, który nie należy do cyklu pierwszego, ani drugiego
       powodujący najmniejszy wzrost długości pierwszego cyklu, a jego żal między opcjami jest największy.
@@ -127,11 +127,11 @@ Początkowo jest wybierany element losowy lub na podstawie predefiniowanego inde
 Następnie jest wybierany najbliższy element do pierwszego elementu i dodawany do pierwszego cyklu.
 Najbliższy element to taki, który ma najmniejszą wartość w prekalkulowanej macierzy odległości i nie jest elementem
 zabronionym ( na początku pierwszy element ).
-Następnie jest wybierany element najdalszy do pierwszego elementu i dodawany do drugieog cyklu. Po tym jest wybierany
+Następnie jest wybierany element najdalszy do pierwszego elementu i dodawany do drugiego cyklu. Po tym jest wybierany
 najbliższy
 element do ostatniego elementu drugiego cyklu i dodawany do ścieżki. Element najbliższy jest definiowany analogicznie
 przez najmniejszą
-wartość w macierzy odległości i nie jest elementem zabronionym ( elementy cyklu piewrszego i element pierwszy cyklu
+wartość w macierzy odległości i nie jest elementem zabronionym ( elementy cyklu pierwszego i element pierwszy cyklu
 drugiego ).
 Później cykle są rozbudowywane w taki sposób, że wstawiany jest element, który nie należy do żadnego z cykli i powoduje
 najmniejszy wzrost
@@ -141,7 +141,7 @@ takiego, który po przejrzeniu każdej z krawędzi cyklu powoduje najmniejszy wz
 przez odnalezienie wszystkich opcji wstawienia, posortowania ich kosztu jak w metodzie rozbudowywania cyklu, a następnie
 wyliczenie wartości przez
 sumę różnic pierwszego z posortowanych elementów o k-1 kolejne. Ta wartość jest minimalizowana i na podstawie tej
-sortowana jest przestrzeń opcji.
+sortowana jest przestrzeń opcji,
 po czym wybierana jest pierwsza opcja ( najmniejszy żal ).
 I tak się dzieje do momentu, gdy wszystkie elementy zostaną dodane do cykli.
 
@@ -150,9 +150,9 @@ I tak się dzieje do momentu, gdy wszystkie elementy zostaną dodane do cykli.
 ### Pseudokod
 
 - Wybierz losowo lub na podstawie przekazanego indeksu wierzchołek startowy pierwszej ścieżki.
-- Wybierz wierzchołek najbliższy do pierwszego wierzcholka pierwszej ścieżki i dodaj do pierwszej ścieżki.
+- Wybierz wierzchołek najbliższy do pierwszego wierzchołka pierwszej ścieżki i dodaj do pierwszej ścieżki.
 - Utwórz początek ścieżki przez wybór wierzchołka najdalszego do pierwszego wierzchołka pierwszej ścieżki.
-- Wybierz wierzchołek najbliższy do ostatniego wierzcholka drugiej ścieżki i dodaj do drugiej ścieżki.
+- Wybierz wierzchołek najbliższy do ostatniego wierzchołka drugiej ścieżki i dodaj do drugiej ścieżki.
 - **powtarzaj**
     - Wstaw do pierwszego cyklu w najlepsze miejsce wierzchołek, który nie należy do cyklu pierwszego, ani drugiego
       powodujący najmniejszy wzrost długości pierwszego cyklu, a jego żal między opcjami jest największy.
@@ -166,11 +166,11 @@ Początkowo jest wybierany element losowy lub na podstawie predefiniowanego inde
 Następnie jest wybierany najbliższy element do pierwszego elementu i dodawany do pierwszego cyklu.
 Najbliższy element to taki, który ma najmniejszą wartość w prekalkulowanej macierzy odległości i nie jest elementem
 zabronionym ( na początku pierwszy element ).
-Następnie jest wybierany element najdalszy do pierwszego elementu i dodawany do drugieog cyklu. Po tym jest wybierany
+Następnie jest wybierany element najdalszy do pierwszego elementu i dodawany do drugiego cyklu. Po tym jest wybierany
 najbliższy
 element do ostatniego elementu drugiego cyklu i dodawany do ścieżki. Element najbliższy jest definiowany analogicznie
 przez najmniejszą
-wartość w macierzy odległości i nie jest elementem zabronionym ( elementy cyklu piewrszego i element pierwszy cyklu
+wartość w macierzy odległości i nie jest elementem zabronionym ( elementy cyklu pierwszego i element pierwszy cyklu
 drugiego ).
 Później cykle są rozbudowywane w taki sposób, że wstawiany jest element, który nie należy do żadnego z cykli i powoduje
 najmniejszy wzrost
@@ -183,7 +183,7 @@ rozbudowywania cyklu, a następnie
 wyliczenie wartości przez
 sumę różnic pierwszego z posortowanych elementów o k-1 kolejne. Ta wartość jest minimalizowana i na podstawie tej
 sortowana jest przestrzeń opcji.
-po czym wybierana jest pierwsza opcja ( najmniejszy żal plus waga z najlepszej opcji włożenia )
+po czym wybierana jest pierwsza opcja ( najmniejszy żal plus waga z najlepszej opcji włożenia ).
 I tak się dzieje do momentu, gdy wszystkie elementy zostaną dodane do cykli.
 
 ## Eksperyment
