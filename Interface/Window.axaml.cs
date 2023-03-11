@@ -82,11 +82,7 @@ public sealed partial class MainWindow : Window {
     CalculateAverageButton.Click += (_, _) => {
       _calculatedAverage = Range((int)ParameterStartIndex.Minimum + 1, (int)ParameterStartIndex.Maximum - 1)
         .Average(start => {
-          var configuration = new SearchConfiguration {
-            Population = Range(0, SelectedParameterPopulationSize).Select(_ => new List<Node>()),
-            Regret = SelectedParameterRegret,
-            Start = start
-          };
+          var configuration = CreateSearchConfiguration() with { Start = start };
 
           var results = SelectedAlgorithm.Search(_instance, configuration);
           return results.Sum(nodes => _instance.DistanceOf(nodes));
@@ -236,13 +232,10 @@ public sealed partial class MainWindow : Window {
     _histories.Clear();
 
     var histories = Range(0, SelectedParameterPopulationSize).Select(_ => new List<List<Node>> { new() }).ToList();
-    var configuration = new SearchConfiguration {
+    var configuration = CreateSearchConfiguration() with {
       Population = histories.Select(history =>
         new ObservableList<Node>(items => history.Add(items.ToList()))
       ),
-      Regret = SelectedParameterRegret,
-      Start = SelectedParameterStartIndex,
-      Weight = SelectedParameterWeight
     };
 
     SelectedAlgorithm.Search(_instance, configuration);
@@ -250,6 +243,15 @@ public sealed partial class MainWindow : Window {
     histories.ForEach(_histories.Add);
     HistorySlider.Maximum = histories.MaxBy(x => x.Count)!.Count - 1;
     HistorySlider.Value = HistorySlider.Maximum;
+  }
+
+  private SearchConfiguration CreateSearchConfiguration() {
+    return new() {
+      Population = Range(0, SelectedParameterPopulationSize).Select(_ => new List<Node>()),
+      Regret = SelectedParameterRegret,
+      Start = SelectedParameterStartIndex,
+      Weight = SelectedParameterWeight
+    };
   }
 
   private double _calculatedAverage;
