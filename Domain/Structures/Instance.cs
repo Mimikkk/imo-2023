@@ -49,8 +49,9 @@ public sealed record Instance(int Dimension, List<Node> Nodes, int[,] Distances)
       : Nodes.Hull().Except(except).Combinations(count).MaxBy(nodes => nodes.Edges().Sum(edge => this[edge]))!;
   }
 
-  public int DistanceOf(IEnumerable<Node> cycle) =>
-    cycle.Edges().Sum(edge => this[edge]);
+  public int DistanceOf(IEnumerable<Node> cycle) {
+    return cycle.Edges().Sum(edge => this[edge]);
+  }
 
   public int InsertCost((Node a, Node b) edge, Node node) =>
     this[edge.a, node] + this[node, edge.b] - this[edge];

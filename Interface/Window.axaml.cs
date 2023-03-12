@@ -166,6 +166,7 @@ public sealed partial class MainWindow : Window {
     HandleRenderSelectedNode();
 
     HandleRenderAverageCycleDistance();
+    HandleRenderDistanceSum();
     HandleUpdateTitle();
     Chart.Refresh();
   }
@@ -188,6 +189,16 @@ public sealed partial class MainWindow : Window {
     var scatter = Chart.Plot.Add.Scatter(xs: new double[] { 0 }, ys: new double[] { 0 });
     scatter.IsVisible = false;
     scatter.Label = $"Przeciętna długość: {_calculatedAverage:F2}";
+  }
+
+  private void HandleRenderDistanceSum() {
+    if (SelectedParameterPopulationSize < 2) return;
+    var scatter = Chart.Plot.Add.Scatter(xs: new double[] { 0 }, ys: new double[] { 0 });
+    scatter.IsVisible = false;
+
+    scatter.Label = $"Łączna długość: {_histories.Sum(history =>
+      _instance.DistanceOf(history.ElementAtOrDefault(HistoryStep) ?? history[^1]))
+    }";
   }
 
   private void HandleRenderSelectedNode() {

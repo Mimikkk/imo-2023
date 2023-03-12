@@ -29,7 +29,7 @@ public static class IEnumerableExtensions {
   public static IEnumerable<(Node a, Node b)> Edges(this IEnumerable<Node> cycle) {
     var items = cycle.ToArray();
 
-    return items.Pairwise().Concat(Yield((items.Last(), items.First())));
+    return items.Length == 0 ? Array.Empty<(Node a, Node b)>() : items.Pairwise().Concat(Yield((items.Last(), items.First())));
   }
 
   private enum GeometricRelation : byte { LeftOf, RightOf, Collinear }
