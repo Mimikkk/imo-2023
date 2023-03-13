@@ -13,7 +13,7 @@ W ramach zadania należało:
 - [x] **Dodatkowo** Zaimplementować algorytm zachłanny typu heurestyki z żalem na bazie algorytmu inspirowanego metodą
   rozbudowy cyklu
   przy wykorzystaniu 2-żal (2-regret) oraz uwzględnieniem wag.
-- [ ] Eksperymenty obliczeniowe na każdej instancji poprzez 100 krotne uruchomienie algorytmu i przedstawienie wyników.
+- [x] Eksperymenty obliczeniowe na każdej instancji poprzez 100 krotne uruchomienie algorytmu i przedstawienie wyników.
 
 ### Dodatek
 
@@ -195,36 +195,84 @@ kroB100 ).
 Jako miara jakości rozwiązania wybrano długość ścieżki, która została obliczana poprzez sumę długości między węzłami w
 odnalezionym cyklu.
 
-### KroA100
+# Zadanie 2 - Heurestyki lokalne
 
-| Algorytm | Długość cyklu A | Długość cyklu B |
-|----------|-----------------|-----------------|
-|          |                 |                 |
-|          |                 |                 |
+W ramach zadania należało:
 
-#### Najlepszy wynik
+- [ ] Zaimplemnetować algorytm losowego zachłannego adapcyjnego przeszukiwania ( _GRASP_ ).
+- [ ] Zaimplementować algorytm przeszukiwania lokalnego w wersji stromej ( _steepest_ ).
+    - [ ] Przy wykorzystaniu sąsiedztwa z wymianą wierzchołków między cyklami.
+    - [ ] Przy wykorzystaniu sąsiedztwa z wymianą wierzchołków wewnątrz cyklu.
+    - [ ] Zaczynającą od rozwiązania uzyskanego w algorytmie zachłannym.
+    - [ ] Zaczynający od rozwiązania uzyskanego w algorytmie losowym ( grasp ).
+- [ ] Zaimplementować algorytm przeszukiwania lokalnego w wersji zachłannej ( _greedy_ ).
+    - [ ] Przy wykorzystaniu sąsiedztwa z wymianą wierzchołków między cyklami.
+    - [ ] Przy wykorzystaniu sąsiedztwa z wymianą wierzchołków wewnątrz cyklu.
 
-<div style="
-    display: flex;
-    justify-content: center;
-    align-items: center;
-">
-<img src="imo-2023/Resources/Graphs/kroA100-greedy-nearest-neighbour.png" alt="wyniki przedstawiające 2 cykle">
-</div>
+## Implementacja algorytmu losowego zachłannego adapcyjnego przeszukiwania ( _GRASP_ ).
 
-### KroB100
+### Pseudokod
 
-| Algorytm | Długość cyklu A | Długość cyklu B |
-|----------|-----------------|-----------------|
-|          |                 |                 |
-|          |                 |                 |
+### Opis
 
-#### Najlepszy wynik
+## Implementacja algorytmu przeszukiwania lokalnego w wersji stromej ( _steepest_ ).
 
-<div style="
-    display: flex;
-    justify-content: center;
-    align-items: center;
-">
-<img src="./imo-2023/Resources/Graphs/kroA100-greedy-nearest-neighbour.png" alt="wyniki przedstawiające 2 cykle">
-</div>
+### Wersja z wymianą wierzchołków między cyklami
+
+#### Pseudokod
+
+#### Opis
+
+### Wersja z wymianą wierzchołków wewnątrz cyklu
+
+#### Pseudokod
+
+#### Opis
+
+### Wersja zaczynająca od rozwiązania uzyskanego w algorytmie zachłannym
+
+#### Pseudokod
+
+#### Opis
+
+### Wersja zaczynająca od rozwiązania uzyskanego w algorytmie losowym ( grasp )
+
+#### Pseudokod
+
+#### Opis
+
+## Implementacja algorytmu przeszukiwania lokalnego w wersji zachłannej ( _greedy_ ).
+
+### Wersja z wymianą wierzchołków między cyklami
+
+#### Pseudokod
+
+#### Opis
+
+### Wersja z wymianą wierzchołków wewnątrz cyklu
+
+#### Pseudokod
+
+#### Opis
+
+### Wersja zaczynająca od rozwiązania uzyskanego w algorytmie zachłannym
+
+#### Pseudokod
+
+#### Opis
+
+### Wersja zaczynająca od rozwiązania uzyskanego w algorytmie losowym ( grasp )
+
+#### Pseudokod
+
+#### Opis
+
+## Eksperyment
+
+Poprzez eksperymenty obliczeniowe chcemy sprawdzić, które z heurystyk lokalnego przeszukiwania odnajduje najlepsze
+rozwiązanie. W
+tym celu zostało wykonane stukrotne uruchomienie każdego z algorytmów na każdej z wybranych instancji ( kroA100,
+kroB100 ).
+
+Jako miara jakości rozwiązania wybrano długość ścieżki, która została obliczana poprzez sumę długości między węzłami w
+odnalezionym cyklu.
