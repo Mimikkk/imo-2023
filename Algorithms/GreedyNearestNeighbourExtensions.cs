@@ -1,4 +1,3 @@
-using System.Diagnostics;
 using Algorithms.Structures;
 using Domain.Extensions;
 using Domain.Structures;
@@ -16,10 +15,10 @@ internal static class GreedyNearestNeighbourExtensions {
 
     return population.Length switch {
       < 0 => throw new ArgumentOutOfRangeException(nameof(configuration)),
-      0   => Enumerable.Empty<IEnumerable<Node>>(),
-      1   => SearchSingle(instance, population.First(), start),
-      2   => SearchDouble(instance, population.First(), population.Last(), start),
-      _   => instance.SearchMultiple(population)
+      0 => Enumerable.Empty<IEnumerable<Node>>(),
+      1 => SearchSingle(instance, population.First(), start),
+      2 => SearchDouble(instance, population.First(), population.Last(), start),
+      _ => instance.SearchMultiple(population)
     };
   }
 

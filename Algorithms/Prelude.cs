@@ -1,2 +1,3 @@
-global using static Domain.Extensions.IEnumerableExtensions;
+global using static Domain.Extensions.NodeEnumerableExtensions;
+global using static Domain.Extensions.EnumerableExtensions;
 global using System;

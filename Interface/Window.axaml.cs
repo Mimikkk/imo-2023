@@ -17,7 +17,7 @@ using ScottPlot.Control;
 using ScottPlot.Palettes;
 using SkiaSharp;
 using static System.Linq.Enumerable;
-using static Domain.Extensions.IEnumerableExtensions;
+using static Domain.Extensions.EnumerableExtensions;
 
 namespace Interface;
 

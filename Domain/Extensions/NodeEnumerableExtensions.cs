@@ -2,43 +2,26 @@
 
 namespace Domain.Extensions;
 
-public static class IEnumerableExtensions {
-  public static IEnumerable<T> Yield<T>(params T[] items) => items;
-  public static IEnumerable<T> Flatten<T>(this IEnumerable<IEnumerable<T>> items) => items.SelectMany(x => x);
-
-  public static IEnumerable<(T a, T b)> Pairwise<T>(this IEnumerable<T> source) {
-    var previous = default(T);
-    using var it = source.GetEnumerator();
-
-    if (it.MoveNext()) previous = it.Current;
-    while (it.MoveNext()) yield return (previous!, previous = it.Current);
-  }
-  public static IEnumerable<IEnumerable<T>> Combinations<T>(this IEnumerable<T> items, int count) {
-    var enumerable = items as T[] ?? items.ToArray();
-    if (count == 1)
-      foreach (var item in enumerable)
-        yield return Yield(item);
-    if (count > enumerable.Length)
-      yield return enumerable;
-
-    foreach (var (element, i) in enumerable.Select((item, index) => (item, index + 1))) {
-      foreach (var result in Combinations(enumerable.Skip(i), count - 1))
-        yield return Yield(element).Concat(result);
-    }
-  }
+public static class NodeEnumerableExtensions {
   public static IEnumerable<(Node a, Node b)> Edges(this IEnumerable<Node> cycle) {
     var items = cycle.ToArray();
 
-    return items.Length == 0 ? Array.Empty<(Node a, Node b)>() : items.Pairwise().Concat(Yield((items.Last(), items.First())));
+    return items.Length == 0
+      ? Array.Empty<(Node a, Node b)>()
+      : items.Pairwise().Concat(Yield((items.Last(), items.First())));
   }
 
-  private enum GeometricRelation : byte { LeftOf, RightOf, Collinear }
+  private enum GeometricRelation : byte {
+    LeftOf,
+    RightOf,
+    Collinear
+  }
 
   private static GeometricRelation CalculateRelation(Node a, Node b, Node c) =>
     ((float)(a.X - c.X) * (b.Y - c.Y) - (a.Y - c.Y) * (b.X - c.X)) switch {
       < 0.00001f and > -0.00001f => GeometricRelation.Collinear,
-      < 0                        => GeometricRelation.RightOf,
-      _                          => GeometricRelation.LeftOf
+      < 0 => GeometricRelation.RightOf,
+      _ => GeometricRelation.LeftOf
     };
 
   public static IEnumerable<Node> Hull(this IEnumerable<Node> nodes) {
@@ -82,5 +65,4 @@ public static class IEnumerableExtensions {
 
     return hull;
   }
-
 }

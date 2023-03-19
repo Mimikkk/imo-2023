@@ -1,3 +1,5 @@
+using Domain.Extensions;
+
 namespace Domain.Structures;
 
 public sealed record Instance(int Dimension, List<Node> Nodes, int[,] Distances) {

@@ -204,10 +204,11 @@ W ramach zadania należało:
     - [ ] Przy wykorzystaniu sąsiedztwa z wymianą wierzchołków między cyklami.
     - [ ] Przy wykorzystaniu sąsiedztwa z wymianą wierzchołków wewnątrz cyklu.
     - [ ] Zaczynającą od rozwiązania uzyskanego w algorytmie zachłannym.
-    - [ ] Zaczynający od rozwiązania uzyskanego w algorytmie losowym ( grasp ).
-- [ ] Zaimplementować algorytm przeszukiwania lokalnego w wersji zachłannej ( _greedy_ ).
+    - [ ] Zaczynający od rozwiązania uzyskanego w algorytmie losowym ( grasp ). - [ ] Zaimplementować algorytm przeszukiwania lokalnego w wersji zachłannej ( _greedy_ ).
     - [ ] Przy wykorzystaniu sąsiedztwa z wymianą wierzchołków między cyklami.
     - [ ] Przy wykorzystaniu sąsiedztwa z wymianą wierzchołków wewnątrz cyklu.
+    - [ ] Zaczynającą od rozwiązania uzyskanego w algorytmie zachłannym.
+    - [ ] Zaczynający od rozwiązania uzyskanego w algorytmie losowym ( grasp ).
 
 ## Implementacja algorytmu losowego zachłannego adapcyjnego przeszukiwania ( _GRASP_ ).
 
