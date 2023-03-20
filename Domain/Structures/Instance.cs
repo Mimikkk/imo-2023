@@ -30,6 +30,7 @@ public sealed record Instance(int Dimension, List<Node> Nodes, int[,] Distances)
   public int this[Node first, Node second] => Distances[first.Index, second.Index];
   public int this[int first, int second] => Distances[first, second];
   public int this[(Node a, Node b) edge] => this[edge.a, edge.b];
+  public int this[(Node a, Node b, Node c) vertex] => this[vertex.a, vertex.b] + this[vertex.b, vertex.c];
 
   public Node ClosestTo(Node node, IEnumerable<Node>? except = null) {
     except ??= new List<Node>();

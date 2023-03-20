@@ -4,12 +4,29 @@ public static class EnumerableExtensions {
   public static IEnumerable<T> Yield<T>(params T[] items) => items;
   public static IEnumerable<T> Flatten<T>(this IEnumerable<IEnumerable<T>> items) => items.SelectMany(x => x);
 
-  public static IEnumerable<(T a, T b)> Pairwise<T>(this IEnumerable<T> source) {
-    var previous = default(T);
+  public static IEnumerable<(T a, T b)> Pairwise<T>(this IEnumerable<T> source) => Window(source, 2).Select(
+    enumerable => {
+      var items = enumerable.ToArray();
+
+      return (items[0], items[1]);
+    });
+
+  public static IEnumerable<(T a, T b, T c)> Tripletwise<T>(this IEnumerable<T> source) =>
+    Window(source, 3).Select(enumerable => {
+      var items = enumerable.ToArray();
+
+      return (items[0], items[1], items[2]);
+    });
+
+  public static IEnumerable<IEnumerable<T>> Window<T>(this IEnumerable<T> source, int size) {
+    var current = new T[size];
     using var it = source.GetEnumerator();
 
-    if (it.MoveNext()) previous = it.Current;
-    while (it.MoveNext()) yield return (previous!, previous = it.Current);
+    for (var i = 0; i < size && it.MoveNext(); ++i) current[i] = it.Current;
+    while (it.MoveNext()) {
+      yield return current;
+      current = current.Skip(1).Append(it.Current).ToArray();
+    }
   }
 
   public static IEnumerable<IEnumerable<T>> Combinations<T>(this IEnumerable<T> items, int count) {

@@ -4,11 +4,33 @@ namespace Domain.Extensions;
 
 public static class NodeEnumerableExtensions {
   public static IEnumerable<(Node a, Node b)> Edges(this IEnumerable<Node> cycle) {
-    var items = cycle.ToArray();
+    var nodes = cycle.ToArray();
 
-    return items.Length == 0
-      ? Array.Empty<(Node a, Node b)>()
-      : items.Pairwise().Concat(Yield((items.Last(), items.First())));
+    for (var i = 0; i < nodes.Length; ++i) {
+      yield return (
+        nodes[i % nodes.Length],
+        nodes[(i + 1) % nodes.Length]
+      );
+    }
+  }
+
+  public static IEnumerable<(Node a, Node b, Node c)> Vertices(this IEnumerable<Node> cycle) {
+    var nodes = cycle.ToArray();
+
+    for (var i = 0; i < nodes.Length; ++i) {
+      yield return (
+        nodes[i % nodes.Length],
+        nodes[(i + 1) % nodes.Length],
+        nodes[(i + 2) % nodes.Length]
+      );
+    }
+  }
+
+  public static (Node a, Node b, Node c) Neighbourhood(this IEnumerable<Node> cycle, Node at) {
+    var nodes = cycle.ToList();
+    var index = nodes.IndexOf(at);
+    
+    return (nodes[(index - 1) % nodes.Count], at, nodes[(index + 1) % nodes.Count]);
   }
 
   private enum GeometricRelation : byte {

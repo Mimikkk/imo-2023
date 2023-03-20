@@ -29,7 +29,29 @@ internal static class GreedyRandomAdaptiveSearchExtensions {
 
     cycle.Add(start is null ? Node.Choose(instance.Nodes) : instance.Nodes[start.Value]);
     cycle.Add(instance.ClosestTo(cycle.First()));
+
+
     return Yield(cycle);
+  }
+
+  private record Gains(Instance Instance) {
+    public int ReplaceInternalVertex(IEnumerable<Node> cycle, Node replace, Node with) {
+      var vertex = cycle.Neighbourhood(with);
+
+      return Instance[vertex] - Instance[(vertex.a, replace, vertex.c)];
+    }
+
+    public int ReplaceExternalTwoVertices(IEnumerable<Node> first, IEnumerable<Node> second, Node a, Node b) =>
+      ReplaceInternalVertex(first, a, b) + ReplaceInternalVertex(second, b, a);
+
+    public int InsertCost((Node a, Node b) edge, Node node) =>
+      Instance[edge.a, node] + Instance[node, edge.b] - Instance[edge];
+
+    public int ReplaceInternalTwoVertices(IEnumerable<Node> cycle, Node a, Node b) {
+      cycle = cycle.ToArray();
+
+      return ReplaceExternalTwoVertices(cycle, cycle, a, b);
+    }
   }
 
   private record Moves(Instance instance) {
