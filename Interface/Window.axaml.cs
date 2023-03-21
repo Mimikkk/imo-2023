@@ -133,11 +133,11 @@ public sealed partial class MainWindow : Window {
     Mod.Chart.Notify();
 
     Chart.PointerMoved += (_, _) => {
-      UpdateClosestNode();
+      Mod.Mouse.OnMove();
       Mod.Chart.Notify();
     };
     Chart.PointerReleased += (_, _) => {
-      UpdateSelectedNode();
+      Mod.Mouse.OnClick();
       Mod.Chart.Notify();
     };
   }

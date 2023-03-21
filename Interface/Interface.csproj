@@ -31,11 +31,4 @@
     <ItemGroup>
       <ProjectReference Include="..\Algorithms\Algorithms.csproj" />
     </ItemGroup>
-
-    <ItemGroup>
-      <Compile Update="MouseListeners.cs">
-        <DependentUpon>Window.axaml</DependentUpon>
-        <SubType>Code</SubType>
-      </Compile>
-    </ItemGroup>
 </Project>

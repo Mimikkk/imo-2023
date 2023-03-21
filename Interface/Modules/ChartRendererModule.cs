@@ -22,24 +22,24 @@ internal sealed record ChartRendererModule {
       () => Add.Scatter(I.Instance.Nodes),
       () => M.Histories.ToList().ForEach(Render),
       () => {
-        if (Self._closestNode is null) return;
-        Add.Point(Self._closestNode);
+        if (Mouse.ClosestNode is null) return;
+        Add.Point(Mouse.ClosestNode);
       },
       () => {
-        if (Self._selectedNode is null) return;
-        Add.Point(Self._selectedNode);
+        if (Mouse.SelectedNode is null) return;
+        Add.Point(Mouse.SelectedNode);
 
         var color = Self.Chart.Plot.Plottables.Count;
 
         var plotted = new List<Node>();
         foreach (var history in M.Histories.Where(history => history.Count > I.Step)) {
-          var nodes = history[I.Step].Except(Yield(Self._selectedNode)).ToList();
+          var nodes = history[I.Step].Except(Yield(Mouse.SelectedNode)).ToList();
 
           plotted.AddRange(nodes);
-          Add.DistanceTo(Self._selectedNode, nodes, M.Palette.GetColor(++color).ToSKColor());
+          Add.DistanceTo(Mouse.SelectedNode, nodes, M.Palette.GetColor(++color).ToSKColor());
         }
 
-        Add.DistanceTo(Self._selectedNode, I.Instance.Nodes.Except(plotted).Except(Yield(Self._selectedNode)));
+        Add.DistanceTo(Mouse.SelectedNode, I.Instance.Nodes.Except(plotted).Except(Yield(Mouse.SelectedNode)));
 
       },
       () => {
@@ -77,5 +77,6 @@ internal sealed record ChartRendererModule {
   private readonly List<Action> Updates;
   private InteractionModule I => Self.Mod.Interaction;
   private MemoryModule M => Self.Mod.Memory;
+  private MouseModule Mouse => Self.Mod.Mouse;
   public void Subscribe(Action update) => Updates.Add(update);
 }

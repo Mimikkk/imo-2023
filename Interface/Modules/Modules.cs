@@ -6,8 +6,10 @@ internal sealed record Modules {
     Memory = new(self);
     Chart = new(self);
     Title = new(self);
+    Mouse = new(self);
   }
 
+  public readonly MouseModule Mouse;
   public readonly TitleModule Title;
   public readonly MemoryModule Memory;
   public readonly ChartRendererModule Chart;

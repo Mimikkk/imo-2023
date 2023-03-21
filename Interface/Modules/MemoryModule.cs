@@ -12,11 +12,13 @@ internal sealed record MemoryModule(MainWindow Self) {
   public void CalculateAverage(int start, int end) {
     Average = Enumerable.Range(start, end)
       .Average(start =>
-        Self.Mod.Interaction.Algorithm.Search(Self.Mod.Interaction.Instance, Self.Mod.Interaction.Parameter.Configuration with { Start = start })
-          .Sum(nodes => Self.Mod.Interaction.Instance.DistanceOf(nodes))
+        I.Algorithm.Search(I.Instance, I.Parameter.Configuration with { Start = start })
+          .Sum(nodes => I.Instance.DistanceOf(nodes))
       );
   }
+
   public void ClearAverage() => Average = null;
   public readonly IPalette Palette = new Category10();
   public readonly ObservableCollection<List<List<Node>>> Histories = new();
+  private InteractionModule I => Self.Mod.Interaction;
 }

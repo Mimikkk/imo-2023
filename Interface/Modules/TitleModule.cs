@@ -5,26 +5,37 @@ using Domain.Extensions;
 
 namespace Interface.Modules;
 
-internal sealed record TitleModule(MainWindow Self) {
+internal sealed record TitleModule {
+  public TitleModule(MainWindow self) {
+    Self = self;
+    Updates = new List<Func<string>> {
+      () => {
+        var (mx, my) = Self.Chart.Interaction.GetMouseCoordinates();
+        return $"Pozycja Myszy - {(int)mx}x, {(int)my}y";
+      },
+      () => M.SelectedNode switch {
+        var (index, x, y) => $"Wierzchołek - {index + 1} - {x}x, {y}y",
+        null              => "",
+      },
+      () => {
+        if (M.SelectedNode is null) return "";
+        var contained = Self.Mod.Memory.Histories
+          .Where(history => history.Count > I.Step)
+          .FirstOrDefault(x => x[I.Step].Contains(M.SelectedNode));
+        if (contained is null) return "";
+        var index = contained[I.Step].IndexOf(M.SelectedNode);
+        return $"Indeks - {index}";
+      }
+    };
+  }
+
   public void Update() => Self.Title = string.Join(" : ", Updates.Select(a => a()).Where(s => s != ""));
-  private readonly List<Func<string>> Updates = new() {
-    () => {
-      var (mx, my) = Self.Chart.Interaction.GetMouseCoordinates();
-      return $"Pozycja Myszy - {(int)mx}x, {(int)my}y";
-    },
-    () => Self._selectedNode switch {
-      var (index, x, y) => $"Wierzchołek - {index + 1} - {x}x, {y}y",
-      null              => "",
-    },
-    () => {
-      if (Self._selectedNode is null) return "";
-      var contained = Self.Mod.Memory.Histories
-        .Where(history => history.Count > Self.Mod.Interaction.Step)
-        .FirstOrDefault(x => x[Self.Mod.Interaction.Step].Contains(Self._selectedNode));
-      if (contained is null) return "";
-      var index = contained[Self.Mod.Interaction.Step].IndexOf(Self._selectedNode);
-      return $"Indeks - {index}";
-    }
-  };
+
   public void Subscribe(Func<string> update) => Updates.Add(update);
+
+  private readonly List<Func<string>> Updates;
+
+  private readonly MainWindow Self;
+  private MouseModule M => Self.Mod.Mouse;
+  private InteractionModule I => Self.Mod.Interaction;
 }
