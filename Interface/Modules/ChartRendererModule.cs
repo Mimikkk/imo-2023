@@ -1,0 +1,81 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using Algorithms.Structures;
+using Domain.Extensions;
+using Domain.Structures;
+using ScottPlot;
+using static Domain.Extensions.EnumerableExtensions;
+
+namespace Interface.Modules;
+
+internal sealed record ChartRendererModule {
+  public void Notify() {
+    Self.Chart.Plot.Clear();
+    Updates.ForEach(Invoke);
+    Self.Chart.Refresh();
+  }
+
+  public ChartRendererModule(MainWindow window) {
+    Self = window;
+    Updates = new() {
+      () => Add.Scatter(I.Instance.Nodes),
+      () => M.Histories.ToList().ForEach(Render),
+      () => {
+        if (Self._closestNode is null) return;
+        Add.Point(Self._closestNode);
+      },
+      () => {
+        if (Self._selectedNode is null) return;
+        Add.Point(Self._selectedNode);
+
+        var color = Self.Chart.Plot.Plottables.Count;
+
+        var plotted = new List<Node>();
+        foreach (var history in M.Histories.Where(history => history.Count > I.Step)) {
+          var nodes = history[I.Step].Except(Yield(Self._selectedNode)).ToList();
+
+          plotted.AddRange(nodes);
+          Add.DistanceTo(Self._selectedNode, nodes, M.Palette.GetColor(++color).ToSKColor());
+        }
+
+        Add.DistanceTo(Self._selectedNode, I.Instance.Nodes.Except(plotted).Except(Yield(Self._selectedNode)));
+
+      },
+      () => {
+        if (M.Average is null) return;
+        Add.Label($"Przeciętna długość: {M.Average:F2}");
+      },
+      () => {
+        if (I.Parameter.PopulationSize < 2) return;
+        Add.Label($"Łączna długość: {M.Histories.Sum(history =>
+          I.Instance.DistanceOf(history.ElementAtOrDefault(I.Step) ?? history[^1]))
+        }");
+      }
+    };
+  }
+
+  private void Render(IEnumerable<IEnumerable<Node>> history) {
+    var enumerable = history as IEnumerable<Node>[] ?? history.ToArray();
+    var step = enumerable.ElementAtOrDefault(I.Step) ?? enumerable[^1];
+
+    switch (I.Algorithm.DisplayAs) {
+      case Algorithm.DisplayType.Cycle: {
+        Add.Cycle(step, I.Instance);
+        return;
+      }
+      case Algorithm.DisplayType.Path: {
+        if (I.Step == (int)Self.HistorySlider.Maximum) Add.Cycle(step, I.Instance);
+        else Add.Path(step, I.Instance);
+        return;
+      }
+    }
+  }
+
+  private MainWindow Self { get; }
+  private AddPlottable Add => Self.Chart.Plot.Add;
+  private readonly List<Action> Updates;
+  private InteractionModule I => Self.Mod.Interaction;
+  private MemoryModule M => Self.Mod.Memory;
+  public void Subscribe(Action update) => Updates.Add(update);
+}

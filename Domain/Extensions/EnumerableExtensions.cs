@@ -1,22 +1,28 @@
-﻿namespace Domain.Extensions;
+﻿using System.Collections;
+
+namespace Domain.Extensions;
 
 public static class EnumerableExtensions {
   public static IEnumerable<T> Yield<T>(params T[] items) => items;
   public static IEnumerable<T> Flatten<T>(this IEnumerable<IEnumerable<T>> items) => items.SelectMany(x => x);
+  public static void Invoke(Action action) => action();
+  public static void A(Action action) => action();
 
-  public static IEnumerable<(T a, T b)> Pairwise<T>(this IEnumerable<T> source) => Window(source, 2).Select(
-    enumerable => {
-      var items = enumerable.ToArray();
+  public static IEnumerable<(T a, T b)> Pairwise<T>(this IEnumerable<T> source) => Window(source, 2)
+    .Select(
+      enumerable => {
+        var items = enumerable.ToArray();
 
-      return (items[0], items[1]);
-    });
+        return (items[0], items[1]);
+      });
 
   public static IEnumerable<(T a, T b, T c)> Tripletwise<T>(this IEnumerable<T> source) =>
-    Window(source, 3).Select(enumerable => {
-      var items = enumerable.ToArray();
+    Window(source, 3)
+      .Select(enumerable => {
+        var items = enumerable.ToArray();
 
-      return (items[0], items[1], items[2]);
-    });
+        return (items[0], items[1], items[2]);
+      });
 
   public static IEnumerable<IEnumerable<T>> Window<T>(this IEnumerable<T> source, int size) {
     var current = new T[size];

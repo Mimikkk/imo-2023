@@ -7,7 +7,7 @@ namespace Interface;
 public sealed partial class MainWindow {
   private void UpdateClosestNode() {
     var mouse = Chart.Interaction.GetMouseCoordinates();
-    _closestNode = Interaction.Instance.Nodes.MinBy(node => node.DistanceTo(mouse))!;
+    _closestNode = Mod.Interaction.Instance.Nodes.MinBy(node => node.DistanceTo(mouse))!;
   }
 
   private void UpdateSelectedNode() {
@@ -15,6 +15,6 @@ public sealed partial class MainWindow {
     _selectedNode = _selectedNode == _closestNode ? null : _closestNode;
   }
 
-  private Node? _closestNode;
-  private Node? _selectedNode;
+  public Node? _closestNode;
+  public Node? _selectedNode;
 }
