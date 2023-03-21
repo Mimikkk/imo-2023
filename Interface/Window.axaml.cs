@@ -23,8 +23,10 @@ namespace Interface;
 
 public sealed partial class MainWindow : Window {
   public MainWindow() {
+    TitleController = new(this);
     Interaction = new(this);
     Memory = new(this);
+
     InitializeComponent();
     InitializeComboBoxes();
     InitializeChart();
@@ -163,21 +165,8 @@ public sealed partial class MainWindow : Window {
 
     HandleRenderAverageCycleDistance();
     HandleRenderDistanceSum();
-    HandleUpdateTitle();
+    TitleController.Update();
     Chart.Refresh();
-  }
-
-  private void HandleUpdateTitle() {
-    var (mx, my) = Chart.Interaction.GetMouseCoordinates();
-
-    Title = $"Pozycja Myszy - {(int)mx}x, {(int)my}y";
-    if (_selectedNode is null) return;
-    Title += $" : Wierzchołek - {_selectedNode.Index + 1} - {_selectedNode.X}x, {_selectedNode.Y}y";
-    var contained = Memory.Histories.Where(history => history.Count > Interaction.Step)
-      .FirstOrDefault(x => x[Interaction.Step].Contains(_selectedNode));
-    if (contained is null) return;
-    var index = contained[Interaction.Step].IndexOf(_selectedNode);
-    Title += $" : Indeks - {index}";
   }
 
   private void HandleRenderAverageCycleDistance() {

@@ -13,7 +13,6 @@ namespace Interface;
 
 public sealed partial class MainWindow {
   private record Interactive(MainWindow Self) {
-    public readonly Parameters Parameter = new(Self);
     public Instance Instance {
       get {
         if (_instance is null || _instance.Name != InstanceSelection) {
@@ -28,7 +27,6 @@ public sealed partial class MainWindow {
     public Algorithm Algorithm => Algorithm.FromName(Self.Algorithms.SelectedItem.As<Option>().Value);
     public int Step => (int)Self.HistorySlider.Value;
 
-
     internal record Parameters(MainWindow Self) {
       public int Regret => (int)Self.ParameterRegret.Value;
       public int? StartIndex => Self.ParameterStartIndex.Value is 0 ? null : (int)Self.ParameterStartIndex.Value;
@@ -42,6 +40,7 @@ public sealed partial class MainWindow {
         Weight = Weight
       };
     }
+    public readonly Parameters Parameter = new(Self);
 
     private Instance? _instance;
     private IEnumerable<Node>? _hull;

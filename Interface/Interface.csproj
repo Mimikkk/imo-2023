@@ -45,5 +45,9 @@
         <DependentUpon>Window.axaml</DependentUpon>
         <SubType>Code</SubType>
       </Compile>
+      <Compile Update="TitleController.cs">
+        <DependentUpon>Window.axaml</DependentUpon>
+        <SubType>Code</SubType>
+      </Compile>
     </ItemGroup>
 </Project>
