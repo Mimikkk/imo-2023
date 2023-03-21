@@ -4,20 +4,53 @@ using Domain.Structures;
 namespace Algorithms.Structures;
 
 public sealed class Algorithm : SmartEnum<Algorithm> {
-  public static readonly Algorithm NGreedyNearestNeighbour = new(StrategyType.PathBased, GreedyNearestNeighbourExtensions.Search);
-  public static readonly Algorithm NGreedyCycleExpansion = new(StrategyType.CycleBased, GreedyCycleExpansionExtensions.Search);
-  public static readonly Algorithm NGreedyCycleExpansionWithKRegret = new(StrategyType.CycleBased, GreedyRegretCycleExpansionExtensions.Search);
-  public static readonly Algorithm NGreedyCycleExpansionWithKRegretAndWeight =
-    new(StrategyType.CycleBased, GreedyWeightedRegretCycleExpansionExtensions.Search);
-
-  public Algorithm(StrategyType strategyType, Func<Instance, SearchConfiguration, IEnumerable<IEnumerable<Node>>> search)
+  public static readonly Algorithm NearestNeighbour = new(
+    DisplayType.Path,
+    GreedyNearestNeighbourExtensions.Search,
+    false,
+    false
+  );
+  public static readonly Algorithm CycleExpansion = new(
+    DisplayType.Cycle,
+    GreedyCycleExpansionExtensions.Search,
+    false,
+    false
+  );
+  public static readonly Algorithm CycleExpansionWithKRegret = new(
+    DisplayType.Cycle,
+    GreedyRegretCycleExpansionExtensions.Search,
+    true,
+    false
+  );
+  public static readonly Algorithm CycleExpansionWithKRegretAndWeight = new(
+    DisplayType.Cycle,
+    GreedyWeightedRegretCycleExpansionExtensions.Search,
+    true,
+    true
+  );
+  public static readonly Algorithm RandomAdaptive = new(
+    DisplayType.Cycle,
+    GreedyRandomAdaptiveSearchExtensions.Search,
+    false,
+    false
+  );
+  public Algorithm(
+    DisplayType displayAs,
+    Func<Instance, SearchConfiguration, IEnumerable<IEnumerable<Node>>> search,
+    bool usesRegret,
+    bool usesWeight
+  )
     : base(_nextValue.ToString(), ++_nextValue) {
-    Type = strategyType;
+    DisplayAs = displayAs;
     Search = search;
+    UsesRegret = usesRegret;
+    UsesWeight = usesWeight;
   }
 
-  public enum StrategyType { CycleBased, PathBased }
-  public readonly StrategyType Type;
+  public enum DisplayType { Cycle, Path }
+  public readonly bool UsesRegret;
+  public readonly bool UsesWeight;
+  public readonly DisplayType DisplayAs;
   private static int _nextValue;
 
   public readonly Func<Instance, SearchConfiguration, IEnumerable<IEnumerable<Node>>> Search;

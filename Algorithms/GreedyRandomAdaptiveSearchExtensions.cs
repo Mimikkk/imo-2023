@@ -17,19 +17,21 @@ internal static class GreedyRandomAdaptiveSearchExtensions {
     return population.Length switch {
       < 0 => throw new ArgumentOutOfRangeException(nameof(configuration)),
       > 1 => throw new ArgumentOutOfRangeException(nameof(configuration)),
-      0 => Enumerable.Empty<IEnumerable<Node>>(),
-      1 => SearchSingle(instance, population.First(), start),
+      0   => Enumerable.Empty<IEnumerable<Node>>(),
+      1   => SearchSingle(instance, population.First(), start),
     };
   }
 
   private static IEnumerable<IEnumerable<Node>>
     SearchSingle(Instance instance, IList<Node>? cycle, int? start) {
     cycle ??= new List<Node>();
-    var moves = new Moves(instance);
 
-    cycle.Add(start is null ? Node.Choose(instance.Nodes) : instance.Nodes[start.Value]);
-    cycle.Add(instance.ClosestTo(cycle.First()));
+    GreedyNearestNeighbourExtensions.Search(instance, new() {
+      Population = Yield(cycle),
+      Start = start,
+    });
 
+    Debug.WriteLine($"heh {cycle.Count}");
 
     return Yield(cycle);
   }
@@ -45,7 +47,7 @@ internal static class GreedyRandomAdaptiveSearchExtensions {
       ReplaceInternalVertex(first, a, b) + ReplaceInternalVertex(second, b, a);
 
     public int InsertCost((Node a, Node b) edge, Node node) =>
-      Instance[edge.a, node] + Instance[node, edge.b] - Instance[edge];
+      Instance[(edge.a, node, edge.b)] - Instance[edge];
 
     public int ReplaceInternalTwoVertices(IEnumerable<Node> cycle, Node a, Node b) {
       cycle = cycle.ToArray();
@@ -55,13 +57,10 @@ internal static class GreedyRandomAdaptiveSearchExtensions {
   }
 
   private record Moves(Instance instance) {
-    public static void TradeExternalVertices(IEnumerable<Node> graph) {
-    }
+    public static void TradeExternalVertices(IEnumerable<Node> graph) { }
 
-    public static void TradeInternalVertices(IEnumerable<Node> graph) {
-    }
+    public static void TradeInternalVertices(IEnumerable<Node> graph) { }
 
-    public static void TradeInternalEdges(IEnumerable<Node> graph) {
-    }
+    public static void TradeInternalEdges(IEnumerable<Node> graph) { }
   }
 }

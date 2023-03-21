@@ -54,6 +54,15 @@ public static class AddPlottableExtensions {
     return add;
   }
 
+  public static AddPlottable Label(this AddPlottable add, string text) {
+    var scatter = add.Scatter(xs: new double[] { 0 }, ys: new double[] { 0 });
+    scatter.IsVisible = false;
+    scatter.LineStyle = LineStyle.NoLine;
+    scatter.Label = text;
+
+    return add;
+  }
+
 
   public static AddPlottable DistanceTo(this AddPlottable add, Node from, Node to, SKColor? color = null) {
     add.Plottable(new Annotation {

@@ -2,14 +2,14 @@ using Domain.Extensions;
 
 namespace Domain.Structures;
 
-public sealed record Instance(int Dimension, List<Node> Nodes, int[,] Distances) {
+public sealed record Instance(int Dimension, List<Node> Nodes, int[,] Distances, string Name) {
   public static Instance Read(string name) {
     var nodes = Node.From(File.ReadLines(Path.Combine(InstanceDirectory, $"{name}.tsp"))
         .Skip(6)
         .SkipLast(1))
       .ToList();
 
-    return new Instance(nodes.Count, nodes, CreateDistanceMatrix(nodes));
+    return new Instance(nodes.Count, nodes, CreateDistanceMatrix(nodes), name);
   }
 
   private static int[,] CreateDistanceMatrix(IEnumerable<Node> nodes) {

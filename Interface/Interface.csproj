@@ -37,7 +37,11 @@
         <DependentUpon>Window.axaml</DependentUpon>
         <SubType>Code</SubType>
       </Compile>
-      <Compile Update="Parameters.cs">
+      <Compile Update="Interactions.cs">
+        <DependentUpon>Window.axaml</DependentUpon>
+        <SubType>Code</SubType>
+      </Compile>
+      <Compile Update="Memories.cs">
         <DependentUpon>Window.axaml</DependentUpon>
         <SubType>Code</SubType>
       </Compile>
