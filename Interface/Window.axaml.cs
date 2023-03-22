@@ -143,12 +143,14 @@ public sealed partial class MainWindow : Window {
     Chart.PointerMoved += (_, _) => {
       Mod.Mouse.UpdateClosest();
       Mod.Chart.Notify();
+      Mod.Panel.Notify();
     };
     Chart.PointerReleased += (_, e) => {
       (e.KeyModifiers == KeyModifiers.Control)
         .And(Mod.Mouse.UpdateSelection)
         .Or(Mod.Mouse.UpdateSelected);
       Mod.Chart.Notify();
+      Mod.Panel.Notify();
     };
   }
 
@@ -169,4 +171,18 @@ public sealed partial class MainWindow : Window {
   }
 
   internal readonly Modules.Modules Mod;
+
+  public List<Player> Players { get; set; } = new() {
+    new("Maurizio"),
+    new("Giacomo"),
+    new("Mario"),
+  };
+
+  public class Player {
+    public string Name { get; set; }
+
+    public Player(string name) {
+      Name = name;
+    }
+  }
 }

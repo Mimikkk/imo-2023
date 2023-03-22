@@ -7,6 +7,7 @@ internal sealed record Modules {
     Chart = new(self);
     Title = new(self);
     Mouse = new(self);
+    Panel = new(self);
   }
 
   public readonly MouseModule Mouse;
@@ -14,4 +15,5 @@ internal sealed record Modules {
   public readonly MemoryModule Memory;
   public readonly ChartRendererModule Chart;
   public readonly InteractionModule Interaction;
+  public readonly NodePanelModule Panel;
 }

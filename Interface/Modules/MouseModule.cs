@@ -2,6 +2,7 @@
 using System.Linq;
 using Domain.Extensions;
 using Domain.Structures;
+using Interface.Types;
 using ScottPlot.Control;
 
 namespace Interface.Modules;
@@ -15,8 +16,14 @@ internal sealed record MouseModule(MainWindow Self) {
   public void UpdateSelected() {
     if (NotCloseEnough) return;
 
-    if (Selection.Contains(Closest)) Selection.Remove(Closest);
-    else Selected = Selected == Closest ? null : Closest;
+    if (Selection.Contains(Closest)) {
+      if (Selection.First() == Closest) Selection.Remove(Closest);
+      else Selection.Swap(Selection[0], Closest);
+    }
+    else {
+      Selection.Clear();
+      Selection.Add(Closest);
+    }
   }
 
   public void UpdateSelection() {
@@ -27,8 +34,8 @@ internal sealed record MouseModule(MainWindow Self) {
   }
 
   public Node? Closest { get; private set; }
-  public Node? Selected { get; private set; }
-  public readonly HashSet<Node> Selection = new();
+  public Node? Selected => Selection.FirstOrDefault();
+  public readonly ObservableList<Node> Selection = new();
 
   private InteractionModule I => Self.Mod.Interaction;
   private Interaction CI => Self.Chart.Interaction;

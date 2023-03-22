@@ -8,14 +8,10 @@ namespace Interface.Modules;
 internal sealed record TitleModule {
   public TitleModule(MainWindow self) {
     Self = self;
-    Updates = new List<Func<string>> {
-      () => {
-        var (mx, my) = Self.Chart.Interaction.GetMouseCoordinates();
-        return $"Pozycja Myszy - {(int)mx}x, {(int)my}y";
-      },
+    _updates = new List<Func<string>> {
       () => M.Selected switch {
         var (index, x, y) => $"Wierzchołek - {index + 1} - {x}x, {y}y",
-        null              => "",
+        null => "",
       },
       () => {
         if (M.Selected is null) return "";
@@ -29,11 +25,11 @@ internal sealed record TitleModule {
     };
   }
 
-  public void Update() => Self.Title = string.Join(" : ", Updates.Select(a => a()).Where(s => s != ""));
+  public void Update() => Self.Title = string.Join(" : ", _updates.Select(a => a()).Where(s => s != ""));
 
-  public void Subscribe(Func<string> update) => Updates.Add(update);
+  public void Subscribe(Func<string> update) => _updates.Add(update);
 
-  private readonly List<Func<string>> Updates;
+  private readonly List<Func<string>> _updates;
 
   private readonly MainWindow Self;
   private MouseModule M => Self.Mod.Mouse;
