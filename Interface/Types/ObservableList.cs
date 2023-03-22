@@ -43,6 +43,9 @@ public sealed class ObservableList<T> : IList<T> {
   }
   public T this[int index] {
     get => _list[index];
-    set => _list[index] = value;
+    set {
+      _list[index] = value;
+      Changed?.Invoke(this, EventArgs.Empty);
+    }
   }
 }
