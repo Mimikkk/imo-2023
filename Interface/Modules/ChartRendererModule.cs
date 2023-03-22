@@ -5,6 +5,7 @@ using Algorithms.Structures;
 using Domain.Extensions;
 using Domain.Structures;
 using ScottPlot;
+using SkiaSharp;
 using static Domain.Extensions.EnumerableExtensions;
 
 namespace Interface.Modules;
@@ -24,11 +25,11 @@ internal sealed record ChartRendererModule {
       () => Mouse.Closest.Let(Add.Point),
       () => {
         if (Mouse.Selected is null) return;
-        Add.Point(Mouse.Selected);
+        Add.Point(Mouse.Selected, SKColors.Coral);
 
         var color = Self.Chart.Plot.Plottables.Count;
-
         var plotted = new List<Node>();
+
         foreach (var history in M.Histories.Where(history => history.Count > I.Step)) {
           var nodes = history[I.Step].Except(Yield(Mouse.Selected)).ToList();
 
@@ -36,7 +37,10 @@ internal sealed record ChartRendererModule {
           Add.DistanceTo(Mouse.Selected, nodes, M.Palette.GetColor(++color).ToSKColor());
         }
 
-        Add.DistanceTo(Mouse.Selected, I.Instance.Nodes.Except(plotted).Except(Yield(Mouse.Selected)));
+        Add.DistanceTo(Mouse.Selected,
+          I.Instance.Nodes.Except(plotted)
+            .Except(Mouse.Selection)
+            .Except(Yield(Mouse.Selected)));
       },
       () => Mouse.Selection.ForEach(Add.Point),
       () => M.Average.Let(average => Add.Label($"Przeciętna długość: {average:F2}")),

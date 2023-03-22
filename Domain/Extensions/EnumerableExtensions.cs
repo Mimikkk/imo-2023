@@ -52,7 +52,15 @@ public static class EnumerableExtensions {
     foreach (var item in items) action(item);
   }
 
+  public static void ForEach<T, Y>(this IEnumerable<T> items, Action<T, Y?> action) {
+    foreach (var item in items) action(item, default);
+  }
+
   public static void ForEach<T>(this IEnumerable<T> items, Func<T, dynamic> action) {
     foreach (var item in items) action(item);
+  }
+
+  public static void ForEach<T, Y>(this IEnumerable<T> items, Func<T, Y?, dynamic> action) {
+    foreach (var item in items) action(item, default);
   }
 }

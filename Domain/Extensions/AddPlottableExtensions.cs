@@ -50,7 +50,18 @@ public static class AddPlottableExtensions {
       xs: new[] { (double)node.X },
       ys: new[] { (double)node.Y }
     );
-    scatter.MarkerStyle = new MarkerStyle(MarkerShape.OpenCircle, 10f);
+    scatter.MarkerStyle = new(MarkerShape.OpenCircle, 10f);
+    return add;
+  }
+
+  public static AddPlottable Point(this AddPlottable add, Node node, SKColor color) {
+    var scatter = add.Scatter(
+      xs: new[] { (double)node.X },
+      ys: new[] { (double)node.Y }
+    );
+    scatter.MarkerStyle = new(MarkerShape.OpenCircle, 10f) {
+      Fill = { Color = color.Into() },
+    };
     return add;
   }
 
@@ -72,6 +83,7 @@ public static class AddPlottableExtensions {
     });
     return add;
   }
+
   public static AddPlottable DistanceTo(this AddPlottable add, Node from, IEnumerable<Node> to, SKColor? color = null) {
     foreach (var destination in to) add.DistanceTo(from, to: destination, color);
     return add;
@@ -91,10 +103,10 @@ public static class AddPlottableExtensions {
 
     return add;
   }
+
   public static AddPlottable LineTo(this AddPlottable add, Node from, IEnumerable<Node> to) {
     foreach (var destination in to) add.LineTo(from, to: destination);
 
     return add;
   }
-
 }

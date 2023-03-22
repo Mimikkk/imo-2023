@@ -32,5 +32,5 @@ internal sealed record MouseModule(MainWindow Self) {
 
   private InteractionModule I => Self.Mod.Interaction;
   private Interaction CI => Self.Chart.Interaction;
-  private bool NotCloseEnough => Closest is null || CI.GetMouseCoordinates().DistanceTo(Closest) < 125;
+  private bool NotCloseEnough => Closest is null || CI.GetMouseCoordinates().DistanceTo(Closest) >= 125;
 }
