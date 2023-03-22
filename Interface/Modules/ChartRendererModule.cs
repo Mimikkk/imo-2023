@@ -21,24 +21,24 @@ internal sealed record ChartRendererModule {
     Updates = new() {
       () => Add.Scatter(I.Instance.Nodes),
       () => M.Histories.ToList().ForEach(Render),
-      () => Mouse.ClosestNode.Let(Add.Point),
+      () => Mouse.Closest.Let(Add.Point),
       () => {
-        if (Mouse.SelectedNode is null) return;
-        Add.Point(Mouse.SelectedNode);
+        if (Mouse.Selected is null) return;
+        Add.Point(Mouse.Selected);
 
         var color = Self.Chart.Plot.Plottables.Count;
 
         var plotted = new List<Node>();
         foreach (var history in M.Histories.Where(history => history.Count > I.Step)) {
-          var nodes = history[I.Step].Except(Yield(Mouse.SelectedNode)).ToList();
+          var nodes = history[I.Step].Except(Yield(Mouse.Selected)).ToList();
 
           plotted.AddRange(nodes);
-          Add.DistanceTo(Mouse.SelectedNode, nodes, M.Palette.GetColor(++color).ToSKColor());
+          Add.DistanceTo(Mouse.Selected, nodes, M.Palette.GetColor(++color).ToSKColor());
         }
 
-        Add.DistanceTo(Mouse.SelectedNode, I.Instance.Nodes.Except(plotted).Except(Yield(Mouse.SelectedNode)));
+        Add.DistanceTo(Mouse.Selected, I.Instance.Nodes.Except(plotted).Except(Yield(Mouse.Selected)));
       },
-      () => Mouse.SelectedNodes.ForEach(Add.Point),
+      () => Mouse.Selection.ForEach(Add.Point),
       () => M.Average.Let(average => Add.Label($"Przeciętna długość: {average:F2}")),
       () => (I.Parameter.PopulationSize > 1).And(() =>
         Add.Label($"Łączna długość: {

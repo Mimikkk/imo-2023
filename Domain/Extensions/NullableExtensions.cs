@@ -17,10 +17,19 @@ public static class NullableExtensions {
     if (any is not null) action(any);
   }
 
-  public static void And(this bool predicate, Action action) {
+  public static bool And(this bool predicate, Action action) {
     if (predicate) action();
+    return predicate;
   }
 
-  public static void And(this bool? predicate, Action action) =>
+  public static bool And(this bool? predicate, Action action) =>
     (predicate.HasValue && predicate.Value).And(action);
+
+  public static bool Or(this bool predicate, Action action) {
+    if (!predicate) action();
+    return predicate;
+  }
+
+  public static bool Or(this bool? predicate, Action action) =>
+    (predicate.HasValue && !predicate.Value).Or(action);
 }

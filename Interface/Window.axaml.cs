@@ -1,10 +1,14 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using Algorithms.Structures;
 using Avalonia.Controls;
+using Avalonia.Input;
+using Domain.Extensions;
 using Domain.Structures;
 using Interface.Types;
+using ScottPlot.Control;
 using static System.Linq.Enumerable;
 
 namespace Interface;
@@ -137,11 +141,13 @@ public sealed partial class MainWindow : Window {
     Mod.Chart.Notify();
 
     Chart.PointerMoved += (_, _) => {
-      Mod.Mouse.OnMove();
+      Mod.Mouse.UpdateClosest();
       Mod.Chart.Notify();
     };
-    Chart.PointerReleased += (_, _) => {
-      Mod.Mouse.OnClick();
+    Chart.PointerReleased += (_, e) => {
+      (e.KeyModifiers == KeyModifiers.Control)
+        .And(Mod.Mouse.UpdateSelection)
+        .Or(Mod.Mouse.UpdateSelected);
       Mod.Chart.Notify();
     };
   }

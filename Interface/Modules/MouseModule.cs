@@ -7,26 +7,30 @@ using ScottPlot.Control;
 namespace Interface.Modules;
 
 internal sealed record MouseModule(MainWindow Self) {
-  public void OnMove() {
+  public void UpdateClosest() {
     var mouse = CI.GetMouseCoordinates();
-    ClosestNode = I.Instance.Nodes.MinBy(node => node.DistanceTo(mouse))!;
+    Closest = I.Instance.Nodes.MinBy(node => node.DistanceTo(mouse))!;
   }
 
-  public void OnClick() {
-    if (!(CI.GetMouseCoordinates().DistanceTo(ClosestNode!) < 125)) return;
-    SelectedNode = SelectedNode == ClosestNode ? null : ClosestNode;
+  public void UpdateSelected() {
+    if (NotCloseEnough) return;
+
+    if (Selection.Contains(Closest)) Selection.Remove(Closest);
+    else Selected = Selected == Closest ? null : Closest;
   }
 
-  public void OnCtrlClick() {
-    if (ClosestNode is null || !(CI.GetMouseCoordinates().DistanceTo(ClosestNode) < 125)) return;
-    if (SelectedNodes.Contains(ClosestNode)) SelectedNodes.Remove(ClosestNode);
-    else SelectedNodes.Add(ClosestNode);
+  public void UpdateSelection() {
+    if (NotCloseEnough) return;
+
+    if (Selection.Contains(Closest)) Selection.Remove(Closest);
+    else Selection.Add(Closest);
   }
 
-  public Node? ClosestNode { get; private set; }
-  public Node? SelectedNode { get; private set; }
-  public readonly HashSet<Node> SelectedNodes = new();
+  public Node? Closest { get; private set; }
+  public Node? Selected { get; private set; }
+  public readonly HashSet<Node> Selection = new();
 
   private InteractionModule I => Self.Mod.Interaction;
   private Interaction CI => Self.Chart.Interaction;
+  private bool NotCloseEnough => Closest is null || CI.GetMouseCoordinates().DistanceTo(Closest) < 125;
 }

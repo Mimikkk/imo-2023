@@ -13,17 +13,17 @@ internal sealed record TitleModule {
         var (mx, my) = Self.Chart.Interaction.GetMouseCoordinates();
         return $"Pozycja Myszy - {(int)mx}x, {(int)my}y";
       },
-      () => M.SelectedNode switch {
+      () => M.Selected switch {
         var (index, x, y) => $"Wierzchołek - {index + 1} - {x}x, {y}y",
         null              => "",
       },
       () => {
-        if (M.SelectedNode is null) return "";
+        if (M.Selected is null) return "";
         var contained = Self.Mod.Memory.Histories
           .Where(history => history.Count > I.Step)
-          .FirstOrDefault(x => x[I.Step].Contains(M.SelectedNode));
+          .FirstOrDefault(x => x[I.Step].Contains(M.Selected));
         if (contained is null) return "";
-        var index = contained[I.Step].IndexOf(M.SelectedNode);
+        var index = contained[I.Step].IndexOf(M.Selected);
         return $"Indeks - {index}";
       }
     };
