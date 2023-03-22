@@ -39,7 +39,7 @@ internal static class GreedyRandomAdaptiveSearchExtensions {
     // moves.TradeInternalVertices(cycle, cycle[49], cycle[48]);
     // moves.TradeInternalVertices(cycle, cycle[48], cycle[49]);
 
-    moves.TradeInternalEdges(cycle, (cycle[39], cycle[40]), (cycle[48], cycle[49]));
+    moves.TradeInternalEdges(cycle, cycle[40], cycle[44 + 1]);
 
     return Yield(cycle);
   }
@@ -76,9 +76,9 @@ internal static class GreedyRandomAdaptiveSearchExtensions {
 
     public void TradeInternalVertices(IList<Node> cycle, Node a, Node b) => cycle.Swap(a, b);
 
-    public void TradeInternalEdges(IList<Node> cycle, (Node a, Node b) a, (Node a, Node b) b) {
-      var ia = cycle.IndexOf(a.a);
-      var ib = cycle.IndexOf(b.a);
+    public void TradeInternalEdges(IList<Node> cycle, Node a, Node b) {
+      var ia = cycle.IndexOf(a);
+      var ib = cycle.IndexOf(b);
       (ia, ib) = ia > ib ? (ib, ia) : (ia, ib);
       cycle.Swap(ia, ib);
 
