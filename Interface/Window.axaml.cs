@@ -110,11 +110,15 @@ public sealed partial class MainWindow : Window {
     };
 
     ParameterStartIndex.ValueChanged += (_, _) => {
-      ParameterPopulationSize.Maximum = Mod.Interaction.Parameter.StartIndex > Mod.Interaction.Hull.Count() ? 2 : Mod.Interaction.Hull.Count() - 1;
+      ParameterPopulationSize.Maximum = Mod.Interaction.Parameter.StartIndex > Mod.Interaction.Hull.Count()
+        ? 2
+        : Mod.Interaction.Hull.Count() - 1;
       ParameterPopulationSize.Value = Math.Min(ParameterPopulationSize.Maximum, ParameterPopulationSize.Value);
     };
     ParameterPopulationSize.ValueChanged += (_, _) => {
-      ParameterStartIndex.Maximum = Mod.Interaction.Parameter.PopulationSize > 2 ? Mod.Interaction.Hull.Count() - 1 : Mod.Interaction.Instance.Dimension;
+      ParameterStartIndex.Maximum = Mod.Interaction.Parameter.PopulationSize > 2
+        ? Mod.Interaction.Hull.Count() - 1
+        : Mod.Interaction.Instance.Dimension;
       ParameterStartIndex.Value = Math.Min(ParameterStartIndex.Maximum, ParameterStartIndex.Value);
     };
 
@@ -145,7 +149,8 @@ public sealed partial class MainWindow : Window {
   private void HandleRunCommand() {
     Mod.Memory.Histories.Clear();
 
-    var histories = Range(0, Mod.Interaction.Parameter.PopulationSize).Select(_ => new List<List<Node>> { new() }).ToList();
+    var histories = Range(0, Mod.Interaction.Parameter.PopulationSize).Select(_ => new List<List<Node>> { new() })
+      .ToList();
     Mod.Interaction.Algorithm.Search(Mod.Interaction.Instance, Mod.Interaction.Parameter.Configuration with {
       Population = histories.Select(history =>
         new ObservableList<Node>(items => history.Add(items.ToList()))
@@ -156,6 +161,6 @@ public sealed partial class MainWindow : Window {
     HistorySlider.Maximum = histories.MaxBy(x => x.Count)!.Count - 1;
     HistorySlider.Value = HistorySlider.Maximum;
   }
-  
+
   internal readonly Modules.Modules Mod;
 }

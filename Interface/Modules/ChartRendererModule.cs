@@ -21,10 +21,7 @@ internal sealed record ChartRendererModule {
     Updates = new() {
       () => Add.Scatter(I.Instance.Nodes),
       () => M.Histories.ToList().ForEach(Render),
-      () => {
-        if (Mouse.ClosestNode is null) return;
-        Add.Point(Mouse.ClosestNode);
-      },
+      () => Mouse.ClosestNode.Let(Add.Point),
       () => {
         if (Mouse.SelectedNode is null) return;
         Add.Point(Mouse.SelectedNode);
@@ -40,18 +37,14 @@ internal sealed record ChartRendererModule {
         }
 
         Add.DistanceTo(Mouse.SelectedNode, I.Instance.Nodes.Except(plotted).Except(Yield(Mouse.SelectedNode)));
-
       },
-      () => {
-        if (M.Average is null) return;
-        Add.Label($"Przeciętna długość: {M.Average:F2}");
-      },
-      () => {
-        if (I.Parameter.PopulationSize < 2) return;
-        Add.Label($"Łączna długość: {M.Histories.Sum(history =>
-          I.Instance.DistanceOf(history.ElementAtOrDefault(I.Step) ?? history[^1]))
-        }");
-      }
+      () => Mouse.SelectedNodes.ForEach(Add.Point),
+      () => M.Average.Let(average => Add.Label($"Przeciętna długość: {average:F2}")),
+      () => (I.Parameter.PopulationSize > 1).And(() =>
+        Add.Label($"Łączna długość: {
+          M.Histories.Sum(history =>
+            I.Instance.DistanceOf(history.ElementAtOrDefault(I.Step) ?? history[^1]))
+        }"))
     };
   }
 

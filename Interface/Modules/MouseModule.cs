@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using Domain.Extensions;
 using Domain.Structures;
 using ScottPlot.Control;
@@ -16,8 +17,15 @@ internal sealed record MouseModule(MainWindow Self) {
     SelectedNode = SelectedNode == ClosestNode ? null : ClosestNode;
   }
 
+  public void OnCtrlClick() {
+    if (ClosestNode is null || !(CI.GetMouseCoordinates().DistanceTo(ClosestNode) < 125)) return;
+    if (SelectedNodes.Contains(ClosestNode)) SelectedNodes.Remove(ClosestNode);
+    else SelectedNodes.Add(ClosestNode);
+  }
+
   public Node? ClosestNode { get; private set; }
   public Node? SelectedNode { get; private set; }
+  public readonly HashSet<Node> SelectedNodes = new();
 
   private InteractionModule I => Self.Mod.Interaction;
   private Interaction CI => Self.Chart.Interaction;

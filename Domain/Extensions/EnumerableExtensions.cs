@@ -6,7 +6,6 @@ public static class EnumerableExtensions {
   public static IEnumerable<T> Yield<T>(params T[] items) => items;
   public static IEnumerable<T> Flatten<T>(this IEnumerable<IEnumerable<T>> items) => items.SelectMany(x => x);
   public static void Invoke(Action action) => action();
-  public static void A(Action action) => action();
 
   public static IEnumerable<(T a, T b)> Pairwise<T>(this IEnumerable<T> source) => Window(source, 2)
     .Select(
@@ -47,5 +46,13 @@ public static class EnumerableExtensions {
       foreach (var result in Combinations(enumerable.Skip(i), count - 1))
         yield return Yield(element).Concat(result);
     }
+  }
+
+  public static void ForEach<T>(this IEnumerable<T> items, Action<T> action) {
+    foreach (var item in items) action(item);
+  }
+
+  public static void ForEach<T>(this IEnumerable<T> items, Func<T, dynamic> action) {
+    foreach (var item in items) action(item);
   }
 }
