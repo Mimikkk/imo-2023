@@ -62,8 +62,10 @@ internal sealed record CyclePanelModule {
           ), false)
           .AddWhen(new(
             "Usuń",
-            () => { }
-          ), false)
+            () => {
+              if (selected!.Count < 4) Cycles.Remove(selected);
+              else selected.Remove(selection.First());
+            }), selected is not null && selection.Count == 1)
           .AddWhen(new(
             "Rozwiąż",
             () => Cycles.Remove(selected!)
