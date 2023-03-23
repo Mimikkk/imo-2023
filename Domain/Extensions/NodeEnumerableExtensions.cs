@@ -29,8 +29,15 @@ public static class NodeEnumerableExtensions {
   public static (Node a, Node b, Node c) Neighbourhood(this IEnumerable<Node> cycle, Node at) {
     var nodes = cycle.ToList();
     var index = nodes.IndexOf(at);
-    
-    return (nodes[(index - 1) % nodes.Count], at, nodes[(index + 1) % nodes.Count]);
+
+    return (nodes[(index + nodes.Count - 1) % nodes.Count], at, nodes[(index + nodes.Count + 1) % nodes.Count]);
+  }
+
+  public static bool NextTo(this IEnumerable<Node> cycle, Node a, Node b) {
+    var enumerable = cycle as Node[] ?? cycle.ToArray();
+    if (!enumerable.Contains(a) && enumerable.Contains(b)) return false;
+    var (previous, _, next) = enumerable.Neighbourhood(a);
+    return Yield(previous, next).Contains(b);
   }
 
   private enum GeometricRelation : byte {

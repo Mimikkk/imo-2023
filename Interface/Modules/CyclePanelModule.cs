@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using Domain.Extensions;
 using Domain.Structures;
@@ -11,9 +10,9 @@ using static Domain.Extensions.EnumerableExtensions;
 namespace Interface.Modules;
 
 internal sealed record CyclePanelModule {
-  private static void Insert(IList<Node> cycle, Node node, (Node a, Node b) edge) {
-    var index = cycle.IndexOf(edge.a) > cycle.IndexOf(edge.b) ? cycle.IndexOf(edge.a) : cycle.IndexOf(edge.b);
-    cycle.Insert(index, node);
+  private static class Moves {
+    public static void Insert(IList<Node> cycle, Node node, (Node a, Node b) edge) =>
+      cycle.Insert(new[] { edge.a, edge.b }.Select(cycle.IndexOf).Max() % (cycle.Count - 1), node);
   }
 
   public CyclePanelModule(MainWindow window) {
@@ -57,9 +56,16 @@ internal sealed record CyclePanelModule {
             () => Cycles.Add(selection.ToList())
           ), selection.Count > 2 && !partiallySelected.Any())
           .AddWhen(new(
-            "Dodaj",
-            () => { }
-          ), false)
+              "Dodaj Wierzchołek",
+              () => {
+                var (a, edge) = (selection[0], (selection[1], selection[2]));
+                Moves.Insert(partiallySelected.First(), a, edge);
+              }
+            ),
+            selection.Count == 3
+            && !partiallySelected.Any(c => c.Contains(selection.First()))
+            && partiallySelected.Count == 1
+            && partiallySelected.First().NextTo(selection[1], selection[2]))
           .AddWhen(new(
             "Usuń wierzchołek",
             () => {
