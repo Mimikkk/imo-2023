@@ -39,8 +39,10 @@ internal static class GreedyNearestNeighbourExtensions {
     second ??= new List<Node>();
     second.Add(instance.Move.FurthestTo(first.First()));
 
-    while (first.Count < instance.Dimension / 2) {
+    while (true) {
+      if (first.Count + second.Count == instance.Dimension) break;
       instance.Move.AppendClosestToHeadOrTail(first, first.Concat(second));
+      if (first.Count + second.Count == instance.Dimension) break;
       instance.Move.AppendClosestToHeadOrTail(second, first.Concat(second));
     }
 

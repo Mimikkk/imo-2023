@@ -50,8 +50,10 @@ internal static class GreedyRegretCycleExpansionExtensions {
     second.Add(instance.Move.FurthestTo(first.First()));
     second.Add(instance.Move.ClosestTo(second.First()));
 
-    while (first.Count < instance.Dimension / 2) {
+    while (true) {
+      if (first.Count + second.Count == instance.Dimension) break;
       Moves.AppendFit(first, instance.Move.FindBestFitByRegretInsertGain(first, second, regret));
+      if (first.Count + second.Count == instance.Dimension) break;
       Moves.AppendFit(second, instance.Move.FindBestFitByRegretInsertGain(second, first, regret));
     }
 

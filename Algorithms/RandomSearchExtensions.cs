@@ -4,7 +4,7 @@ using Domain.Structures;
 
 namespace Algorithms;
 
-internal static class GreedyCycleExpansionExtensions {
+internal static class RandomSearchExtensions {
   public static IEnumerable<IEnumerable<Node>>
     Search(this Instance instance, SearchConfiguration configuration) {
     var population = configuration.Population.ToArray();
@@ -18,7 +18,7 @@ internal static class GreedyCycleExpansionExtensions {
       0 => Enumerable.Empty<IEnumerable<Node>>(),
       1 => SearchSingle(instance, population.First(), start),
       2 => SearchDouble(instance, population.First(), population.Last(), start),
-      _ => instance.SearchMultiple(population)
+      _ => SearchMultiple(instance, population)
     };
   }
 
@@ -26,10 +26,8 @@ internal static class GreedyCycleExpansionExtensions {
     SearchSingle(Instance instance, IList<Node>? cycle, int? start) {
     cycle ??= new List<Node>();
     cycle.Add(start is null ? Node.Choose(instance.Nodes) : instance.Nodes[start.Value]);
-    cycle.Add(instance.Move.ClosestTo(cycle.First()));
 
-    while (cycle.Count < instance.Dimension)
-      Moves.AppendFit(cycle, instance.Move.FindBestFitByLowestGain(cycle, cycle));
+    while (cycle.Count < instance.Dimension) cycle.Add(Node.Choose(instance.Nodes.Except(cycle)));
 
     return Yield(cycle);
   }
@@ -38,35 +36,31 @@ internal static class GreedyCycleExpansionExtensions {
     SearchDouble(Instance instance, IList<Node>? first, IList<Node>? second, int? start) {
     first ??= new List<Node>();
     first.Add(start is null ? Node.Choose(instance.Nodes) : instance.Nodes[start.Value]);
-    first.Add(instance.Move.ClosestTo(first.First()));
 
     second ??= new List<Node>();
     second.Add(instance.Move.FurthestTo(first.First()));
-    second.Add(instance.Move.ClosestTo(second.First()));
 
     while (true) {
+      first.Add(Node.Choose(instance.Nodes.Except(first).Except(second)));
       if (first.Count + second.Count == instance.Dimension) break;
-      Moves.AppendFit(first, instance.Move.FindBestFitByLowestGain(first, second));
+      second.Add(Node.Choose(instance.Nodes.Except(first).Except(second)));
       if (first.Count + second.Count == instance.Dimension) break;
-      Moves.AppendFit(second, instance.Move.FindBestFitByLowestGain(second, first));
     }
 
     return Yield(first, second);
   }
 
   private static IEnumerable<IEnumerable<Node>>
-    SearchMultiple(this Instance instance, IEnumerable<IList<Node>> paths) {
-    paths = paths.ToArray();
+    SearchMultiple(this Instance instance, IEnumerable<IList<Node>> cycles) {
+    cycles = cycles.ToArray();
 
-    var points = instance.Move.FindFurthest(paths.Count());
-    foreach (var (path, point) in paths.Zip(points)) path.Add(point);
-    foreach (var path in paths) instance.Move.ClosestTo(path.First(), paths.Flatten());
+    foreach (var (path, point) in cycles.Zip(instance.Move.FindFurthest(cycles.Count()))) path.Add(point);
+    var count = cycles.Flatten().Count();
 
-    var count = paths.Flatten().Count();
     while (true) {
-      foreach (var path in paths) {
-        Moves.AppendFit(path, instance.Move.FindBestFitByLowestGain(path, paths.Flatten().Except(path)));
-        if (++count == instance.Dimension) return paths;
+      foreach (var cycle in cycles) {
+        cycle.Add(Node.Choose(instance.Nodes.Except(cycles.Flatten())));
+        if (++count == instance.Dimension) return cycles;
       }
     }
   }

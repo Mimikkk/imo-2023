@@ -10,30 +10,42 @@ public sealed class Algorithm : SmartEnum<Algorithm> {
     false,
     false
   );
+
   public static readonly Algorithm CycleExpansion = new(
     DisplayType.Cycle,
     GreedyCycleExpansionExtensions.Search,
     false,
     false
   );
+
   public static readonly Algorithm CycleExpansionWithKRegret = new(
     DisplayType.Cycle,
     GreedyRegretCycleExpansionExtensions.Search,
     true,
     false
   );
+
   public static readonly Algorithm CycleExpansionWithKRegretAndWeight = new(
     DisplayType.Cycle,
     GreedyWeightedRegretCycleExpansionExtensions.Search,
     true,
     true
   );
+
+  public static readonly Algorithm Random = new(
+    DisplayType.Cycle,
+    RandomSearchExtensions.Search,
+    false,
+    false
+  );
+
   public static readonly Algorithm RandomAdaptive = new(
     DisplayType.Cycle,
     GreedyRandomAdaptiveSearchExtensions.Search,
     false,
     false
   );
+
   public Algorithm(
     DisplayType displayAs,
     Func<Instance, SearchConfiguration, IEnumerable<IEnumerable<Node>>> search,
@@ -47,7 +59,11 @@ public sealed class Algorithm : SmartEnum<Algorithm> {
     UsesWeight = usesWeight;
   }
 
-  public enum DisplayType { Cycle, Path }
+  public enum DisplayType {
+    Cycle,
+    Path
+  }
+
   public readonly bool UsesRegret;
   public readonly bool UsesWeight;
   public readonly DisplayType DisplayAs;

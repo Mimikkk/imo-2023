@@ -131,6 +131,7 @@ public sealed partial class MainWindow : Window {
       new("Rozszerzanie cyklu", Algorithm.CycleExpansion),
       new("Rozszerzanie cyklu z k-żalem", Algorithm.CycleExpansionWithKRegret),
       new("Rozszerzanie cyklu z ważonym k-żalem", Algorithm.CycleExpansionWithKRegretAndWeight),
+      new("Przypadkowe próbkowanie", Algorithm.Random),
       new("GRASP", Algorithm.RandomAdaptive)
     };
     Algorithms.SelectedIndex = 0;
