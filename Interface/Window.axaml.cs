@@ -171,18 +171,4 @@ public sealed partial class MainWindow : Window {
   }
 
   internal readonly Modules.Modules Mod;
-
-  public List<Player> Players { get; set; } = new() {
-    new("Maurizio"),
-    new("Giacomo"),
-    new("Mario"),
-  };
-
-  public class Player {
-    public string Name { get; set; }
-
-    public Player(string name) {
-      Name = name;
-    }
-  }
 }
