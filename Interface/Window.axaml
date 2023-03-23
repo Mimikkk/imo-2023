@@ -69,6 +69,15 @@
                         </Button>
                         <NumericUpDown Minimum="1" Name="ParameterRegret" />
                     </Panel>
+                    <Panel Name="ParameterTimeLimitBox">
+                        <TextBlock Margin="8 -8 0 0" ZIndex="1" FontSize="12">Liczba iteracji</TextBlock>
+                        <Button Name="ClearParameterTimeLimitButton"
+                                Padding="0 0 0 0" Margin="100 0 0 0" ZIndex="1" Height="18" Width="18"
+                                HorizontalContentAlignment="Center" FontSize="12">
+                            X
+                        </Button>
+                        <NumericUpDown Minimum="1" Name="ParameterTimeLimit" />
+                    </Panel>
                     <Panel Name="ParameterWeightBox">
                         <TextBlock Margin="8 -8 0 0" ZIndex="1" FontSize="12">Waga kosztu wsadzenia</TextBlock>
                         <Button Name="ClearParameterWeightButton"

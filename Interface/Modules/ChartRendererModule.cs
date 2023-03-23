@@ -32,7 +32,7 @@ internal sealed record ChartRendererModule {
         var plotted = new List<Node>();
 
         foreach (var history in M.Histories.Where(history => history.Count > I.Step)) {
-          var nodes = history[I.Step].Except(Yield(Mouse.Selection.First())).ToList();
+          var nodes = history[I.Step].Except(Mouse.Selection.First()).ToList();
 
           plotted.AddRange(nodes);
           Add.DistanceTo(Mouse.Selection.First(), nodes, M.Palette.GetColor(++color).ToSKColor());
@@ -40,8 +40,7 @@ internal sealed record ChartRendererModule {
 
         Add.DistanceTo(Mouse.Selection.First(),
           I.Instance.Nodes.Except(plotted)
-            .Except(Mouse.Selection)
-            .Except(Yield(Mouse.Selection.First())));
+            .Except(Mouse.Selection));
       },
       () => Mouse.Selection.ForEach(Add.Point),
       () => M.Average.Let(average => Add.Label($"Przeciętna długość: {average:F2}")),

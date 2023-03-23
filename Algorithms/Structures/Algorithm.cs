@@ -3,10 +3,13 @@ using Domain.Structures;
 
 namespace Algorithms.Structures;
 
+using SearchFn = Func<Instance, SearchConfiguration, IEnumerable<IEnumerable<Node>>>;
+
 public sealed class Algorithm : SmartEnum<Algorithm> {
   public static readonly Algorithm NearestNeighbour = new(
     DisplayType.Path,
     GreedyNearestNeighbourExtensions.Search,
+    false,
     false,
     false
   );
@@ -15,6 +18,7 @@ public sealed class Algorithm : SmartEnum<Algorithm> {
     DisplayType.Cycle,
     GreedyCycleExpansionExtensions.Search,
     false,
+    false,
     false
   );
 
@@ -22,6 +26,7 @@ public sealed class Algorithm : SmartEnum<Algorithm> {
     DisplayType.Cycle,
     GreedyRegretCycleExpansionExtensions.Search,
     true,
+    false,
     false
   );
 
@@ -29,12 +34,14 @@ public sealed class Algorithm : SmartEnum<Algorithm> {
     DisplayType.Cycle,
     GreedyWeightedRegretCycleExpansionExtensions.Search,
     true,
-    true
+    true,
+    false
   );
 
   public static readonly Algorithm Random = new(
     DisplayType.Cycle,
     RandomSearchExtensions.Search,
+    false,
     false,
     false
   );
@@ -43,20 +50,21 @@ public sealed class Algorithm : SmartEnum<Algorithm> {
     DisplayType.Cycle,
     GreedyRandomAdaptiveSearchExtensions.Search,
     false,
-    false
+    false,
+    true
   );
 
-  public Algorithm(
+  private Algorithm(
     DisplayType displayAs,
-    Func<Instance, SearchConfiguration, IEnumerable<IEnumerable<Node>>> search,
+    SearchFn search,
     bool usesRegret,
-    bool usesWeight
-  )
+    bool usesWeight, bool usesTimeLimit)
     : base(_nextValue.ToString(), ++_nextValue) {
     DisplayAs = displayAs;
     Search = search;
     UsesRegret = usesRegret;
     UsesWeight = usesWeight;
+    UsesTimeLimit = usesTimeLimit;
   }
 
   public enum DisplayType {
@@ -66,10 +74,11 @@ public sealed class Algorithm : SmartEnum<Algorithm> {
 
   public readonly bool UsesRegret;
   public readonly bool UsesWeight;
+  public readonly bool UsesTimeLimit;
   public readonly DisplayType DisplayAs;
   private static int _nextValue;
 
-  public readonly Func<Instance, SearchConfiguration, IEnumerable<IEnumerable<Node>>> Search;
+  public readonly SearchFn Search;
 
   public static implicit operator string(Algorithm algorithm) => algorithm.Name;
 }

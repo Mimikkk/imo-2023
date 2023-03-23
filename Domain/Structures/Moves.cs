@@ -138,6 +138,35 @@ public sealed record Moves(Instance Instance) {
       .MinBy(match => match.gain);
   }
 
+  public void PerformRandomMove(IEnumerable<IList<Node>> cycles) {
+    var enumerated = cycles.ToList();
+
+    var action = Random.Shared.Next(0, enumerated.Count > 1 ? 4 : 3);
+    var first = Random.Shared.Choose(enumerated);
+
+    switch (action) {
+      case 1: {
+        var a = Random.Shared.Choose(first);
+        var b = Random.Shared.Choose(first.Except(a));
+        ExchangeVertex(first, a, b);
+        break;
+      }
+      case 2: {
+        var second = Random.Shared.Choose(enumerated.Except(first));
+        var a = Random.Shared.Choose(first);
+        var b = Random.Shared.Choose(second);
+        ExchangeVertex(first, second, a, b);
+        break;
+      }
+      case 3: {
+        var a = Random.Shared.Choose(first);
+        var b = Random.Shared.Choose(first.Except(a));
+        ExchangeEdge(first, a, b);
+        break;
+      }
+    }
+  }
+
   private static int CalculateRegret(IEnumerable<int> gains, int k) {
     var enumerable = gains as int[] ?? gains.ToArray();
 

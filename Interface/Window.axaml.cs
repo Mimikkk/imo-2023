@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using Algorithms.Structures;
 using Avalonia.Controls;
@@ -8,7 +7,6 @@ using Avalonia.Input;
 using Domain.Extensions;
 using Domain.Structures;
 using Interface.Types;
-using ScottPlot.Control;
 using static System.Linq.Enumerable;
 
 namespace Interface;
@@ -108,6 +106,7 @@ public sealed partial class MainWindow : Window {
     Algorithms.SelectionChanged += (_, _) => {
       ParameterRegretBox.IsVisible = Mod.Interaction.Algorithm.UsesRegret;
       ParameterWeightBox.IsVisible = Mod.Interaction.Algorithm.UsesWeight;
+      ParameterTimeLimitBox.IsVisible = Mod.Interaction.Algorithm.UsesTimeLimit;
       ParameterRegret.Value = 2;
       Mod.Memory.ClearAverage();
       Mod.Chart.Notify();

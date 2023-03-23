@@ -23,17 +23,19 @@ internal sealed record InteractionModule(MainWindow Self) {
   public Algorithm Algorithm => Algorithm.FromName(Self.Algorithms.SelectedItem.As<Option<string>>().Value);
   public int Step => (int)Self.HistorySlider.Value;
 
-  internal record Parameters(MainWindow Self) {
+  internal sealed record Parameters(MainWindow Self) {
     public int Regret => (int)Self.ParameterRegret.Value;
     public int? StartIndex => Self.ParameterStartIndex.Value is 0 ? null : (int)Self.ParameterStartIndex.Value;
     public int PopulationSize => (int)Self.ParameterPopulationSize.Value;
     public float Weight => (float)Self.ParameterWeight.Value;
+    public float TimeLimit => (float)Self.ParameterTimeLimit.Value;
 
     public SearchConfiguration Configuration => new() {
       Population = Range(0, PopulationSize).Select(_ => new List<Node>()),
       Regret = Regret,
       Start = StartIndex,
-      Weight = Weight
+      Weight = Weight,
+      TimeLimit = TimeLimit
     };
   }
 

@@ -7,6 +7,9 @@ public static class EnumerableExtensions {
   public static IEnumerable<T> Flatten<T>(this IEnumerable<IEnumerable<T>> items) => items.SelectMany(x => x);
   public static void Invoke(Action action) => action();
 
+  public static IEnumerable<T>
+    Except<T>(this IEnumerable<T> enumerable, params T[] items) => enumerable.Except(items.AsEnumerable());
+
   public static IEnumerable<(T a, T b)> Pairwise<T>(this IEnumerable<T> source) => Window(source, 2)
     .Select(
       enumerable => {

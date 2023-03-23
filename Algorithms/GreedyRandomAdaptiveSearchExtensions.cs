@@ -11,35 +11,37 @@ internal static class GreedyRandomAdaptiveSearchExtensions {
   public static IEnumerable<IEnumerable<Node>>
     Search(this Instance instance, SearchConfiguration configuration) {
     var population = configuration.Population.ToArray();
-    var start = configuration.Start;
+    var timeLimit = configuration.TimeLimit;
 
     var hullSize = instance.Nodes.Hull().Count();
     if (population.Length > hullSize) throw new ArgumentOutOfRangeException(nameof(configuration));
+    if (population.Flatten().Count() != instance.Dimension) {
+      RandomSearchExtensions.Search(instance, configuration);
+    }
 
     return population.Length switch {
       < 0 => throw new ArgumentOutOfRangeException(nameof(configuration)),
-      > 1 => throw new ArgumentOutOfRangeException(nameof(configuration)),
-      0   => Enumerable.Empty<IEnumerable<Node>>(),
-      1   => SearchSingle(instance, population.First(), start),
+      0 => Enumerable.Empty<IEnumerable<Node>>(),
+      _ => SearchMultiple(instance, population, timeLimit),
     };
   }
 
   private static IEnumerable<IEnumerable<Node>>
-    SearchSingle(Instance instance, IList<Node>? cycle, int? start) {
-    cycle ??= new List<Node>();
+    SearchMultiple(Instance instance, IEnumerable<IList<Node>> population, float timeLimit) {
+    var bestSolutions = population.Select(solution => solution.ToList()).ToList();
+    var bestDistance = bestSolutions.Sum(solution => instance[solution]);
 
-    GreedyNearestNeighbourExtensions.Search(instance, new() {
-      Population = Yield(cycle),
-      Start = start,
-    });
+    var timer = Stopwatch.StartNew();
+    while (timer.ElapsedMilliseconds < 1000 * timeLimit) {
+      var solutions = bestSolutions.Select(solution => solution.ToList()).ToList();
+      instance.Move.PerformRandomMove(solutions);
 
-    var gains = new Gains(instance);
+      var distance = solutions.Sum(solution => instance[solution]);
+      if (distance >= bestDistance) continue;
+      bestDistance = distance;
+      bestSolutions = solutions;
+    }
 
-    // moves.TradeInternalVertices(cycle, cycle[49], cycle[48]);
-    // moves.TradeInternalVertices(cycle, cycle[48], cycle[49]);
-
-    // moves.TradeInternalEdges(cycle, cycle[40], cycle[44 + 1]);
-
-    return Yield(cycle);
+    return bestSolutions;
   }
 }
