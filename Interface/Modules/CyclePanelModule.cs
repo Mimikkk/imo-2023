@@ -61,7 +61,7 @@ internal sealed record CyclePanelModule {
             () => { }
           ), false)
           .AddWhen(new(
-            "Usuń",
+            "Usuń wierzchołek",
             () => {
               if (selected!.Count < 4) Cycles.Remove(selected);
               else selected.Remove(selection.First());
