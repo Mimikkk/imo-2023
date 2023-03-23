@@ -17,6 +17,7 @@ internal sealed record InteractionModule(MainWindow Self) {
       return _instance;
     }
   }
+
   public IEnumerable<Node> Hull => _hull ??= Instance.Nodes.Hull();
 
   public Algorithm Algorithm => Algorithm.FromName(Self.Algorithms.SelectedItem.As<Option<string>>().Value);
@@ -35,6 +36,7 @@ internal sealed record InteractionModule(MainWindow Self) {
       Weight = Weight
     };
   }
+
   public readonly Parameters Parameter = new(Self);
 
   private Instance? _instance;

@@ -9,17 +9,17 @@ internal sealed record TitleModule {
   public TitleModule(MainWindow self) {
     Self = self;
     _updates = new List<Func<string>> {
-      () => M.Selected switch {
+      () => M.Selection.FirstOrDefault() switch {
         var (index, x, y) => $"Wierzchołek - {index} - {x}x, {y}y",
         null => "",
       },
       () => {
-        if (M.Selected is null) return "";
+        if (M.Selection.Count < 1) return "";
         var contained = Self.Mod.Memory.Histories
           .Where(history => history.Count > I.Step)
-          .FirstOrDefault(x => x[I.Step].Contains(M.Selected));
+          .FirstOrDefault(x => x[I.Step].Contains(M.Selection.First()));
         if (contained is null) return "";
-        var index = contained[I.Step].IndexOf(M.Selected);
+        var index = contained[I.Step].IndexOf(M.Selection.First());
         return $"Indeks - {index}";
       }
     };

@@ -34,7 +34,6 @@ internal sealed record MouseModule(MainWindow Self) {
   }
 
   public Node? Closest { get; private set; }
-  public Node? Selected => Selection.FirstOrDefault();
   public readonly ObservableList<Node> Selection = new();
 
   private InteractionModule I => Self.Mod.Interaction;

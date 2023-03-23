@@ -21,7 +21,7 @@ internal sealed record CyclePanelModule {
     Self.NodeOperationButton.Click += (_, _) => {
       Operation();
 
-      var first = Mouse.Selected;
+      var first = Mouse.Selection.FirstOrDefault();
       Mouse.Selection.Clear();
       first.Let(Mouse.Selection.Add);
 
@@ -53,13 +53,15 @@ internal sealed record CyclePanelModule {
             () => Cycle = Mouse.Selection.ToList()
           ), count > 2 && Cycle.Count == 0)
           .AddWhen(new(
-            "Dodaj",
-            () => Insert(Cycle, Mouse.Selection[0], (Mouse.Selection[1], Mouse.Selection[2]))
-          ), count == 3 && !Cycle.Contains(Mouse.Selected!) && Cycle.Contains(Mouse.Selection[1], Mouse.Selection[2]))
+              "Dodaj",
+              () => Insert(Cycle, Mouse.Selection[0], (Mouse.Selection[1], Mouse.Selection[2]))
+            ),
+            count == 3 && !Cycle.Contains(Mouse.Selection.First()) &&
+            Cycle.Contains(Mouse.Selection[1], Mouse.Selection[2]))
           .AddWhen(new(
             "Usuń",
-            () => Cycle.Remove(Mouse.Selected!)
-          ), count == 1 && Cycle.Count > 2 && Mouse.Selected is not null && Cycle.Contains(Mouse.Selected))
+            () => Cycle.Remove(Mouse.Selection.First())
+          ), count == 1 && Cycle.Count > 2 && Cycle.Contains(Mouse.Selection.First()))
           .AddWhen(new(
             "Rozwiąż",
             Cycle.Clear

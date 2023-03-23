@@ -25,23 +25,23 @@ internal sealed record ChartRendererModule {
       () => (P.Cycle.Count > 0).And(() => Add.Cycle(P.Cycle, I.Instance)),
       () => Mouse.Closest.Let(Add.Point),
       () => {
-        if (Mouse.Selected is null) return;
-        Add.Point(Mouse.Selected, SKColors.Coral);
+        if (Mouse.Selection.Count < 1) return;
+        Add.Point(Mouse.Selection.First(), SKColors.Coral);
 
         var color = Self.Chart.Plot.Plottables.Count;
         var plotted = new List<Node>();
 
         foreach (var history in M.Histories.Where(history => history.Count > I.Step)) {
-          var nodes = history[I.Step].Except(Yield(Mouse.Selected)).ToList();
+          var nodes = history[I.Step].Except(Yield(Mouse.Selection.First())).ToList();
 
           plotted.AddRange(nodes);
-          Add.DistanceTo(Mouse.Selected, nodes, M.Palette.GetColor(++color).ToSKColor());
+          Add.DistanceTo(Mouse.Selection.First(), nodes, M.Palette.GetColor(++color).ToSKColor());
         }
 
-        Add.DistanceTo(Mouse.Selected,
+        Add.DistanceTo(Mouse.Selection.First(),
           I.Instance.Nodes.Except(plotted)
             .Except(Mouse.Selection)
-            .Except(Yield(Mouse.Selected)));
+            .Except(Yield(Mouse.Selection.First())));
       },
       () => Mouse.Selection.ForEach(Add.Point),
       () => M.Average.Let(average => Add.Label($"Przeciętna długość: {average:F2}")),

@@ -9,6 +9,7 @@ namespace Interface.Modules;
 
 internal sealed record MemoryModule(MainWindow Self) {
   public double? Average { get; private set; }
+
   public void CalculateAverage(int start, int end) {
     Average = Enumerable.Range(start, end)
       .Average(start =>
