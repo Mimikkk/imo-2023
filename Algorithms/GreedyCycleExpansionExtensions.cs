@@ -75,7 +75,7 @@ internal static class GreedyCycleExpansionExtensions {
       .SelectMany(p => instance.Nodes
         .Except(cycle)
         .Except(except)
-        .Select(n => (p.b, n, cost: instance.InsertCost(p, n))))
+        .Select(n => (p.b, n, cost: instance.Gain.Insert(p, n))))
       .MinBy(x => x.cost)
       .DropLast();
 

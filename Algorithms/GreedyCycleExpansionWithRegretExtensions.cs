@@ -86,7 +86,7 @@ internal static class GreedyRegretCycleExpansionExtensions {
       .Except(except)
       .Select(candidate =>
         cycle.Edges()
-          .Select(edge => (edge.b, candidate, cost: instance.InsertCost(edge, candidate)))
+          .Select(edge => (edge.b, candidate, cost: instance.Gain.Insert(edge, candidate)))
           .OrderBy(n => n.cost)
           .ToList()
       )

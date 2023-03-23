@@ -13,17 +13,18 @@ internal static class GreedyWeightedRegretCycleExpansionExtensions {
     var start = configuration.Start;
 
     if (configuration.Regret == 0)
-      throw new ArgumentNullException(nameof(configuration.Regret), "Regret must be specified for greedy regret cycle expansion with k-regrets.");
+      throw new ArgumentNullException(nameof(configuration.Regret),
+        "Regret must be specified for greedy regret cycle expansion with k-regrets.");
 
     var hullSize = instance.Nodes.Hull().Count();
     if (population.Length > hullSize) throw new ArgumentOutOfRangeException(nameof(configuration));
 
     return population.Length switch {
       < 0 => throw new ArgumentOutOfRangeException(nameof(configuration), "Population must be non-negative."),
-      0   => Enumerable.Empty<IEnumerable<Node>>(),
-      1   => instance.SearchSingle(population.First(), start, regret, weight),
-      2   => instance.SearchDouble(population.First(), population.Last(), start, regret, weight),
-      _   => instance.SearchMultiple(population, regret, weight)
+      0 => Enumerable.Empty<IEnumerable<Node>>(),
+      1 => instance.SearchSingle(population.First(), start, regret, weight),
+      2 => instance.SearchDouble(population.First(), population.Last(), start, regret, weight),
+      _ => instance.SearchMultiple(population, regret, weight)
     };
   }
 
@@ -42,7 +43,8 @@ internal static class GreedyWeightedRegretCycleExpansionExtensions {
   }
 
   private static IEnumerable<IEnumerable<Node>>
-    SearchDouble(this Instance instance, IList<Node>? first, IList<Node>? second, int? start, int regret, float weight) {
+    SearchDouble(this Instance instance, IList<Node>? first, IList<Node>? second, int? start, int regret,
+      float weight) {
     first ??= new List<Node>();
     first.Add(start is null ? Node.Choose(instance.Nodes) : instance.Nodes[start.Value]);
     first.Add(instance.ClosestTo(first.First()));
@@ -88,7 +90,7 @@ internal static class GreedyWeightedRegretCycleExpansionExtensions {
       .Except(except)
       .Select(candidate =>
         cycle.Edges()
-          .Select(edge => (edge.b, candidate, cost: instance.InsertCost(edge, candidate)))
+          .Select(edge => (edge.b, candidate, cost: instance.Gain.Insert(edge, candidate)))
           .OrderBy(n => n.cost)
           .ToList()
       )

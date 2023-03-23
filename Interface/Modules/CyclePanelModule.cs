@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using Domain.Extensions;
 using Domain.Structures;
 using Interface.Types;
-using Microsoft.VisualBasic;
 using ScottPlot;
 using static Domain.Extensions.EnumerableExtensions;
 
@@ -57,7 +55,7 @@ internal sealed record CyclePanelModule {
           ), selection.Count > 2 && !partiallySelected.Any())
           .AddWhen(new(
               "Dodaj Wierzchołek",
-              () => Moves.Insert(partiallySelected.First(), selection[0], (selection[1], selection[2]))
+              () => I.Instance.Move.Insert(partiallySelected.First(), selection[0], (selection[1], selection[2]))
             ), selection.Count == 3
                && !partiallySelected.Any(c => c.Contains(selection.First()))
                && partiallySelected.Count == 1
@@ -68,16 +66,16 @@ internal sealed record CyclePanelModule {
               var first = partiallySelected.Find(x => x.Contains(selection[0]))!;
               var second = partiallySelected.Find(x => x.Contains(selection[1]))!;
               var (a, b) = (selection[0], selection[1]);
-              Moves.ExchangeVertex(first, second, a, b);
+              I.Instance.Move.ExchangeVertex(first, second, a, b);
             }
           ), selection.Count == 2 && partiallySelected.Count == 2)
           .AddWhen(new(
             "Wymień Wewnętrzne wierzchołki",
-            () => Moves.ExchangeVertex(selected!, selection[0], selection[1])
+            () => I.Instance.Move.ExchangeVertex(selected!, selection[0], selection[1])
           ), selection.Count == 2 && selected is not null)
           .AddWhen(new(
             "Wymień wewnętrzne krawędzi",
-            () => Moves.ExchangeEdge(selected!, selection[0], selection[1])
+            () => I.Instance.Move.ExchangeEdge(selected!, selection[0], selection[1])
           ), selection.Count == 2 && selected is not null)
           .AddWhen(new(
             "Usuń wierzchołek",

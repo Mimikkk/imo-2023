@@ -57,7 +57,7 @@ public sealed partial class MainWindow : Window {
           };
 
           var results = Mod.Interaction.Algorithm.Search(Mod.Interaction.Instance, configuration);
-          return results.Sum(nodes => Mod.Interaction.Instance.DistanceOf(nodes));
+          return results.Sum(nodes => Mod.Interaction.Instance[nodes]);
         });
       HandleRunCommand();
     };
@@ -71,7 +71,7 @@ public sealed partial class MainWindow : Window {
           };
 
           var results = Mod.Interaction.Algorithm.Search(Mod.Interaction.Instance, configuration);
-          return results.Sum(nodes => Mod.Interaction.Instance.DistanceOf(nodes));
+          return results.Sum(nodes => Mod.Interaction.Instance[nodes]);
         });
       HandleRunCommand();
     };

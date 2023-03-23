@@ -14,7 +14,7 @@ internal sealed record MemoryModule(MainWindow Self) {
     Average = Enumerable.Range(start, end)
       .Average(start =>
         I.Algorithm.Search(I.Instance, I.Parameter.Configuration with { Start = start })
-          .Sum(nodes => I.Instance.DistanceOf(nodes))
+          .Sum(nodes => I.Instance[nodes])
       );
   }
 

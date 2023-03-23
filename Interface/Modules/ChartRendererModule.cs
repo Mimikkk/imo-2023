@@ -48,7 +48,7 @@ internal sealed record ChartRendererModule {
       () => (I.Parameter.PopulationSize > 1).And(() =>
         Add.Label($"Łączna długość: {
           M.Histories.Sum(history =>
-            I.Instance.DistanceOf(history.ElementAtOrDefault(I.Step) ?? history[^1]))
+            I.Instance[history.ElementAtOrDefault(I.Step) ?? history[^1]])
         }"))
     };
   }

@@ -2,8 +2,8 @@
 
 namespace Domain.Structures;
 
-public static class Moves {
-  public static void Insert(IList<Node> cycle, Node node, (Node a, Node b) edge) {
+public sealed record Moves {
+  public void Insert(IList<Node> cycle, Node node, (Node a, Node b) edge) {
     if (edge.a == cycle.First() && edge.b == cycle.Last() || edge.b == cycle.First() && edge.a == cycle.Last()) {
       cycle.Add(node);
       return;
@@ -15,7 +15,7 @@ public static class Moves {
     cycle.Insert(ia > ib ? ia : ib, node);
   }
 
-  public static void ExchangeVertex(IList<Node> first, IList<Node> second, Node a, Node b) {
+  public void ExchangeVertex(IList<Node> first, IList<Node> second, Node a, Node b) {
     var (ia, ib) = (first.IndexOf(a), second.IndexOf(b));
     first.Remove(a);
     first.Insert(ia, b);
@@ -23,9 +23,9 @@ public static class Moves {
     second.Insert(ib, a);
   }
 
-  public static void ExchangeVertex(IList<Node> cycle, Node a, Node b) => cycle.Swap(a, b);
+  public void ExchangeVertex(IList<Node> cycle, Node a, Node b) => cycle.Swap(a, b);
 
-  public static void ExchangeEdge(IList<Node> cycle, Node a, Node b) {
+  public void ExchangeEdge(IList<Node> cycle, Node a, Node b) {
     var ia = cycle.IndexOf(a);
     var ib = cycle.IndexOf(b);
     if (ia > ib) (ia, ib) = (ib, ia);

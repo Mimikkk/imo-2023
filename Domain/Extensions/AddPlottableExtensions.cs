@@ -13,7 +13,7 @@ public static class AddPlottableExtensions {
       xs: nodes.Select(node => (double)node.X).Append(nodes.First().X).ToArray(),
       ys: nodes.Select(node => (double)node.Y).Append(nodes.First().Y).ToArray()
     );
-    scatter.Label = $"Długość cyklu: {instance.DistanceOf(nodes.Append(nodes.First()))}";
+    scatter.Label = $"Długość cyklu: {instance[nodes.Append(nodes.First())]}";
 
     return add;
   }
@@ -26,7 +26,7 @@ public static class AddPlottableExtensions {
       xs: nodes.Select(node => (double)node.X).ToArray(),
       ys: nodes.Select(node => (double)node.Y).ToArray()
     );
-    scatter.Label = $"Długość ścieżki: {instance.DistanceOf(nodes.Append(nodes.First()))}";
+    scatter.Label = $"Długość ścieżki: {instance[nodes.Append(nodes.First())]}";
 
     return add;
   }
