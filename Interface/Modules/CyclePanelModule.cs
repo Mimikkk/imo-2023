@@ -4,6 +4,7 @@ using System.Linq;
 using Domain.Extensions;
 using Domain.Structures;
 using Interface.Types;
+using Microsoft.VisualBasic;
 using ScottPlot;
 using static Domain.Extensions.EnumerableExtensions;
 
@@ -13,6 +14,14 @@ internal sealed record CyclePanelModule {
   private static class Moves {
     public static void Insert(IList<Node> cycle, Node node, (Node a, Node b) edge) =>
       cycle.Insert(new[] { edge.a, edge.b }.Select(cycle.IndexOf).Max() % (cycle.Count - 1), node);
+
+    public static void Exchange(IList<Node> first, IList<Node> second, Node a, Node b) {
+      var (ia, ib) = (first.IndexOf(a), second.IndexOf(b));
+      first.Remove(a);
+      first.Insert(ia, b);
+      second.Remove(b);
+      second.Insert(ib, a);
+    }
   }
 
   public CyclePanelModule(MainWindow window) {
@@ -38,10 +47,13 @@ internal sealed record CyclePanelModule {
         Self.NodePanelDescription.IsVisible = Mouse.Selection.Count > 0;
         Self.NodePanelNodes.IsVisible = Self.NodePanelDescription.IsVisible;
         Self.NodePanelNodes.Items = Mouse.Selection.Select((node, index) => {
-          var contained = Cycles.FirstOrDefault()?.IndexOf(node);
           var display = $"S: {index}";
-          if (contained != -1) display += $" - C: {contained}";
+
+          var contained = Cycles.Find(c => c.Contains(node));
+          var i = contained?.IndexOf(node) ?? -1;
+          if (i != -1) display += $" - C:{Cycles.IndexOf(contained!)}/{i}";
           display += $" - {node.Index}/{node.X}/{node.Y}";
+
           return new Option<Action> { Name = display, };
         });
       },
@@ -66,6 +78,17 @@ internal sealed record CyclePanelModule {
             && !partiallySelected.Any(c => c.Contains(selection.First()))
             && partiallySelected.Count == 1
             && partiallySelected.First().NextTo(selection[1], selection[2]))
+          .AddWhen(new(
+              "Wymień wierzchołki",
+              () => {
+                var first = partiallySelected.Find(x => x.Contains(selection[0]))!;
+                var second = partiallySelected.Find(x => x.Contains(selection[1]))!;
+                var (a, b) = (selection[0], selection[1]);
+                Moves.Exchange(first, second, a, b);
+              }
+            ),
+            selection.Count == 2
+            && partiallySelected.Count == 2)
           .AddWhen(new(
             "Usuń wierzchołek",
             () => {
