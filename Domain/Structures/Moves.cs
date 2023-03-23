@@ -88,13 +88,14 @@ public sealed record Moves(Instance Instance) {
 
 
   public (Node previous, Node best, int gain)
-    FindBestFitByLowestGain(IList<Node> cycle, IEnumerable<Node> except) =>
-    cycle.Edges()
+    FindBestFitByLowestGain(IList<Node> cycle, IEnumerable<Node> except) {
+    return cycle.Edges()
       .SelectMany(p => Instance.Nodes
         .Except(cycle)
         .Except(except)
         .Select(n => (p.b, n, gain: Instance.Gain.Insert(p, n))))
       .MinBy(x => x.gain);
+  }
 
   public static void
     AppendFit(IList<Node> cycle, (Node previous, Node best, int gain) edge) {
