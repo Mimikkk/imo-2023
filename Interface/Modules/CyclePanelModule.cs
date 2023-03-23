@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using Domain.Extensions;
 using Domain.Structures;
@@ -10,7 +11,7 @@ using static Domain.Extensions.EnumerableExtensions;
 namespace Interface.Modules;
 
 internal sealed record CyclePanelModule {
-  public void Insert(IList<Node> cycle, Node node, (Node a, Node b) edge) {
+  private static void Insert(IList<Node> cycle, Node node, (Node a, Node b) edge) {
     var index = cycle.IndexOf(edge.a) > cycle.IndexOf(edge.b) ? cycle.IndexOf(edge.a) : cycle.IndexOf(edge.b);
     cycle.Insert(index, node);
   }
@@ -38,7 +39,7 @@ internal sealed record CyclePanelModule {
         Self.NodePanelDescription.IsVisible = Mouse.Selection.Count > 0;
         Self.NodePanelNodes.IsVisible = Self.NodePanelDescription.IsVisible;
         Self.NodePanelNodes.Items = Mouse.Selection.Select((node, index) => {
-          var contained = Cycle.IndexOf(node);
+          var contained = Cycles.FirstOrDefault()?.IndexOf(node);
           var display = $"S: {index}";
           if (contained != -1) display += $" - C: {contained}";
           display += $" - {node.Index}/{node.X}/{node.Y}";
@@ -46,26 +47,31 @@ internal sealed record CyclePanelModule {
         });
       },
       () => {
-        var count = Mouse.Selection.Count;
+        var selection = Mouse.Selection;
+        var selected = selection.Any() ? Cycles.FirstOrDefault(n => n.Contains(selection)) : null;
+        var partiallySelected = Cycles.Where(n => n.ContainsAny(selection)).ToList();
+
         var options = new List<Option<Action>>()
           .AddWhen(new(
             "Utwórz",
-            () => Cycle = Mouse.Selection.ToList()
-          ), count > 2 && Cycle.Count == 0)
+            () => Cycles.Add(selection.ToList())
+          ), selection.Count > 2 && !partiallySelected.Any())
           .AddWhen(new(
-              "Dodaj",
-              () => Insert(Cycle, Mouse.Selection[0], (Mouse.Selection[1], Mouse.Selection[2]))
-            ),
-            count == 3 && !Cycle.Contains(Mouse.Selection.First()) &&
-            Cycle.Contains(Mouse.Selection[1], Mouse.Selection[2]))
+            "Dodaj",
+            () => { }
+          ), false)
           .AddWhen(new(
             "Usuń",
-            () => Cycle.Remove(Mouse.Selection.First())
-          ), count == 1 && Cycle.Count > 2 && Cycle.Contains(Mouse.Selection.First()))
+            () => { }
+          ), false)
           .AddWhen(new(
             "Rozwiąż",
-            Cycle.Clear
-          ), Cycle.Count != 0);
+            () => Cycles.Remove(selected!)
+          ), selected is not null)
+          .AddWhen(new(
+            "Rozwiąż Wszystkie",
+            Cycles.Clear
+          ), Cycles.Count > 0 && selection.Count == 0);
 
         Self.NodeOperationButton.IsVisible = options.Count > 0;
         Self.NodeOperations.IsVisible = Self.NodeOperationButton.IsVisible;
@@ -85,5 +91,5 @@ internal sealed record CyclePanelModule {
   private MemoryModule M => Self.Mod.Memory;
   private MouseModule Mouse => Self.Mod.Mouse;
   public void Subscribe(Action update) => Updates.Add(update);
-  public List<Node> Cycle = new();
+  public List<List<Node>> Cycles = new();
 }
