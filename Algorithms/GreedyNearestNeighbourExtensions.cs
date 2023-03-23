@@ -37,7 +37,7 @@ internal static class GreedyNearestNeighbourExtensions {
     first ??= new List<Node>();
     first.Add(start is null ? Node.Choose(instance.Nodes) : instance.Nodes[start.Value]);
     second ??= new List<Node>();
-    second.Add(instance.FurthestTo(first.First()));
+    second.Add(instance.Move.FurthestTo(first.First()));
 
     while (first.Count < instance.Dimension / 2) {
       instance.AppendClosestHeadOrTail(first, first.Concat(second));
@@ -51,7 +51,7 @@ internal static class GreedyNearestNeighbourExtensions {
     SearchMultiple(this Instance instance, IEnumerable<IList<Node>> paths) {
     paths = paths.ToArray();
 
-    var points = instance.ChooseFurthest(paths.Count());
+    var points = instance.Move.FindFurthest(paths.Count());
     foreach (var (path, point) in paths.Zip(points)) path.Add(point);
 
     while (true) {
@@ -65,8 +65,8 @@ internal static class GreedyNearestNeighbourExtensions {
   private static void
     AppendClosestHeadOrTail(this Instance instance, IList<Node> path, IEnumerable<Node> except) {
     var excepted = except.ToArray();
-    var closestToTail = instance.ClosestTo(path.First(), excepted);
-    var closestToHead = instance.ClosestTo(path.Last(), excepted);
+    var closestToTail = instance.Move.ClosestTo(path.First(), excepted);
+    var closestToHead = instance.Move.ClosestTo(path.Last(), excepted);
 
     if (instance[closestToTail, path.First()] > instance[path.Last(), closestToHead]) path.Add(closestToHead);
     else path.Insert(0, closestToTail);

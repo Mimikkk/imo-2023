@@ -32,7 +32,7 @@ internal static class GreedyWeightedRegretCycleExpansionExtensions {
     SearchSingle(this Instance instance, IList<Node>? cycle, int? start, int regret, float weight) {
     cycle ??= new List<Node>();
     cycle.Add(start is null ? Node.Choose(instance.Nodes) : instance.Nodes[start.Value]);
-    cycle.Add(instance.ClosestTo(cycle.First()));
+    cycle.Add(instance.Move.ClosestTo(cycle.First()));
 
     while (cycle.Count < instance.Dimension) {
       var (previous, best) = FindFitsByRegretGain(instance, cycle, cycle, regret, weight);
@@ -47,11 +47,11 @@ internal static class GreedyWeightedRegretCycleExpansionExtensions {
       float weight) {
     first ??= new List<Node>();
     first.Add(start is null ? Node.Choose(instance.Nodes) : instance.Nodes[start.Value]);
-    first.Add(instance.ClosestTo(first.First()));
+    first.Add(instance.Move.ClosestTo(first.First()));
 
     second ??= new List<Node>();
-    second.Add(instance.FurthestTo(first.First()));
-    second.Add(instance.ClosestTo(second.First()));
+    second.Add(instance.Move.FurthestTo(first.First()));
+    second.Add(instance.Move.ClosestTo(second.First()));
 
     while (first.Count < instance.Dimension / 2) {
       var (previous, best) = FindFitsByRegretGain(instance, first, second, regret, weight);
@@ -68,9 +68,9 @@ internal static class GreedyWeightedRegretCycleExpansionExtensions {
     SearchMultiple(this Instance instance, IEnumerable<IList<Node>> cycles, int regret, float weight) {
     cycles = cycles.ToArray();
 
-    var points = instance.ChooseFurthest(cycles.Count());
+    var points = instance.Move.FindFurthest(cycles.Count());
     foreach (var (path, point) in cycles.Zip(points)) path.Add(point);
-    foreach (var path in cycles) instance.ClosestTo(path.First(), cycles.Flatten());
+    foreach (var path in cycles) instance.Move.ClosestTo(path.First(), cycles.Flatten());
 
     var count = cycles.Flatten().Count();
     while (true) {

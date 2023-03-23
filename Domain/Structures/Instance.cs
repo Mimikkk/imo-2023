@@ -9,7 +9,7 @@ public sealed record Instance {
         .SkipLast(1))
       .ToList();
 
-    return new Instance(nodes.Count, nodes, CreateDistanceMatrix(nodes), name);
+    return new Instance(nodes.Count, nodes, name);
   }
 
   private static int[,] CreateDistanceMatrix(IEnumerable<Node> nodes) {
@@ -26,32 +26,11 @@ public sealed record Instance {
     return distances;
   }
 
-  public int this[Node first, Node second] => Distances[first.Index, second.Index];
-  public int this[int first, int second] => Distances[first, second];
+  public int this[Node first, Node second] => _distances[first.Index, second.Index];
+  public int this[int first, int second] => _distances[first, second];
   public int this[(Node a, Node b) edge] => this[edge.a, edge.b];
   public int this[(Node a, Node b, Node c) vertex] => this[vertex.a, vertex.b] + this[vertex.b, vertex.c];
   public int this[IEnumerable<Node> cycle] => cycle.Edges().Sum(edge => this[edge]);
-
-  public Node ClosestTo(Node node, IEnumerable<Node>? except = null) {
-    except ??= new List<Node>();
-
-    return Nodes.Except(except.Concat(Yield(node))).MinBy(n => this[n, node])!;
-  }
-
-  public Node FurthestTo(Node node, IEnumerable<Node>? except = null) {
-    except ??= new List<Node>();
-
-    return Nodes.Except(except.Concat(Yield(node))).MaxBy(n => this[n, node])!;
-  }
-
-  public IEnumerable<Node> ChooseFurthest(int count, IEnumerable<Node>? except = null) {
-    except ??= new List<Node>();
-
-    return count < 2
-      ? Yield(Node.Choose(Nodes)).Except(except)
-      : Nodes.Hull().Except(except).Combinations(count).MaxBy(nodes => nodes.Edges().Sum(edge => this[edge]))!;
-  }
-
 
   public readonly Moves Move;
   public readonly Gains Gain;
@@ -59,15 +38,15 @@ public sealed record Instance {
   public readonly List<Node> Nodes;
   public readonly string Name;
 
-  private readonly int[,] Distances;
+  private readonly int[,] _distances;
 
-  private Instance(int dimension, List<Node> nodes, int[,] distances, string name) {
+  private Instance(int dimension, List<Node> nodes, string name) {
     Dimension = dimension;
     Nodes = nodes;
-    Distances = distances;
+    _distances = CreateDistanceMatrix(nodes);
     Name = name;
     Gain = new(this);
-    Move = new();
+    Move = new(this);
   }
 
   private static readonly string InstanceDirectory = Path.Combine(ResourcesDirectory, "Instances");

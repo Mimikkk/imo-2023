@@ -2,7 +2,7 @@
 
 namespace Domain.Structures;
 
-public sealed record Moves {
+public sealed record Moves(Instance Instance) {
   public void Insert(IList<Node> cycle, Node node, (Node a, Node b) edge) {
     if (edge.a == cycle.First() && edge.b == cycle.Last() || edge.b == cycle.First() && edge.a == cycle.Last()) {
       cycle.Add(node);
@@ -35,5 +35,54 @@ public sealed record Moves {
     for (var i = 0; i < elementCount / 2; ++i) {
       cycle.Swap((ia + cycle.Count + i) % cycle.Count, (ib + cycle.Count - i) % cycle.Count);
     }
+  }
+
+  public Node ClosestTo(Node node, IEnumerable<Node>? except = null) {
+    except ??= new List<Node>();
+
+    return Instance.Nodes.Except(except.Concat(Yield(node))).MinBy(n => Instance[n, node])!;
+  }
+
+  public Node FurthestTo(Node node, IEnumerable<Node>? except = null) {
+    except ??= new List<Node>();
+
+    return Instance.Nodes.Except(except.Concat(Yield(node))).MaxBy(n => Instance[n, node])!;
+  }
+
+  public IEnumerable<Node> FindFurthest(int count, IEnumerable<Node>? except = null) {
+    except ??= new List<Node>();
+
+    return count < 2
+      ? Yield(Node.Choose(Instance.Nodes)).Except(except)
+      : Instance.Nodes.Hull().Except(except).Combinations(count)
+        .MaxBy(nodes => nodes.Edges().Sum(edge => Instance[edge]))!;
+  }
+
+  public ((Node a, Node b), int) FindBestInsertion(IList<Node> cycle, Node node) {
+    var edge = (cycle.First(), cycle.Last());
+    var gain = Instance.Gain.Insert(edge, node);
+
+    foreach (var (a, b) in cycle.Edges()) {
+      var current = Instance.Gain.Insert((a, b), node);
+      if (current <= gain) continue;
+      (gain, edge) = (current, (a, b));
+    }
+
+    return (edge, gain);
+  }
+
+  public (Node a, Node b) ClosestToHeadOrTail(IList<Node> path, IEnumerable<Node> except) {
+    var excepted = except.ToArray();
+    var tail = ClosestTo(path.First(), excepted);
+    var head = ClosestTo(path.Last(), excepted);
+
+    return (head, tail);
+  }
+
+  public void AppendClosestToHeadOrTail(IList<Node> path, IEnumerable<Node> except) {
+    var (head, tail) = ClosestToHeadOrTail(path, except);
+
+    if (Instance[tail, path.First()] > Instance[path.Last(), head]) path.Add(head);
+    else path.Insert(0, tail);
   }
 }

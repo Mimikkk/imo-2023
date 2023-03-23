@@ -12,24 +12,26 @@ internal static class GreedyRegretCycleExpansionExtensions {
     var start = configuration.Start;
 
     if (configuration.Regret == 0)
-      throw new ArgumentNullException(nameof(configuration.Regret), "Regret must be specified for greedy regret cycle expansion with k-regrets.");
+      throw new ArgumentNullException(nameof(configuration.Regret),
+        "Regret must be specified for greedy regret cycle expansion with k-regrets.");
 
     var hullSize = instance.Nodes.Hull().Count();
     if (population.Length > hullSize) throw new ArgumentOutOfRangeException(nameof(configuration));
 
     return population.Length switch {
       < 0 => throw new ArgumentOutOfRangeException(nameof(configuration), "Population must be non-negative."),
-      0   => Enumerable.Empty<IEnumerable<Node>>(),
-      1   => instance.SearchSingle(population.First(), start, regret),
-      2   => instance.SearchDouble(population.First(), population.Last(), start, regret),
-      _   => instance.SearchMultiple(population, regret)
+      0 => Enumerable.Empty<IEnumerable<Node>>(),
+      1 => instance.SearchSingle(population.First(), start, regret),
+      2 => instance.SearchDouble(population.First(), population.Last(), start, regret),
+      _ => instance.SearchMultiple(population, regret)
     };
   }
+
   private static IEnumerable<IEnumerable<Node>>
     SearchSingle(this Instance instance, IList<Node>? cycle, int? start, int regret) {
     cycle ??= new List<Node>();
     cycle.Add(start is null ? Node.Choose(instance.Nodes) : instance.Nodes[start.Value]);
-    cycle.Add(instance.ClosestTo(cycle.First()));
+    cycle.Add(instance.Move.ClosestTo(cycle.First()));
 
     while (cycle.Count < instance.Dimension) {
       var (previous, best) = FindFitsByRegretGain(instance, cycle, cycle, regret);
@@ -43,11 +45,11 @@ internal static class GreedyRegretCycleExpansionExtensions {
     SearchDouble(this Instance instance, IList<Node>? first, IList<Node>? second, int? start, int regret) {
     first ??= new List<Node>();
     first.Add(start is null ? Node.Choose(instance.Nodes) : instance.Nodes[start.Value]);
-    first.Add(instance.ClosestTo(first.First()));
+    first.Add(instance.Move.ClosestTo(first.First()));
 
     second ??= new List<Node>();
-    second.Add(instance.FurthestTo(first.First()));
-    second.Add(instance.ClosestTo(second.First()));
+    second.Add(instance.Move.FurthestTo(first.First()));
+    second.Add(instance.Move.ClosestTo(second.First()));
 
     while (first.Count < instance.Dimension / 2) {
       var (previous, best) = FindFitsByRegretGain(instance, first, second, regret);
@@ -64,9 +66,9 @@ internal static class GreedyRegretCycleExpansionExtensions {
     SearchMultiple(this Instance instance, IEnumerable<IList<Node>> cycles, int regret) {
     cycles = cycles.ToArray();
 
-    var points = instance.ChooseFurthest(cycles.Count());
+    var points = instance.Move.FindFurthest(cycles.Count());
     foreach (var (path, point) in cycles.Zip(points)) path.Add(point);
-    foreach (var path in cycles) instance.ClosestTo(path.First(), cycles.Flatten());
+    foreach (var path in cycles) instance.Move.ClosestTo(path.First(), cycles.Flatten());
 
     var count = cycles.Flatten().Count();
     while (true) {

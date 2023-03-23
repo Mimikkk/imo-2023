@@ -26,7 +26,7 @@ internal static class GreedyCycleExpansionExtensions {
     SearchSingle(Instance instance, IList<Node>? cycle, int? start) {
     cycle ??= new List<Node>();
     cycle.Add(start is null ? Node.Choose(instance.Nodes) : instance.Nodes[start.Value]);
-    cycle.Add(instance.ClosestTo(cycle.First()));
+    cycle.Add(instance.Move.ClosestTo(cycle.First()));
 
     while (cycle.Count < instance.Dimension) instance.FindAndAppendBestFit(cycle, cycle);
 
@@ -37,11 +37,11 @@ internal static class GreedyCycleExpansionExtensions {
     SearchDouble(Instance instance, IList<Node>? first, IList<Node>? second, int? start) {
     first ??= new List<Node>();
     first.Add(start is null ? Node.Choose(instance.Nodes) : instance.Nodes[start.Value]);
-    first.Add(instance.ClosestTo(first.First()));
+    first.Add(instance.Move.ClosestTo(first.First()));
 
     second ??= new List<Node>();
-    second.Add(instance.FurthestTo(first.First()));
-    second.Add(instance.ClosestTo(second.First()));
+    second.Add(instance.Move.FurthestTo(first.First()));
+    second.Add(instance.Move.ClosestTo(second.First()));
 
     while (first.Count < instance.Dimension / 2) {
       instance.FindAndAppendBestFit(first, second);
@@ -55,9 +55,9 @@ internal static class GreedyCycleExpansionExtensions {
     SearchMultiple(this Instance instance, IEnumerable<IList<Node>> paths) {
     paths = paths.ToArray();
 
-    var points = instance.ChooseFurthest(paths.Count());
+    var points = instance.Move.FindFurthest(paths.Count());
     foreach (var (path, point) in paths.Zip(points)) path.Add(point);
-    foreach (var path in paths) instance.ClosestTo(path.First(), paths.Flatten());
+    foreach (var path in paths) instance.Move.ClosestTo(path.First(), paths.Flatten());
 
     var count = paths.Flatten().Count();
     while (true) {
