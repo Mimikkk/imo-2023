@@ -17,6 +17,11 @@ public static class NullableExtensions {
     if (any is not null) action(any);
   }
 
+  public static T Also<T>(this T any, Action<T> action, bool predicate = true) {
+    predicate.And(() => action(any));
+    return any;
+  }
+
   public static bool And(this bool predicate, Action action) {
     if (predicate) action();
     return predicate;

@@ -15,5 +15,5 @@ internal sealed record Modules {
   public readonly MemoryModule Memory;
   public readonly ChartRendererModule Chart;
   public readonly InteractionModule Interaction;
-  public readonly NodePanelModule Panel;
+  public readonly CyclePanelModule Panel;
 }

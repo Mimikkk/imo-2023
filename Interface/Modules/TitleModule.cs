@@ -10,7 +10,7 @@ internal sealed record TitleModule {
     Self = self;
     _updates = new List<Func<string>> {
       () => M.Selected switch {
-        var (index, x, y) => $"Wierzchołek - {index + 1} - {x}x, {y}y",
+        var (index, x, y) => $"Wierzchołek - {index} - {x}x, {y}y",
         null => "",
       },
       () => {

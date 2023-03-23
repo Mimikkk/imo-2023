@@ -79,6 +79,6 @@ internal sealed record ChartRendererModule {
   private InteractionModule I => Self.Mod.Interaction;
   private MemoryModule M => Self.Mod.Memory;
   private MouseModule Mouse => Self.Mod.Mouse;
-  private NodePanelModule P => Self.Mod.Panel;
+  private CyclePanelModule P => Self.Mod.Panel;
   public void Subscribe(Action update) => Updates.Add(update);
 }
