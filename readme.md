@@ -199,6 +199,7 @@ odnalezionym cyklu.
 
 W ramach zadania należało:
 
+- [x] Zaimplemnetować algorytm losowego przeszukiwania ( _RS_ ).
 - [ ] Zaimplemnetować algorytm losowego zachłannego adapcyjnego przeszukiwania ( _GRASP_ ).
 - [ ] Zaimplementować algorytm przeszukiwania lokalnego w wersji stromej ( _steepest_ ).
     - [ ] Przy wykorzystaniu sąsiedztwa z wymianą wierzchołków między cyklami.
