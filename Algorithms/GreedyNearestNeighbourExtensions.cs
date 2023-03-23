@@ -27,7 +27,7 @@ internal static class GreedyNearestNeighbourExtensions {
     path ??= new List<Node>();
     path.Add(start is null ? Node.Choose(instance.Nodes) : instance.Nodes[start.Value]);
 
-    while (path.Count < instance.Dimension) instance.AppendClosestHeadOrTail(path, path);
+    while (path.Count < instance.Dimension) instance.Move.AppendClosestToHeadOrTail(path, path);
 
     return Yield(path);
   }
@@ -40,8 +40,8 @@ internal static class GreedyNearestNeighbourExtensions {
     second.Add(instance.Move.FurthestTo(first.First()));
 
     while (first.Count < instance.Dimension / 2) {
-      instance.AppendClosestHeadOrTail(first, first.Concat(second));
-      instance.AppendClosestHeadOrTail(second, first.Concat(second));
+      instance.Move.AppendClosestToHeadOrTail(first, first.Concat(second));
+      instance.Move.AppendClosestToHeadOrTail(second, first.Concat(second));
     }
 
     return Yield(first, second);
@@ -56,19 +56,9 @@ internal static class GreedyNearestNeighbourExtensions {
 
     while (true) {
       foreach (var path in paths) {
-        instance.AppendClosestHeadOrTail(path, paths.Flatten());
+        instance.Move.AppendClosestToHeadOrTail(path, paths.Flatten());
         if (paths.Flatten().Count() == instance.Dimension) return paths;
       }
     }
-  }
-
-  private static void
-    AppendClosestHeadOrTail(this Instance instance, IList<Node> path, IEnumerable<Node> except) {
-    var excepted = except.ToArray();
-    var closestToTail = instance.Move.ClosestTo(path.First(), excepted);
-    var closestToHead = instance.Move.ClosestTo(path.Last(), excepted);
-
-    if (instance[closestToTail, path.First()] > instance[path.Last(), closestToHead]) path.Add(closestToHead);
-    else path.Insert(0, closestToTail);
   }
 }

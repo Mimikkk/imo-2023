@@ -85,4 +85,62 @@ public sealed record Moves(Instance Instance) {
     if (Instance[tail, path.First()] > Instance[path.Last(), head]) path.Add(head);
     else path.Insert(0, tail);
   }
+
+
+  public (Node previous, Node best, int gain)
+    FindBestFitByLowestGain(IList<Node> cycle, IEnumerable<Node> except) =>
+    cycle.Edges()
+      .SelectMany(p => Instance.Nodes
+        .Except(cycle)
+        .Except(except)
+        .Select(n => (p.b, n, gain: Instance.Gain.Insert(p, n))))
+      .MinBy(x => x.gain);
+
+  public static void
+    AppendFit(IList<Node> cycle, (Node previous, Node best, int gain) edge) {
+    var (previous, best, _) = edge;
+    cycle.Insert(cycle.IndexOf(previous), best);
+  }
+
+
+  public (Node previous, Node best, int gain)
+    FindBestFitByWeightedRegretToInsertGain(IList<Node> cycle, IEnumerable<Node> except, int k, float weight) {
+    return Instance
+      .Nodes
+      .Except(cycle)
+      .Except(except)
+      .Select(candidate =>
+        cycle.Edges()
+          .Select(edge => (edge.b, candidate, gain: Instance.Gain.Insert(edge, candidate)))
+          .OrderBy(n => n.gain)
+          .ToList()
+      )
+      .OrderBy(match => CalculateRegret(match.Select(x => x.gain), k) + weight * match.MinBy(x => x.gain).gain)
+      .First()
+      .MinBy(match => match.gain);
+  }
+
+
+  public (Node previous, Node best, int gain)
+    FindBestFitByRegretInsertGain(IList<Node> cycle, IEnumerable<Node> except, int regret) {
+    return Instance
+      .Nodes
+      .Except(cycle)
+      .Except(except)
+      .Select(candidate =>
+        cycle.Edges()
+          .Select(edge => (edge.b, candidate, gain: Instance.Gain.Insert(edge, candidate)))
+          .OrderBy(n => n.gain)
+          .ToList()
+      )
+      .OrderBy(match => CalculateRegret(match.Select(x => x.gain), regret))
+      .First()
+      .MinBy(match => match.gain);
+  }
+
+  private static int CalculateRegret(IEnumerable<int> gains, int k) {
+    var enumerable = gains as int[] ?? gains.ToArray();
+
+    return enumerable.Skip(1).Take(k - 1).Aggregate(0, (acc, a) => acc + (enumerable.First() - a));
+  }
 }

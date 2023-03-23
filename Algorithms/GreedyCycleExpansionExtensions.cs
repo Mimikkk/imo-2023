@@ -1,4 +1,3 @@
-using System.Diagnostics;
 using Algorithms.Structures;
 using Domain.Extensions;
 using Domain.Structures;
@@ -16,19 +15,21 @@ internal static class GreedyCycleExpansionExtensions {
 
     return population.Length switch {
       < 0 => throw new ArgumentOutOfRangeException(nameof(configuration)),
-      0   => Enumerable.Empty<IEnumerable<Node>>(),
-      1   => SearchSingle(instance, population.First(), start),
-      2   => SearchDouble(instance, population.First(), population.Last(), start),
-      _   => instance.SearchMultiple(population)
+      0 => Enumerable.Empty<IEnumerable<Node>>(),
+      1 => SearchSingle(instance, population.First(), start),
+      2 => SearchDouble(instance, population.First(), population.Last(), start),
+      _ => instance.SearchMultiple(population)
     };
   }
+
   private static IEnumerable<IEnumerable<Node>>
     SearchSingle(Instance instance, IList<Node>? cycle, int? start) {
     cycle ??= new List<Node>();
     cycle.Add(start is null ? Node.Choose(instance.Nodes) : instance.Nodes[start.Value]);
     cycle.Add(instance.Move.ClosestTo(cycle.First()));
 
-    while (cycle.Count < instance.Dimension) instance.FindAndAppendBestFit(cycle, cycle);
+    while (cycle.Count < instance.Dimension)
+      Moves.AppendFit(cycle, instance.Move.FindBestFitByLowestGain(cycle, cycle));
 
     return Yield(cycle);
   }
@@ -44,8 +45,8 @@ internal static class GreedyCycleExpansionExtensions {
     second.Add(instance.Move.ClosestTo(second.First()));
 
     while (first.Count < instance.Dimension / 2) {
-      instance.FindAndAppendBestFit(first, second);
-      instance.FindAndAppendBestFit(second, first);
+      Moves.AppendFit(first, instance.Move.FindBestFitByLowestGain(first, second));
+      Moves.AppendFit(second, instance.Move.FindBestFitByLowestGain(second, first));
     }
 
     return Yield(first, second);
@@ -62,26 +63,9 @@ internal static class GreedyCycleExpansionExtensions {
     var count = paths.Flatten().Count();
     while (true) {
       foreach (var path in paths) {
-        var (previous, best) = instance.FindBestFitByLowestGain(path, paths.Flatten().Except(path));
-        path.Insert(path.IndexOf(previous), best);
+        Moves.AppendFit(path, instance.Move.FindBestFitByLowestGain(path, paths.Flatten().Except(path)));
         if (++count == instance.Dimension) return paths;
       }
     }
-  }
-
-  private static (Node previous, Node best)
-    FindBestFitByLowestGain(this Instance instance, IList<Node> cycle, IEnumerable<Node> except) =>
-    cycle.Edges()
-      .SelectMany(p => instance.Nodes
-        .Except(cycle)
-        .Except(except)
-        .Select(n => (p.b, n, cost: instance.Gain.Insert(p, n))))
-      .MinBy(x => x.cost)
-      .DropLast();
-
-  private static void
-    FindAndAppendBestFit(this Instance instance, IList<Node> cycle, IEnumerable<Node> except) {
-    var (previous, best) = instance.FindBestFitByLowestGain(cycle, except);
-    cycle.Insert(cycle.IndexOf(previous), best);
   }
 }

@@ -35,7 +35,7 @@ internal static class GreedyWeightedRegretCycleExpansionExtensions {
     cycle.Add(instance.Move.ClosestTo(cycle.First()));
 
     while (cycle.Count < instance.Dimension) {
-      var (previous, best) = FindFitsByRegretGain(instance, cycle, cycle, regret, weight);
+      var (previous, best, _) = instance.Move.FindBestFitByWeightedRegretToInsertGain(cycle, cycle, regret, weight);
       cycle.Insert(cycle.IndexOf(previous), best);
     }
 
@@ -54,11 +54,8 @@ internal static class GreedyWeightedRegretCycleExpansionExtensions {
     second.Add(instance.Move.ClosestTo(second.First()));
 
     while (first.Count < instance.Dimension / 2) {
-      var (previous, best) = FindFitsByRegretGain(instance, first, second, regret, weight);
-      first.Insert(first.IndexOf(previous), best);
-
-      (previous, best) = FindFitsByRegretGain(instance, second, first, regret, weight);
-      second.Insert(second.IndexOf(previous), best);
+      Moves.AppendFit(first, instance.Move.FindBestFitByWeightedRegretToInsertGain(first, second, regret, weight));
+      Moves.AppendFit(second, instance.Move.FindBestFitByWeightedRegretToInsertGain(second, first, regret, weight));
     }
 
     return Yield(first, second);
@@ -74,34 +71,13 @@ internal static class GreedyWeightedRegretCycleExpansionExtensions {
 
     var count = cycles.Flatten().Count();
     while (true) {
-      foreach (var path in cycles) {
-        var (previous, best) = FindFitsByRegretGain(instance, path, cycles.Flatten(), regret, weight);
-        path.Insert(path.IndexOf(previous), best);
+      foreach (var cycle in cycles) {
+        Moves.AppendFit(
+          cycle,
+          instance.Move.FindBestFitByWeightedRegretToInsertGain(cycle, cycles.Flatten(), regret, weight)
+        );
         if (++count == instance.Dimension) return cycles;
       }
     }
-  }
-
-  private static (Node previous, Node best)
-    FindFitsByRegretGain(this Instance instance, IList<Node> cycle, IEnumerable<Node> except, int regret, float weight)
-    => instance
-      .Nodes
-      .Except(cycle)
-      .Except(except)
-      .Select(candidate =>
-        cycle.Edges()
-          .Select(edge => (edge.b, candidate, cost: instance.Gain.Insert(edge, candidate)))
-          .OrderBy(n => n.cost)
-          .ToList()
-      )
-      .OrderBy(match => CalculateRegret(match.Select(x => x.cost), regret) + weight * match.MinBy(x => x.cost).cost)
-      .First()
-      .MinBy(match => match.cost)
-      .DropLast();
-
-  private static int CalculateRegret(IEnumerable<int> costs, int regret) {
-    var enumerable = costs as int[] ?? costs.ToArray();
-
-    return enumerable.Skip(1).Take(regret - 1).Aggregate(0, (acc, a) => acc + (enumerable.First() - a));
   }
 }
