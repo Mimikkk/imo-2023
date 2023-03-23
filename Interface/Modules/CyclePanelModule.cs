@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using Domain.Extensions;
 using Domain.Structures;
@@ -12,15 +13,42 @@ namespace Interface.Modules;
 
 internal sealed record CyclePanelModule {
   private static class Moves {
-    public static void Insert(IList<Node> cycle, Node node, (Node a, Node b) edge) =>
-      cycle.Insert(new[] { edge.a, edge.b }.Select(cycle.IndexOf).Max() % (cycle.Count - 1), node);
+    public static void Insert(IList<Node> cycle, Node node, (Node a, Node b) edge) {
+      if (edge.a == cycle.First() && edge.b == cycle.Last() || edge.b == cycle.First() && edge.a == cycle.Last()) {
+        cycle.Add(node);
+        return;
+      }
 
-    public static void Exchange(IList<Node> first, IList<Node> second, Node a, Node b) {
+
+      var ia = cycle.IndexOf(edge.a);
+      var ib = cycle.IndexOf(edge.b);
+      cycle.Insert(ia > ib ? ia : ib, node);
+    }
+
+    public static void ExchangeVertex(IList<Node> first, IList<Node> second, Node a, Node b) {
       var (ia, ib) = (first.IndexOf(a), second.IndexOf(b));
       first.Remove(a);
       first.Insert(ia, b);
       second.Remove(b);
       second.Insert(ib, a);
+    }
+
+    public static void ExchangeVertex(IList<Node> cycle, Node a, Node b) => cycle.Swap(a, b);
+
+    public static void ExchangeEdge(IList<Node> cycle, Node a, Node b) {
+      var ia = cycle.IndexOf(a);
+      var ib = cycle.IndexOf(b);
+
+      if (ia > ib) (ia, ib) = (ib, ia);
+      if (ia == 0 && ib == cycle.Count - 1) cycle.Swap(ia, ib);
+      if (ia == ib) return;
+
+
+      while (ia < ib) {
+        (cycle[ia], cycle[ib]) = (cycle[ib], cycle[ia]);
+        ++ia;
+        --ib;
+      }
     }
   }
 
@@ -69,26 +97,28 @@ internal sealed record CyclePanelModule {
           ), selection.Count > 2 && !partiallySelected.Any())
           .AddWhen(new(
               "Dodaj Wierzchołek",
-              () => {
-                var (a, edge) = (selection[0], (selection[1], selection[2]));
-                Moves.Insert(partiallySelected.First(), a, edge);
-              }
-            ),
-            selection.Count == 3
-            && !partiallySelected.Any(c => c.Contains(selection.First()))
-            && partiallySelected.Count == 1
-            && partiallySelected.First().NextTo(selection[1], selection[2]))
+              () => Moves.Insert(partiallySelected.First(), selection[0], (selection[1], selection[2]))
+            ), selection.Count == 3
+               && !partiallySelected.Any(c => c.Contains(selection.First()))
+               && partiallySelected.Count == 1
+               && partiallySelected.First().NextTo(selection[1], selection[2]))
           .AddWhen(new(
-              "Wymień wierzchołki",
-              () => {
-                var first = partiallySelected.Find(x => x.Contains(selection[0]))!;
-                var second = partiallySelected.Find(x => x.Contains(selection[1]))!;
-                var (a, b) = (selection[0], selection[1]);
-                Moves.Exchange(first, second, a, b);
-              }
-            ),
-            selection.Count == 2
-            && partiallySelected.Count == 2)
+            "Wymień zewnętrzne wierzchołki",
+            () => {
+              var first = partiallySelected.Find(x => x.Contains(selection[0]))!;
+              var second = partiallySelected.Find(x => x.Contains(selection[1]))!;
+              var (a, b) = (selection[0], selection[1]);
+              Moves.ExchangeVertex(first, second, a, b);
+            }
+          ), selection.Count == 2 && partiallySelected.Count == 2)
+          .AddWhen(new(
+            "Wymień Wewnętrzne wierzchołki",
+            () => Moves.ExchangeVertex(selected!, selection[0], selection[1])
+          ), selection.Count == 2 && selected is not null)
+          .AddWhen(new(
+            "Wymień wewnętrzne krawędzi",
+            () => Moves.ExchangeEdge(selected!, selection[0], selection[1])
+          ), selection.Count == 2 && selected is not null)
           .AddWhen(new(
             "Usuń wierzchołek",
             () => {
