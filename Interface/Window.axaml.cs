@@ -15,11 +15,11 @@ namespace Interface;
 
 public sealed partial class MainWindow : Window {
   public MainWindow() {
-    Mod = new(this);
+    InitializeComponent();
 
+    Mod = new(this);
     Mod.Chart.Subscribe(Mod.Title.Update);
 
-    InitializeComponent();
     InitializeComboBoxes();
     InitializeChart();
     InitializeListeners();
@@ -82,7 +82,7 @@ public sealed partial class MainWindow : Window {
   }
 
   private void InitializeComboBoxes() {
-    Instances.Items = new List<Option> {
+    Instances.Items = new List<Option<string>> {
       new("KroA 100", "kroA100"),
       new("KroB 100", "kroB100")
     };
@@ -126,7 +126,7 @@ public sealed partial class MainWindow : Window {
       ParameterStartIndex.Value = Math.Min(ParameterStartIndex.Maximum, ParameterStartIndex.Value);
     };
 
-    Algorithms.Items = new List<Option> {
+    Algorithms.Items = new List<Option<string>> {
       new("Najbliższy sąsiad", Algorithm.NearestNeighbour),
       new("Rozszerzanie cyklu", Algorithm.CycleExpansion),
       new("Rozszerzanie cyklu z k-żalem", Algorithm.CycleExpansionWithKRegret),

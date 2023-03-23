@@ -22,6 +22,7 @@ internal sealed record ChartRendererModule {
     Updates = new() {
       () => Add.Scatter(I.Instance.Nodes),
       () => M.Histories.ToList().ForEach(Render),
+      () => (P.Cycle.Count > 0).And(() => Add.Cycle(P.Cycle, I.Instance)),
       () => Mouse.Closest.Let(Add.Point),
       () => {
         if (Mouse.Selected is null) return;
@@ -55,15 +56,18 @@ internal sealed record ChartRendererModule {
   private void Render(IEnumerable<IEnumerable<Node>> history) {
     var enumerable = history as IEnumerable<Node>[] ?? history.ToArray();
     var step = enumerable.ElementAtOrDefault(I.Step) ?? enumerable[^1];
+    Render(step);
+  }
 
+  private void Render(IEnumerable<Node> cycle) {
     switch (I.Algorithm.DisplayAs) {
       case Algorithm.DisplayType.Cycle: {
-        Add.Cycle(step, I.Instance);
+        Add.Cycle(cycle, I.Instance);
         return;
       }
       case Algorithm.DisplayType.Path: {
-        if (I.Step == (int)Self.HistorySlider.Maximum) Add.Cycle(step, I.Instance);
-        else Add.Path(step, I.Instance);
+        if (I.Step == (int)Self.HistorySlider.Maximum) Add.Cycle(cycle, I.Instance);
+        else Add.Path(cycle, I.Instance);
         return;
       }
     }
@@ -75,5 +79,6 @@ internal sealed record ChartRendererModule {
   private InteractionModule I => Self.Mod.Interaction;
   private MemoryModule M => Self.Mod.Memory;
   private MouseModule Mouse => Self.Mod.Mouse;
+  private NodePanelModule P => Self.Mod.Panel;
   public void Subscribe(Action update) => Updates.Add(update);
 }

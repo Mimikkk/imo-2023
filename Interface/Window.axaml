@@ -6,6 +6,7 @@
         xmlns:interface="clr-namespace:Interface"
         xmlns:types="clr-namespace:Interface.Types"
         xmlns:domain="clr-namespace:Domain.Structures;assembly=Domain"
+        xmlns:system="clr-namespace:System;assembly=System.Runtime"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:Class="Interface.MainWindow"
         Title="IMO - 2023">
@@ -23,7 +24,7 @@
                 <TextBlock Margin="8 -8 0 0" ZIndex="1" FontSize="12">Instancja</TextBlock>
                 <ComboBox Name="Instances" HorizontalAlignment="Stretch" SelectedIndex="0">
                     <ComboBox.ItemTemplate>
-                        <DataTemplate DataType="types:Option">
+                        <DataTemplate>
                             <TextBlock Text="{Binding Name}" />
                         </DataTemplate>
                     </ComboBox.ItemTemplate>
@@ -33,7 +34,7 @@
                 <TextBlock Margin="8 -8 0 0" ZIndex="1" FontSize="12">Algorytm</TextBlock>
                 <ComboBox Name="Algorithms" HorizontalAlignment="Stretch">
                     <ComboBox.ItemTemplate>
-                        <DataTemplate DataType="types:Option">
+                        <DataTemplate>
                             <TextBlock Text="{Binding Name}" />
                         </DataTemplate>
                     </ComboBox.ItemTemplate>
@@ -89,19 +90,31 @@
                     <Button Name="FindBestButton" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center">Znajdź najlepsze</Button>
                 </StackPanel>
             </Border>
-            <Border VerticalAlignment="Bottom" Padding="4" CornerRadius="4" BorderBrush="#4f46e5" Background="#1e40af">
+            <Border VerticalAlignment="Bottom" Padding="8" CornerRadius="4" BorderBrush="#4f46e5" Background="#1e40af">
                 <StackPanel Spacing="4">
                     <TextBlock Name="TextMousePosition" />
                     <TextBlock Name="NodePanelDescription" IsVisible="False">Wybrane wierzchołki:</TextBlock>
-                    <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto" MaxHeight="200" >
+                    <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto"
+                                  MaxHeight="200">
                         <ItemsRepeater Name="NodePanelNodes" IsVisible="False">
                             <ItemsRepeater.ItemTemplate>
-                                <DataTemplate DataType="types:Option">
+                                <DataTemplate>
                                     <TextBlock Text="{Binding Name}" />
                                 </DataTemplate>
                             </ItemsRepeater.ItemTemplate>
                         </ItemsRepeater>
                     </ScrollViewer>
+                    <ComboBox Name="NodeOperations" HorizontalAlignment="Stretch" IsVisible="False">
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Name}" />
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
+                    <Button Name="NodeOperationButton" HorizontalAlignment="Stretch"
+                            HorizontalContentAlignment="Center" IsVisible="False">
+                        Wykonaj
+                    </Button>
                 </StackPanel>
             </Border>
         </StackPanel>

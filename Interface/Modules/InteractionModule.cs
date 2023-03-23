@@ -19,7 +19,7 @@ internal sealed record InteractionModule(MainWindow Self) {
   }
   public IEnumerable<Node> Hull => _hull ??= Instance.Nodes.Hull();
 
-  public Algorithm Algorithm => Algorithm.FromName(Self.Algorithms.SelectedItem.As<Option>().Value);
+  public Algorithm Algorithm => Algorithm.FromName(Self.Algorithms.SelectedItem.As<Option<string>>().Value);
   public int Step => (int)Self.HistorySlider.Value;
 
   internal record Parameters(MainWindow Self) {
@@ -39,5 +39,5 @@ internal sealed record InteractionModule(MainWindow Self) {
 
   private Instance? _instance;
   private IEnumerable<Node>? _hull;
-  private string InstanceSelection => Self.Instances.SelectedItem.As<Option>().Value;
+  private string InstanceSelection => Self.Instances.SelectedItem.As<Option<string>>().Value;
 }

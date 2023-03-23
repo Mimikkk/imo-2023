@@ -1,3 +1,3 @@
 ﻿namespace Interface.Types;
 
-public record struct Option(string Name, string Value);
+public record struct Option<T>(string Name, T Value);
