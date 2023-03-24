@@ -69,11 +69,6 @@ public sealed partial class MainWindow : Window {
   }
 
   private void InitializeComboBoxes() {
-    Instances.Items = new List<Option<string>> {
-      new("KroA 100", "kroA100"),
-      new("KroB 100", "kroB100")
-    };
-    Instances.SelectedIndex = 0;
     Instances.SelectionChanged += (_, _) => {
       ParameterStartIndex.Maximum = I.Instance.Dimension;
       ParameterPopulationSize.Maximum = I.Hull.Count() - 1;
@@ -86,20 +81,11 @@ public sealed partial class MainWindow : Window {
       M.ClearAverage();
       M.Histories.Clear();
     };
-
-    ParameterStartIndex.Maximum = I.Instance.Dimension;
-    ParameterPopulationSize.Maximum = I.Hull.Count() - 1;
-    ParameterStartIndex.Value = Math.Min(ParameterStartIndex.Maximum, ParameterStartIndex.Value);
-    ParameterPopulationSize.Value = Math.Min(ParameterPopulationSize.Maximum, ParameterPopulationSize.Value);
-
-    Algorithms.SelectionChanged += (_, _) => {
-      ParameterRegretBox.IsVisible = I.Algorithm.UsesRegret;
-      ParameterWeightBox.IsVisible = I.Algorithm.UsesWeight;
-      ParameterTimeLimitBox.IsVisible = I.Algorithm.UsesTimeLimit;
-      ParameterRegret.Value = 2;
-      M.ClearAverage();
-      C.Notify();
+    Instances.Items = new List<Option<string>> {
+      new("KroA 100", "kroA100"),
+      new("KroB 100", "kroB100")
     };
+    Instances.SelectedIndex = 0;
 
     ParameterStartIndex.ValueChanged += (_, _) => {
       ParameterPopulationSize.Maximum = I.Parameter.StartIndex > I.Hull.Count()
@@ -114,7 +100,16 @@ public sealed partial class MainWindow : Window {
       ParameterStartIndex.Value = Math.Min(ParameterStartIndex.Maximum, ParameterStartIndex.Value);
     };
 
-    Algorithms.Items = new List<Option<string>> {
+    Algorithms.SelectionChanged += (_, _) => {
+      ParameterRegretBox.IsVisible = I.Algorithm.UsesRegret;
+      ParameterWeightBox.IsVisible = I.Algorithm.UsesWeight;
+      ParameterTimeLimitBox.IsVisible = I.Algorithm.UsesTimeLimit;
+      ParameterInitializersBox.IsVisible = I.Algorithm.UsesInitializer;
+      ParameterRegret.Value = 2;
+      M.ClearAverage();
+      C.Notify();
+    };
+    Algorithms.Items = new List<Option<Algorithm>> {
       new("Najbliższy sąsiad", Algorithm.NearestNeighbour),
       new("Rozszerzanie cyklu", Algorithm.CycleExpansion),
       new("Rozszerzanie cyklu z k-żalem", Algorithm.CycleExpansionWithKRegret),
@@ -123,6 +118,12 @@ public sealed partial class MainWindow : Window {
       new("GRASP", Algorithm.RandomAdaptive)
     };
     Algorithms.SelectedIndex = 0;
+
+    ParameterInitializers.Items = new List<Option<Algorithm>> {
+      new("Przypadkowe próbkowanie", Algorithm.Random),
+      new("Rozszerzanie z k-żalem", Algorithm.CycleExpansionWithKRegret)
+    };
+    ParameterInitializers.SelectedIndex = 0;
   }
 
   private void InitializeChart() {

@@ -30,10 +30,13 @@ internal static class GreedyRegretCycleExpansionExtensions {
   private static IEnumerable<IEnumerable<Node>>
     SearchSingle(this Instance instance, ObservableList<Node> cycle, int? start, int regret) {
     cycle.Add(start is null ? Node.Choose(instance.Nodes) : instance.Nodes[start.Value]);
+    cycle.Notify();
     cycle.Add(instance.Move.ClosestTo(cycle.First()));
+    cycle.Notify();
 
     while (cycle.Count < instance.Dimension) {
       Moves.AppendFit(cycle, instance.Move.FindBestFitByRegretInsertGain(cycle, cycle, regret));
+      cycle.Notify();
     }
 
     return Yield(cycle);

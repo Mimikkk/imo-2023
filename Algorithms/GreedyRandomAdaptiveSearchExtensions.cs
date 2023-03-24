@@ -12,12 +12,11 @@ internal static class GreedyRandomAdaptiveSearchExtensions {
     Search(this Instance instance, SearchConfiguration configuration) {
     var population = configuration.Population.ToArray();
     var timeLimit = configuration.TimeLimit;
+    var initializer = configuration.Initializer;
 
     var hullSize = instance.Nodes.Hull().Count();
     if (population.Length > hullSize) throw new ArgumentOutOfRangeException(nameof(configuration));
-    if (population.Flatten().Count() != instance.Dimension) {
-      RandomSearchExtensions.Search(instance, configuration);
-    }
+    if (population.Flatten().Count() != instance.Dimension) initializer.Search(instance, configuration);
 
     return population.Length switch {
       < 0 => throw new ArgumentOutOfRangeException(nameof(configuration)),

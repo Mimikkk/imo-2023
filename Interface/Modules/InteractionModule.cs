@@ -20,7 +20,7 @@ internal sealed record InteractionModule(MainWindow Self) {
 
   public IEnumerable<Node> Hull => _hull ??= Instance.Nodes.Hull();
 
-  public Algorithm Algorithm => Algorithm.FromName(Self.Algorithms.SelectedItem.As<Option<string>>().Value);
+  public Algorithm Algorithm => Self.Algorithms.SelectedItem.As<Option<Algorithm>>().Value;
   public int Step => (int)Self.HistorySlider.Value;
 
   internal sealed record Parameters(MainWindow Self) {
@@ -30,12 +30,15 @@ internal sealed record InteractionModule(MainWindow Self) {
     public float Weight => (float)Self.ParameterWeight.Value;
     public float TimeLimit => (float)Self.ParameterTimeLimit.Value;
 
+    public Algorithm Initializer => Self.ParameterInitializers.SelectedItem.As<Option<Algorithm>>().Value;
+
     public SearchConfiguration Configuration => new() {
       Population = Times(PopulationSize, ObservableList<Node>.Create).ToList(),
       Regret = Regret,
       Start = StartIndex,
       Weight = Weight,
-      TimeLimit = TimeLimit
+      TimeLimit = TimeLimit,
+      Initializer = Initializer
     };
   }
 

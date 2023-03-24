@@ -40,6 +40,16 @@
                     </ComboBox.ItemTemplate>
                 </ComboBox>
             </Panel>
+            <Panel Name="ParameterInitializersBox">
+                <TextBlock Margin="8 -8 0 0" ZIndex="1" FontSize="12">Inicjalizator</TextBlock>
+                <ComboBox Name="ParameterInitializers" HorizontalAlignment="Stretch">
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Name}" />
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
+            </Panel>
             <Border VerticalAlignment="Bottom" Padding="4" CornerRadius="4" BorderBrush="#4f46e5" Background="#1e40af">
                 <StackPanel Spacing="4">
                     <Panel Name="ParameterStartIndexBox">

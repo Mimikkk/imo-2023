@@ -7,5 +7,6 @@ public record SearchConfiguration {
   public int? Start;
   public float TimeLimit;
   public int Regret;
+  public Algorithm? Initializer = null;
   public List<ObservableList<Node>> Population = null!;
 }

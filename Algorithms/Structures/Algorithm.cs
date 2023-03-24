@@ -11,12 +11,14 @@ public sealed class Algorithm : SmartEnum<Algorithm> {
     GreedyNearestNeighbourExtensions.Search,
     false,
     false,
+    false,
     false
   );
 
   public static readonly Algorithm CycleExpansion = new(
     DisplayType.Cycle,
     GreedyCycleExpansionExtensions.Search,
+    false,
     false,
     false,
     false
@@ -27,6 +29,7 @@ public sealed class Algorithm : SmartEnum<Algorithm> {
     GreedyRegretCycleExpansionExtensions.Search,
     true,
     false,
+    false,
     false
   );
 
@@ -35,12 +38,14 @@ public sealed class Algorithm : SmartEnum<Algorithm> {
     GreedyWeightedRegretCycleExpansionExtensions.Search,
     true,
     true,
+    false,
     false
   );
 
   public static readonly Algorithm Random = new(
     DisplayType.Cycle,
     RandomSearchExtensions.Search,
+    false,
     false,
     false,
     false
@@ -51,6 +56,7 @@ public sealed class Algorithm : SmartEnum<Algorithm> {
     GreedyRandomAdaptiveSearchExtensions.Search,
     false,
     false,
+    true,
     true
   );
 
@@ -58,13 +64,14 @@ public sealed class Algorithm : SmartEnum<Algorithm> {
     DisplayType displayAs,
     SearchFn search,
     bool usesRegret,
-    bool usesWeight, bool usesTimeLimit)
+    bool usesWeight, bool usesTimeLimit, bool usesInitializer)
     : base(_nextValue.ToString(), ++_nextValue) {
     DisplayAs = displayAs;
     Search = search;
     UsesRegret = usesRegret;
     UsesWeight = usesWeight;
     UsesTimeLimit = usesTimeLimit;
+    UsesInitializer = usesInitializer;
   }
 
   public enum DisplayType {
@@ -75,6 +82,7 @@ public sealed class Algorithm : SmartEnum<Algorithm> {
   public readonly bool UsesRegret;
   public readonly bool UsesWeight;
   public readonly bool UsesTimeLimit;
+  public readonly bool UsesInitializer;
   public readonly DisplayType DisplayAs;
   private static int _nextValue;
 
