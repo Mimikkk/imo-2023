@@ -89,7 +89,6 @@ public sealed record Moves(Instance Instance) {
     else path.Insert(0, tail);
   }
 
-
   public (Node previous, Node best, int gain)
     FindBestFitByLowestGain(IList<Node> cycle, IEnumerable<Node> except) {
     return cycle.Edges()
@@ -141,10 +140,35 @@ public sealed record Moves(Instance Instance) {
       .First()
       .MinBy(match => match.gain);
   }
-  
+
   private static int CalculateRegret(IEnumerable<int> gains, int k) {
     var enumerable = gains as int[] ?? gains.ToArray();
 
     return enumerable.Skip(1).Take(k - 1).Aggregate(0, (acc, a) => acc + (enumerable.First() - a));
+  }
+
+  public static IEnumerable<(Node a, Node b)> Candidates(IEnumerable<Node> cycle) => cycle.Combinations(2).Select(x => {
+    using var it = x.GetEnumerator();
+    it.MoveNext();
+    var a = it.Current;
+    it.MoveNext();
+    var b = it.Current;
+
+    return (a, b);
+  });
+
+  public static IEnumerable<(Node a, Node b)> Candidates(IEnumerable<Node> first, IEnumerable<Node> second) =>
+    from a in first from b in second select (a, b);
+
+  public static IEnumerable<(Node a, Node b)> Candidates(IEnumerable<IEnumerable<Node>> cycles) {
+    foreach (var (a, b) in cycles.Combinations(2).SelectMany(x => {
+               using var it = x.GetEnumerator();
+               it.MoveNext();
+               var a = it.Current;
+               it.MoveNext();
+               var b = it.Current;
+
+               return Candidates(a, b);
+             })) yield return (a, b);
   }
 }

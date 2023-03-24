@@ -16,7 +16,7 @@ public sealed record Gains(Instance Instance) {
     var va = first.Neighbourhood(a);
     var vb = second.Neighbourhood(b);
 
-    return Instance[(va.a, vb.b, va.c)] + Instance[(vb.a, va.b, vb.c)] - Instance[va] - Instance[vb];
+    return Instance[va] + Instance[vb] - Instance[(va.a, vb.b, va.c)] - Instance[(vb.a, va.b, vb.c)];
   }
 
   public int ExchangeEdge(IEnumerable<Node> cycle, Node a, Node b) {

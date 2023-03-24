@@ -8,63 +8,62 @@ using SearchFn = Func<Instance, SearchConfiguration, IEnumerable<IEnumerable<Nod
 public sealed class Algorithm : SmartEnum<Algorithm> {
   public static readonly Algorithm NearestNeighbour = new(
     DisplayType.Path,
-    GreedyNearestNeighbourExtensions.Search,
-    false,
-    false,
-    false,
-    false
+    GreedyNearestNeighbour.Search
   );
 
   public static readonly Algorithm CycleExpansion = new(
     DisplayType.Cycle,
-    GreedyCycleExpansionExtensions.Search,
-    false,
-    false,
-    false,
-    false
+    GreedyCycleExpansion.Search
   );
 
   public static readonly Algorithm CycleExpansionWithKRegret = new(
     DisplayType.Cycle,
-    GreedyRegretCycleExpansionExtensions.Search,
-    true,
-    false,
-    false,
-    false
+    GreedyRegretCycleExpansion.Search,
+    usesRegret: true
   );
 
   public static readonly Algorithm CycleExpansionWithKRegretAndWeight = new(
     DisplayType.Cycle,
-    GreedyWeightedRegretCycleExpansionExtensions.Search,
-    true,
-    true,
-    false,
-    false
+    GreedyWeightedRegretCycleExpansion.Search,
+    usesRegret: true,
+    usesWeight: true
   );
 
   public static readonly Algorithm Random = new(
     DisplayType.Cycle,
-    RandomSearchExtensions.Search,
-    false,
-    false,
-    false,
-    false
+    RandomSearch.Search
   );
 
   public static readonly Algorithm RandomAdaptive = new(
     DisplayType.Cycle,
-    GreedyRandomAdaptiveSearchExtensions.Search,
-    false,
-    false,
-    true,
-    true
+    GreedyRandomAdaptiveSearch.Search,
+    usesTimeLimit: true,
+    usesInitializer: true
+  );
+
+  public static readonly Algorithm GreedyLocal = new(
+    DisplayType.Cycle,
+    GreedyLocalSearch.Search,
+    usesInitializer: true,
+    usesRegret: true,
+    usesWeight: true
+  );
+
+  public static readonly Algorithm SteepestLocal = new(
+    DisplayType.Cycle,
+    SteepestLocalSearch.Search,
+    usesInitializer: true,
+    usesRegret: true,
+    usesWeight: true
   );
 
   private Algorithm(
     DisplayType displayAs,
     SearchFn search,
-    bool usesRegret,
-    bool usesWeight, bool usesTimeLimit, bool usesInitializer)
+    bool usesRegret = false,
+    bool usesWeight = false,
+    bool usesTimeLimit = false,
+    bool usesInitializer = false)
     : base(_nextValue.ToString(), ++_nextValue) {
     DisplayAs = displayAs;
     Search = search;

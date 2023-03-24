@@ -1,4 +1,6 @@
-﻿namespace Domain.Extensions;
+﻿using System.Collections;
+
+namespace Domain.Extensions;
 
 public static class EnumerableExtensions {
   public static IEnumerable<T> Yield<T>(params T[] items) => items;
@@ -17,7 +19,7 @@ public static class EnumerableExtensions {
         return (items[0], items[1]);
       });
 
-  public static IEnumerable<(T a, T b, T c)> Tripletwise<T>(this IEnumerable<T> source) =>
+  public static IEnumerable<(T a, T b, T c)> TripletWise<T>(this IEnumerable<T> source) =>
     Window(source, 3)
       .Select(enumerable => {
         var items = enumerable.ToArray();
@@ -36,19 +38,16 @@ public static class EnumerableExtensions {
     }
   }
 
-  public static IEnumerable<IEnumerable<T>> Combinations<T>(this IEnumerable<T> items, int count) {
-    var enumerable = items as T[] ?? items.ToArray();
-    if (count == 1)
-      foreach (var item in enumerable)
-        yield return Yield(item);
-    if (count > enumerable.Length)
-      yield return enumerable;
+  public static IEnumerable<IEnumerable<T>> Combinations<T>(this IEnumerable<T> items, int k) {
+    if (k == 0) return Yield(Enumerable.Empty<T>());
+    if (!items.Any()) return Enumerable.Empty<IEnumerable<T>>();
 
-    foreach (var (element, i) in enumerable.Select((item, index) => (item, index + 1))) {
-      foreach (var result in Combinations(enumerable.Skip(i), count - 1))
-        yield return Yield(element).Concat(result);
-    }
+    var head = items.First();
+    var tail = items.Skip(1);
+    return tail.Combinations(k - 1).Select(x => new[] { head }.Concat(x)).Concat(tail.Combinations(k));
   }
+
+  public static IEnumerable<T> Shuffle<T>(this IEnumerable<T> items) => items.OrderBy(_ => Random.Shared.Next());
 
   public static void ForEach<T>(this IEnumerable<T> items, Action<T> action) {
     foreach (var item in items) action(item);

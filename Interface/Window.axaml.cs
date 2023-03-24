@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using Algorithms.Structures;
 using Avalonia.Controls;
@@ -114,6 +115,8 @@ public sealed partial class MainWindow : Window {
       new("Rozszerzanie cyklu", Algorithm.CycleExpansion),
       new("Rozszerzanie cyklu z k-żalem", Algorithm.CycleExpansionWithKRegret),
       new("Rozszerzanie cyklu z ważonym k-żalem", Algorithm.CycleExpansionWithKRegretAndWeight),
+      new("Zachłanne sąsiedztwo", Algorithm.GreedyLocal),
+      new("Strome sąsiedztwo", Algorithm.SteepestLocal),
       new("Przypadkowe próbkowanie", Algorithm.Random),
       new("GRASP", Algorithm.RandomAdaptive)
     };
@@ -149,9 +152,15 @@ public sealed partial class MainWindow : Window {
 
     var histories = Times(I.Parameter.PopulationSize, () => new List<List<Node>> { new() })
       .ToList();
+
+    var timer = Stopwatch.StartNew();
     I.Algorithm.Search(I.Instance, I.Parameter.Configuration with {
       Population = histories.Select(history => new ObservableList<Node>(items => history.Add(items.ToList()))).ToList()
     });
+
+    timer.Stop();
+    var elapsed = timer.ElapsedMilliseconds;
+    ParameterTimeLimit.Value = Math.Round((float)elapsed / 1000, 2);
 
     histories.ForEach(M.Histories.Add);
     HistorySlider.Maximum = histories.MaxBy(x => x.Count)!.Count - 1;

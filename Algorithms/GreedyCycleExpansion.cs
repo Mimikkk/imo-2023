@@ -4,7 +4,7 @@ using Domain.Structures;
 
 namespace Algorithms;
 
-internal static class GreedyCycleExpansionExtensions {
+internal static class GreedyCycleExpansion {
   public static IEnumerable<IEnumerable<Node>>
     Search(this Instance instance, SearchConfiguration configuration) {
     var population = configuration.Population.ToArray();

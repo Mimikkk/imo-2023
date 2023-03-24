@@ -4,7 +4,7 @@ using Domain.Structures;
 
 namespace Algorithms;
 
-internal static class GreedyWeightedRegretCycleExpansionExtensions {
+internal static class GreedyWeightedRegretCycleExpansion {
   public static IEnumerable<IEnumerable<Node>>
     Search(this Instance instance, SearchConfiguration configuration) {
     var population = configuration.Population.ToArray();
