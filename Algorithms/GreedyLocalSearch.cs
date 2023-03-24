@@ -25,13 +25,12 @@ internal static class GreedyLocalSearch {
     };
   }
 
-
   private static IEnumerable<IEnumerable<Node>>
     SearchMultipleExternalVertices(Instance instance, IEnumerable<ObservableList<Node>> population) {
     var enumerable = population.ToArray();
 
     var bestCycles = enumerable.Select(solution => solution.ToList()).ToList();
-
+    var gains = new List<int>();
 
     while (true) {
       var previousBestCycles = bestCycles;
@@ -47,6 +46,7 @@ internal static class GreedyLocalSearch {
 
         if (gain <= 0) continue;
         Moves.ExchangeVertex(first, second, a, b);
+        gains.Add(gain);
 
         bestCycles = cycles;
         enumerable.Zip(cycles).ForEach(p => {
@@ -67,7 +67,7 @@ internal static class GreedyLocalSearch {
     var enumerable = population.ToArray();
 
     var bestCycles = enumerable.Select(solution => solution.ToList()).ToList();
-
+    var gains = new List<int>();
 
     while (true) {
       var previousBestCycles = bestCycles;
@@ -79,6 +79,7 @@ internal static class GreedyLocalSearch {
 
         if (gain <= 0) continue;
         Moves.ExchangeVertex(cycle, a, b);
+        gains.Add(gain);
 
         bestCycles = cycles;
         enumerable.Zip(cycles).ForEach(p => {
@@ -99,6 +100,7 @@ internal static class GreedyLocalSearch {
     var enumerable = population.ToArray();
 
     var bestCycles = enumerable.Select(solution => solution.ToList()).ToList();
+    var gains = new List<int>();
 
 
     while (true) {
@@ -111,6 +113,7 @@ internal static class GreedyLocalSearch {
 
         if (gain <= 0) continue;
         Moves.ExchangeEdge(cycle, a, b);
+        gains.Add(gain);
 
         bestCycles = cycles;
         enumerable.Zip(cycles).ForEach(p => {
@@ -131,7 +134,7 @@ internal static class GreedyLocalSearch {
     var enumerable = population.ToArray();
 
     var bestCycles = enumerable.Select(solution => solution.ToList()).ToList();
-
+    var gains = new List<int>();
 
     while (true) {
       var previousBestCycles = bestCycles;
@@ -165,6 +168,8 @@ internal static class GreedyLocalSearch {
             Moves.ExchangeEdge(first, a, b);
             break;
         }
+
+        gains.Add(gain);
 
         bestCycles = cycles;
         enumerable.Zip(cycles).ForEach(p => {
