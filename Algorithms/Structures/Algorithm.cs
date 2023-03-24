@@ -45,6 +45,7 @@ public sealed class Algorithm : SmartEnum<Algorithm> {
     DisplayType.Cycle,
     GreedyLocalSearch.Search,
     usesInitializer: true,
+    usesVariant: true,
     usesRegret: true,
     usesWeight: true
   );
@@ -53,6 +54,7 @@ public sealed class Algorithm : SmartEnum<Algorithm> {
     DisplayType.Cycle,
     SteepestLocalSearch.Search,
     usesInitializer: true,
+    usesVariant: true,
     usesRegret: true,
     usesWeight: true
   );
@@ -63,6 +65,7 @@ public sealed class Algorithm : SmartEnum<Algorithm> {
     bool usesRegret = false,
     bool usesWeight = false,
     bool usesTimeLimit = false,
+    bool usesVariant = false,
     bool usesInitializer = false)
     : base(_nextValue.ToString(), ++_nextValue) {
     DisplayAs = displayAs;
@@ -71,6 +74,7 @@ public sealed class Algorithm : SmartEnum<Algorithm> {
     UsesWeight = usesWeight;
     UsesTimeLimit = usesTimeLimit;
     UsesInitializer = usesInitializer;
+    UsesVariant = usesVariant;
   }
 
   public enum DisplayType {
@@ -82,6 +86,7 @@ public sealed class Algorithm : SmartEnum<Algorithm> {
   public readonly bool UsesWeight;
   public readonly bool UsesTimeLimit;
   public readonly bool UsesInitializer;
+  public readonly bool UsesVariant;
   public readonly DisplayType DisplayAs;
   private static int _nextValue;
 

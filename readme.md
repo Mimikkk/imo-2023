@@ -208,11 +208,23 @@ W ramach zadania należało:
     - [ ] Przy wykorzystaniu sąsiedztwa z wymianą wierzchołków wewnątrz cyklu.
         - [x] Zaczynającą od rozwiązania uzyskanego w algorytmie zachłannym.
         - [x] Zaczynający od rozwiązania uzyskanego w algorytmie losowym ( _RS_ ).
+    - [ ] Przy wykorzystaniu sąsiedztwa z wymianą krawędzi wewnątrz cyklu.
+        - [x] Zaczynającą od rozwiązania uzyskanego w algorytmie zachłannym.
+        - [x] Zaczynający od rozwiązania uzyskanego w algorytmie losowym ( _RS_ ).
+  - [ ] **Dodatkowo**: Przy wykorzystaniu sąsiedztwa z wykorzystaniem wszystkich operacji.
+      - [x] Zaczynającą od rozwiązania uzyskanego w algorytmie zachłannym.
+      - [x] Zaczynający od rozwiązania uzyskanego w algorytmie losowym ( _RS_ ).
 - [ ] Zaimplementować algorytm przeszukiwania lokalnego w wersji zachłannej ( _greedy_ ).
     - [x] Przy wykorzystaniu sąsiedztwa z wymianą wierzchołków między cyklami.
         - [x] Zaczynającą od rozwiązania uzyskanego w algorytmie zachłannym.
         - [x] Zaczynający od rozwiązania uzyskanego w algorytmie losowym ( _RS_ ).
     - [ ] Przy wykorzystaniu sąsiedztwa z wymianą wierzchołków wewnątrz cyklu.
+        - [x] Zaczynającą od rozwiązania uzyskanego w algorytmie zachłannym.
+        - [x] Zaczynający od rozwiązania uzyskanego w algorytmie losowym ( _RS_ ).
+    - [ ] Przy wykorzystaniu sąsiedztwa z wymianą krawędzi wewnątrz cyklu.
+        - [x] Zaczynającą od rozwiązania uzyskanego w algorytmie zachłannym.
+        - [x] Zaczynający od rozwiązania uzyskanego w algorytmie losowym ( _RS_ ).
+    - [ ] **Dodatkowo**: Przy wykorzystaniu sąsiedztwa z wykorzystaniem wszystkich operacji.
         - [x] Zaczynającą od rozwiązania uzyskanego w algorytmie zachłannym.
         - [x] Zaczynający od rozwiązania uzyskanego w algorytmie losowym ( _RS_ ).
 

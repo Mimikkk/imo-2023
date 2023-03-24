@@ -1,4 +1,6 @@
-﻿namespace Domain.Extensions;
+﻿using System.Collections;
+
+namespace Domain.Extensions;
 
 public static class EnumerableExtensions {
   public static IEnumerable<T> Yield<T>(params T[] items) => items;
@@ -61,5 +63,27 @@ public static class EnumerableExtensions {
 
   public static void ForEach<T, Y>(this IEnumerable<T> items, Func<T, Y?, dynamic> action) {
     foreach (var item in items) action(item, default);
+  }
+
+  public static (T a, T b) First2<T>(this IEnumerable<T> items) {
+    using var it = items.GetEnumerator();
+    it.MoveNext();
+    var a = it.Current;
+    it.MoveNext();
+    var b = it.Current;
+
+    return (a, b);
+  }
+
+  public static (T a, T b, T c) First3<T>(this IEnumerable<T> items) {
+    using var it = items.GetEnumerator();
+    it.MoveNext();
+    var a = it.Current;
+    it.MoveNext();
+    var b = it.Current;
+    it.MoveNext();
+    var c = it.Current;
+
+    return (a, b, c);
   }
 }

@@ -106,6 +106,7 @@ public sealed partial class MainWindow : Window {
       ParameterWeightBox.IsVisible = I.Algorithm.UsesWeight;
       ParameterTimeLimitBox.IsVisible = I.Algorithm.UsesTimeLimit;
       ParameterInitializersBox.IsVisible = I.Algorithm.UsesInitializer;
+      ParameterVariantsBox.IsVisible = I.Algorithm.UsesVariant;
       ParameterRegret.Value = 2;
       M.ClearAverage();
       C.Notify();
@@ -127,6 +128,14 @@ public sealed partial class MainWindow : Window {
       new("Rozszerzanie z k-żalem", Algorithm.CycleExpansionWithKRegret)
     };
     ParameterInitializers.SelectedIndex = 0;
+
+    ParameterVariants.Items = new List<Option<string>> {
+      new("Wewnętrzna wymiana wierzchołków", "internal-vertices"),
+      new("Zewnętrzna wymiana wierzchołków", "internal-edges"),
+      new("Wewnętrzna wymiana krawędzi", "external-vertices"),
+      new("Mieszany", "mixed"),
+    };
+    ParameterVariants.SelectedItem = 0;
   }
 
   private void InitializeChart() {

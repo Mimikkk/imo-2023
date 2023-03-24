@@ -144,27 +144,15 @@ public sealed record Moves(Instance Instance) {
     return enumerable.Skip(1).Take(k - 1).Aggregate(0, (acc, a) => acc + (enumerable.First() - a));
   }
 
-  public static IEnumerable<(Node a, Node b)> Candidates(IEnumerable<Node> cycle) => cycle.Combinations(2).Select(x => {
-    using var it = x.GetEnumerator();
-    it.MoveNext();
-    var a = it.Current;
-    it.MoveNext();
-    var b = it.Current;
-
-    return (a, b);
-  });
+  public static IEnumerable<(Node a, Node b)> Candidates(IEnumerable<Node> cycle) =>
+    cycle.Combinations(2).Select(c => c.First2());
 
   public static IEnumerable<(Node a, Node b)> Candidates(IEnumerable<Node> first, IEnumerable<Node> second) =>
     from a in first from b in second select (a, b);
 
   public static IEnumerable<(Node a, Node b)> Candidates(IEnumerable<IEnumerable<Node>> cycles) {
     foreach (var (a, b) in cycles.Combinations(2).SelectMany(x => {
-               using var it = x.GetEnumerator();
-               it.MoveNext();
-               var a = it.Current;
-               it.MoveNext();
-               var b = it.Current;
-
+               var (a, b) = x.First2();
                return Candidates(a, b);
              })) yield return (a, b);
   }
