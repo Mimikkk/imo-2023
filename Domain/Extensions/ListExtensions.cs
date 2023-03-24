@@ -1,7 +1,4 @@
-﻿using Domain.Structures;
-using ScottPlot;
-
-namespace Domain.Extensions;
+﻿namespace Domain.Extensions;
 
 public static class ListExtensions {
   public static void Swap<T>(this IList<T> list, int i, int j) => (list[i], list[j]) = (list[j], list[i]);

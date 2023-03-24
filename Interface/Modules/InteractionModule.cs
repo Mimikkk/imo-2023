@@ -31,7 +31,7 @@ internal sealed record InteractionModule(MainWindow Self) {
     public float TimeLimit => (float)Self.ParameterTimeLimit.Value;
 
     public SearchConfiguration Configuration => new() {
-      Population = Range(0, PopulationSize).Select(_ => new List<Node>()),
+      Population = Times(PopulationSize, ObservableList<Node>.Create).ToList(),
       Regret = Regret,
       Start = StartIndex,
       Weight = Weight,

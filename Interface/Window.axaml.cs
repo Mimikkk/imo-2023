@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using Algorithms.Structures;
@@ -6,6 +5,7 @@ using Avalonia.Controls;
 using Avalonia.Input;
 using Domain.Extensions;
 using Domain.Structures;
+using Interface.Modules;
 using Interface.Types;
 using static System.Linq.Enumerable;
 
@@ -16,7 +16,7 @@ public sealed partial class MainWindow : Window {
     InitializeComponent();
 
     Mod = new(this);
-    Mod.Chart.Subscribe(Mod.Title.Update);
+    C.Subscribe(T.Update);
 
     InitializeComboBoxes();
     InitializeChart();
@@ -28,13 +28,13 @@ public sealed partial class MainWindow : Window {
     HistorySlider.Minimum = 0;
 
 
-    Mod.Memory.Histories.CollectionChanged += (_, _) => Mod.Chart.Notify();
+    M.Histories.CollectionChanged += (_, _) => C.Notify();
 
     HistorySlider.PropertyChanged += (_, change) => {
       if (change.Property.Name != "Value") return;
 
-      HistoryText.Text = $"Krok: {Mod.Interaction.Step}";
-      Mod.Chart.Notify();
+      HistoryText.Text = $"Krok: {I.Step}";
+      C.Notify();
     };
     RunButton.Click += (_, _) => HandleRunCommand();
 
@@ -46,36 +46,25 @@ public sealed partial class MainWindow : Window {
     ParameterPopulationSize.Value = 1;
     FindBestButton.Click += (_, _) => {
       ParameterStartIndex.Value = Range((int)ParameterStartIndex.Minimum + 1, (int)ParameterStartIndex.Maximum - 1)
-        .MinBy(start => {
-          var configuration = new SearchConfiguration {
-            Population = Range(0, Mod.Interaction.Parameter.PopulationSize).Select(_ => new List<Node>()),
-            Regret = Mod.Interaction.Parameter.Regret,
-            Weight = Mod.Interaction.Parameter.Weight,
-            Start = start
-          };
-
-          var results = Mod.Interaction.Algorithm.Search(Mod.Interaction.Instance, configuration);
-          return results.Sum(nodes => Mod.Interaction.Instance[nodes]);
-        });
+        .MinBy(start => I.Algorithm.Search(
+            I.Instance,
+            I.Parameter.Configuration with { Start = start })
+          .Sum(nodes => I.Instance[nodes])
+        );
       HandleRunCommand();
     };
     FindWorstButton.Click += (_, _) => {
       ParameterStartIndex.Value = Range((int)ParameterStartIndex.Minimum + 1, (int)ParameterStartIndex.Maximum - 1)
-        .MaxBy(start => {
-          var configuration = new SearchConfiguration {
-            Population = Range(0, Mod.Interaction.Parameter.PopulationSize).Select(_ => new List<Node>()),
-            Regret = Mod.Interaction.Parameter.Regret,
-            Start = start
-          };
-
-          var results = Mod.Interaction.Algorithm.Search(Mod.Interaction.Instance, configuration);
-          return results.Sum(nodes => Mod.Interaction.Instance[nodes]);
-        });
+        .MinBy(start => I.Algorithm.Search(
+            I.Instance,
+            I.Parameter.Configuration with { Start = start })
+          .Sum(nodes => I.Instance[nodes])
+        );
       HandleRunCommand();
     };
     CalculateAverageButton.Click += (_, _) => {
-      Mod.Memory.CalculateAverage((int)ParameterStartIndex.Minimum + 1, (int)ParameterStartIndex.Maximum - 1);
-      Mod.Chart.Notify();
+      M.CalculateAverage((int)ParameterStartIndex.Minimum + 1, (int)ParameterStartIndex.Maximum - 1);
+      C.Notify();
     };
   }
 
@@ -86,42 +75,42 @@ public sealed partial class MainWindow : Window {
     };
     Instances.SelectedIndex = 0;
     Instances.SelectionChanged += (_, _) => {
-      ParameterStartIndex.Maximum = Mod.Interaction.Instance.Dimension;
-      ParameterPopulationSize.Maximum = Mod.Interaction.Hull.Count() - 1;
+      ParameterStartIndex.Maximum = I.Instance.Dimension;
+      ParameterPopulationSize.Maximum = I.Hull.Count() - 1;
       ParameterStartIndex.Value = Math.Min(ParameterStartIndex.Maximum, ParameterStartIndex.Value);
       ParameterPopulationSize.Value = Math.Min(ParameterPopulationSize.Maximum, ParameterPopulationSize.Value);
       HistorySlider.Value = 0;
       HistorySlider.Maximum = 0;
 
       Chart.Plot.AutoScale();
-      Mod.Memory.ClearAverage();
-      Mod.Memory.Histories.Clear();
+      M.ClearAverage();
+      M.Histories.Clear();
     };
 
-    ParameterStartIndex.Maximum = Mod.Interaction.Instance.Dimension;
-    ParameterPopulationSize.Maximum = Mod.Interaction.Hull.Count() - 1;
+    ParameterStartIndex.Maximum = I.Instance.Dimension;
+    ParameterPopulationSize.Maximum = I.Hull.Count() - 1;
     ParameterStartIndex.Value = Math.Min(ParameterStartIndex.Maximum, ParameterStartIndex.Value);
     ParameterPopulationSize.Value = Math.Min(ParameterPopulationSize.Maximum, ParameterPopulationSize.Value);
 
     Algorithms.SelectionChanged += (_, _) => {
-      ParameterRegretBox.IsVisible = Mod.Interaction.Algorithm.UsesRegret;
-      ParameterWeightBox.IsVisible = Mod.Interaction.Algorithm.UsesWeight;
-      ParameterTimeLimitBox.IsVisible = Mod.Interaction.Algorithm.UsesTimeLimit;
+      ParameterRegretBox.IsVisible = I.Algorithm.UsesRegret;
+      ParameterWeightBox.IsVisible = I.Algorithm.UsesWeight;
+      ParameterTimeLimitBox.IsVisible = I.Algorithm.UsesTimeLimit;
       ParameterRegret.Value = 2;
-      Mod.Memory.ClearAverage();
-      Mod.Chart.Notify();
+      M.ClearAverage();
+      C.Notify();
     };
 
     ParameterStartIndex.ValueChanged += (_, _) => {
-      ParameterPopulationSize.Maximum = Mod.Interaction.Parameter.StartIndex > Mod.Interaction.Hull.Count()
+      ParameterPopulationSize.Maximum = I.Parameter.StartIndex > I.Hull.Count()
         ? 2
-        : Mod.Interaction.Hull.Count() - 1;
+        : I.Hull.Count() - 1;
       ParameterPopulationSize.Value = Math.Min(ParameterPopulationSize.Maximum, ParameterPopulationSize.Value);
     };
     ParameterPopulationSize.ValueChanged += (_, _) => {
-      ParameterStartIndex.Maximum = Mod.Interaction.Parameter.PopulationSize > 2
-        ? Mod.Interaction.Hull.Count() - 1
-        : Mod.Interaction.Instance.Dimension;
+      ParameterStartIndex.Maximum = I.Parameter.PopulationSize > 2
+        ? I.Hull.Count() - 1
+        : I.Instance.Dimension;
       ParameterStartIndex.Value = Math.Min(ParameterStartIndex.Maximum, ParameterStartIndex.Value);
     };
 
@@ -138,37 +127,41 @@ public sealed partial class MainWindow : Window {
 
   private void InitializeChart() {
     Chart.Plot.AutoScale();
-    Mod.Chart.Notify();
+    C.Notify();
 
     Chart.PointerMoved += (_, _) => {
-      Mod.Mouse.UpdateClosest();
-      Mod.Chart.Notify();
-      Mod.Panel.Notify();
+      Mouse.UpdateClosest();
+      C.Notify();
+      P.Notify();
     };
     Chart.PointerReleased += (_, e) => {
       (e.KeyModifiers == KeyModifiers.Control)
-        .And(Mod.Mouse.UpdateSelection)
-        .Or(Mod.Mouse.UpdateSelected);
-      Mod.Chart.Notify();
-      Mod.Panel.Notify();
+        .And(Mouse.UpdateSelection)
+        .Or(Mouse.UpdateSelected);
+      C.Notify();
+      P.Notify();
     };
   }
 
   private void HandleRunCommand() {
-    Mod.Memory.Histories.Clear();
+    M.Histories.Clear();
 
-    var histories = Range(0, Mod.Interaction.Parameter.PopulationSize).Select(_ => new List<List<Node>> { new() })
+    var histories = Times(I.Parameter.PopulationSize, () => new List<List<Node>> { new() })
       .ToList();
-    Mod.Interaction.Algorithm.Search(Mod.Interaction.Instance, Mod.Interaction.Parameter.Configuration with {
-      Population = histories.Select(history =>
-        new ObservableList<Node>(items => history.Add(items.ToList()))
-      ),
+    I.Algorithm.Search(I.Instance, I.Parameter.Configuration with {
+      Population = histories.Select(history => new ObservableList<Node>(items => history.Add(items.ToList()))).ToList()
     });
 
-    histories.ForEach(Mod.Memory.Histories.Add);
+    histories.ForEach(M.Histories.Add);
     HistorySlider.Maximum = histories.MaxBy(x => x.Count)!.Count - 1;
     HistorySlider.Value = HistorySlider.Maximum;
   }
 
   internal readonly Modules.Modules Mod;
+  private MouseModule Mouse => Mod.Mouse;
+  private TitleModule T => Mod.Title;
+  private MemoryModule M => Mod.Memory;
+  private ChartRendererModule C => Mod.Chart;
+  private InteractionModule I => Mod.Interaction;
+  private CyclePanelModule P => Mod.Panel;
 }

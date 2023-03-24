@@ -1,8 +1,6 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using Domain.Extensions;
 using Domain.Structures;
-using Interface.Types;
 using ScottPlot.Control;
 
 namespace Interface.Modules;

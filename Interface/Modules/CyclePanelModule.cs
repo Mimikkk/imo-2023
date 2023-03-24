@@ -1,11 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using Domain.Extensions;
 using Domain.Structures;
 using Interface.Types;
 using ScottPlot;
-using static Domain.Extensions.EnumerableExtensions;
 
 namespace Interface.Modules;
 

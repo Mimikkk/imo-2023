@@ -7,5 +7,5 @@ public record SearchConfiguration {
   public int? Start;
   public float TimeLimit;
   public int Regret;
-  public IEnumerable<IList<Node>> Population = null!;
+  public List<ObservableList<Node>> Population = null!;
 }

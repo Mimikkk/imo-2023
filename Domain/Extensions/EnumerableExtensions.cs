@@ -1,11 +1,10 @@
-﻿using System.Collections;
-
-namespace Domain.Extensions;
+﻿namespace Domain.Extensions;
 
 public static class EnumerableExtensions {
   public static IEnumerable<T> Yield<T>(params T[] items) => items;
   public static IEnumerable<T> Flatten<T>(this IEnumerable<IEnumerable<T>> items) => items.SelectMany(x => x);
   public static void Invoke(Action action) => action();
+  public static IEnumerable<T> Times<T>(int count, Func<T> action) => Enumerable.Range(0, count).Select(_ => action());
 
   public static IEnumerable<T>
     Except<T>(this IEnumerable<T> enumerable, params T[] items) => enumerable.Except(items.AsEnumerable());
