@@ -41,6 +41,10 @@ public sealed partial class MainWindow : Window {
 
     ClearParameterStartIndexButton.Click += (_, _) => ParameterStartIndex.Value = 0;
     ParameterStartIndex.Value = 0;
+    ParameterStartIndex.PropertyChanged += (_, change) => {
+      if (change.Property.Name != "Maximum") return;
+      M.Invalidate();
+    };
     ClearParameterRegretButton.Click += (_, _) => ParameterRegret.Value = 2;
     ParameterRegret.Value = 2;
     ClearParameterPopulationSizeButton.Click += (_, _) => ParameterPopulationSize.Value = 1;
@@ -71,7 +75,7 @@ public sealed partial class MainWindow : Window {
       HistorySlider.Maximum = 0;
 
       Chart.Plot.AutoScale();
-      M.ClearAverage();
+      M.Invalidate();
       M.Histories.Clear();
     };
     Instances.Items = new List<Option<string>> {
@@ -137,7 +141,7 @@ public sealed partial class MainWindow : Window {
 
 
       ParameterRegret.Value = 2;
-      M.ClearAverage();
+      M.Invalidate();
       C.Notify();
     };
     Algorithms.Items = new List<Option<Algorithm>> {

@@ -24,7 +24,26 @@ internal sealed record MemoryModule(MainWindow Self) {
   public int BestIndex { get; private set; }
   public int WorstIndex { get; private set; }
 
+  public void Invalidate() {
+    AverageScore = null;
+    BestScore = null;
+    WorstScore = null;
+
+    AverageTime = null;
+    BestTime = null;
+    WorstTime = null;
+
+    AverageGain = null;
+    BestGain = null;
+    WorstGain = null;
+
+    BestIndex = -1;
+    WorstIndex = -1;
+  }
+
   public void Measure(int start, int end) {
+    if (AverageScore is not null) return;
+
     var measurements = Enumerable.Range(start, end)
       .Select(index => {
         var timer = Stopwatch.StartNew();
@@ -53,11 +72,6 @@ internal sealed record MemoryModule(MainWindow Self) {
     AverageGain = measurements.Average(m => m.Gains.Count == 0 ? 0 : m.Gains.Average());
     WorstGain = measurements.Max(m => m.Gains.Count == 0 ? null : m.Gains.Max());
     BestGain = measurements.Min(m => m.Gains.Count == 0 ? null : m.Gains.Min());
-  }
-
-  public void ClearAverage() {
-    AverageScore = null;
-    AverageTime = null;
   }
 
   public readonly IPalette Palette = new Category10();
