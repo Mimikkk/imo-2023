@@ -20,7 +20,7 @@ internal sealed record ChartRendererModule {
     Updates = new() {
       () => Add.Scatter(I.Instance.Nodes),
       () => M.Histories.ToList().ForEach(Render),
-      () => (P.Cycles.Count > 0).And(() => P.Cycles.ForEach((cycle) => Add.Cycle(cycle, I.Instance))),
+      () => (P.Cycles.Count > 0).And(() => P.Cycles.ForEach(cycle => Add.Cycle(cycle, I.Instance))),
       () => Mouse.Closest.Let(Add.Point),
       () => {
         if (Mouse.Selection.Count < 1) return;

@@ -105,7 +105,8 @@ public sealed partial class MainWindow : Window {
 
         ParameterVariants.Items = size switch {
           1 => new List<Option<string>> {
-            new("Wewnętrzna wymiana krawędzi", "external-vertices")
+            new("Wewnętrzna wymiana wierzchołków", "internal-vertices"),
+            new("Wewnętrzna wymiana krawędzi", "internal-edges")
           },
           _ => new List<Option<string>> {
             new("Wewnętrzna wymiana wierzchołków", "internal-vertices"),
@@ -129,6 +130,7 @@ public sealed partial class MainWindow : Window {
 
         ParameterVariants.Items = size switch {
           1 => new List<Option<string>> {
+            new("Wewnętrzna wymiana wierzchołków", "internal-vertices"),
             new("Wewnętrzna wymiana krawędzi", "internal-edges")
           },
           _ => new List<Option<string>> {
@@ -157,6 +159,9 @@ public sealed partial class MainWindow : Window {
       new("GRASP", Algorithm.RandomAdaptive)
     };
     Algorithms.SelectedIndex = 0;
+
+    ParameterVariants.Items = new List<Option<string>>();
+
 
     ParameterInitializers.Items = new List<Option<Algorithm>> {
       new("Przypadkowe próbkowanie", Algorithm.Random),

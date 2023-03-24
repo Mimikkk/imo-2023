@@ -38,8 +38,8 @@ internal sealed record CyclePanelModule {
           if (i != -1) display += $" - C:{Cycles.IndexOf(contained!)}/{i}";
           display += $" - {node.Index}/{node.X}/{node.Y}";
 
-          return new Option<Action> { Name = display, };
-        });
+          return new Option<Action> { Name = display };
+        }).Append(new() { Name = $"Zysk: {OperationGain}" });
       },
       () => {
         var selection = Mouse.Selection;
@@ -53,28 +53,39 @@ internal sealed record CyclePanelModule {
           ), selection.Count > 2 && !partiallySelected.Any())
           .AddWhen(new(
               "Dodaj Wierzchołek",
-              () => Moves.Insert(partiallySelected.First(), selection[0], (selection[1], selection[2]))
-            ), selection.Count == 3
-               && !partiallySelected.Any(c => c.Contains(selection.First()))
-               && partiallySelected.Count == 1
-               && partiallySelected.First().NextTo(selection[1], selection[2]))
+              () => {
+                OperationGain = I.Instance.Gain.Insert((selection[1], selection[2]), selection[0]);
+
+                Moves.Insert(partiallySelected.First(), selection[0], (selection[1], selection[2]));
+              }), selection.Count == 3
+                  && !partiallySelected.Any(c => c.Contains(selection.First()))
+                  && partiallySelected.Count == 1
+                  && partiallySelected.First().IsNextTo(selection[1], selection[2]))
           .AddWhen(new(
             "Wymień zewnętrzne wierzchołki",
             () => {
               var first = partiallySelected.Find(x => x.Contains(selection[0]))!;
               var second = partiallySelected.Find(x => x.Contains(selection[1]))!;
               var (a, b) = (selection[0], selection[1]);
+
+              OperationGain = I.Instance.Gain.ExchangeVertex(first, second, a, b);
               Moves.ExchangeVertex(first, second, a, b);
             }
           ), selection.Count == 2 && partiallySelected.Count == 2)
           .AddWhen(new(
             "Wymień Wewnętrzne wierzchołki",
-            () => Moves.ExchangeVertex(selected!, selection[0], selection[1])
-          ), selection.Count == 2 && selected is not null)
+            () => {
+              OperationGain = I.Instance.Gain.ExchangeVertex(selected!, selection[0], selection[1]);
+
+              Moves.ExchangeVertex(selected!, selection[0], selection[1]);
+            }), selection.Count == 2 && selected is not null)
           .AddWhen(new(
             "Wymień wewnętrzne krawędzi",
-            () => Moves.ExchangeEdge(selected!, selection[0], selection[1])
-          ), selection.Count == 2 && selected is not null)
+            () => {
+              OperationGain = I.Instance.Gain.ExchangeEdge(selected!, selection[0], selection[1]);
+
+              Moves.ExchangeEdge(selected!, selection[0], selection[1]);
+            }), selection.Count == 2 && selected is not null)
           .AddWhen(new(
             "Usuń wierzchołek",
             () => {
@@ -101,6 +112,7 @@ internal sealed record CyclePanelModule {
   public void Notify() => Updates.ForEach(Invoke);
 
   private Action Operation => Self.NodeOperations.SelectedItem.As<Option<Action>>().Value;
+  public int OperationGain;
   private MainWindow Self { get; }
   private AddPlottable Add => Self.Chart.Plot.Add;
   private readonly List<Action> Updates;

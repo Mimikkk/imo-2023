@@ -58,19 +58,6 @@ public sealed record Moves(Instance Instance) {
         .MaxBy(nodes => nodes.Edges().Sum(edge => Instance[edge]))!;
   }
 
-  public ((Node a, Node b), int) FindBestInsertion(IList<Node> cycle, Node node) {
-    var edge = (cycle.First(), cycle.Last());
-    var gain = Instance.Gain.Insert(edge, node);
-
-    foreach (var (a, b) in cycle.Edges()) {
-      var current = Instance.Gain.Insert((a, b), node);
-      if (current <= gain) continue;
-      (gain, edge) = (current, (a, b));
-    }
-
-    return (edge, gain);
-  }
-
   public (Node a, Node b) ClosestToHeadOrTail(IList<Node> path, IEnumerable<Node> except) {
     var excepted = except.ToArray();
     var tail = ClosestTo(path.First(), excepted);

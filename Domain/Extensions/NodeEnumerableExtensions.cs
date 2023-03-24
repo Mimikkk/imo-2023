@@ -28,16 +28,26 @@ public static class NodeEnumerableExtensions {
 
   public static (Node a, Node b, Node c) Neighbourhood(this IEnumerable<Node> cycle, Node at) {
     var nodes = cycle.ToList();
-    var index = nodes.IndexOf(at);
-
-    return (nodes[(index + nodes.Count - 1) % nodes.Count], at, nodes[(index + nodes.Count + 1) % nodes.Count]);
+    return (nodes.PreviousTo(at), at, nodes.NextTo(at));
   }
 
-  public static bool NextTo(this IEnumerable<Node> cycle, Node a, Node b) {
+  public static bool IsNextTo(this IEnumerable<Node> cycle, Node a, Node b) {
     var enumerable = cycle as Node[] ?? cycle.ToArray();
     if (!enumerable.Contains(a) && enumerable.Contains(b)) return false;
     var (previous, _, next) = enumerable.Neighbourhood(a);
     return Yield(previous, next).Contains(b);
+  }
+
+  public static Node PreviousTo(this IEnumerable<Node> cycle, Node node) {
+    var nodes = cycle.ToList();
+
+    return nodes[(nodes.IndexOf(node) + nodes.Count - 1) % nodes.Count];
+  }
+
+  public static Node NextTo(this IEnumerable<Node> cycle, Node node) {
+    var nodes = cycle.ToList();
+
+    return nodes[(nodes.IndexOf(node) + 1) % nodes.Count];
   }
 
   private enum GeometricRelation : byte {

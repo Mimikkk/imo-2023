@@ -26,8 +26,8 @@ public sealed record Instance {
     return distances;
   }
 
+  private int this[int first, int second] => _distances[first, second];
   public int this[Node first, Node second] => _distances[first.Index, second.Index];
-  public int this[int first, int second] => _distances[first, second];
   public int this[(Node a, Node b) edge] => this[edge.a, edge.b];
   public int this[(Node a, Node b, Node c) vertex] => this[vertex.a, vertex.b] + this[vertex.b, vertex.c];
   public int this[IEnumerable<Node> cycle] => cycle.Edges().Sum(edge => this[edge]);
