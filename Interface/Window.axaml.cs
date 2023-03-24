@@ -105,13 +105,13 @@ public sealed partial class MainWindow : Window {
 
         ParameterVariants.Items = size switch {
           1 => new List<Option<string>> {
-            new("Wewnętrzna wymiana krawędzi", "external-vertices"),
+            new("Wewnętrzna wymiana krawędzi", "external-vertices")
           },
           _ => new List<Option<string>> {
             new("Wewnętrzna wymiana wierzchołków", "internal-vertices"),
-            new("Zewnętrzna wymiana wierzchołków", "internal-edges"),
-            new("Wewnętrzna wymiana krawędzi", "external-vertices"),
-            new("Mieszany", "mixed"),
+            new("Zewnętrzna wymiana wierzchołków", "external-vertices"),
+            new("Wewnętrzna wymiana krawędzi", "internal-edges"),
+            new("Mieszany", "mixed")
           }
         };
         ParameterVariants.SelectedIndex = 0;
@@ -129,13 +129,13 @@ public sealed partial class MainWindow : Window {
 
         ParameterVariants.Items = size switch {
           1 => new List<Option<string>> {
-            new("Wewnętrzna wymiana krawędzi", "external-vertices"),
+            new("Wewnętrzna wymiana krawędzi", "internal-edges")
           },
           _ => new List<Option<string>> {
             new("Wewnętrzna wymiana wierzchołków", "internal-vertices"),
-            new("Zewnętrzna wymiana wierzchołków", "internal-edges"),
-            new("Wewnętrzna wymiana krawędzi", "external-vertices"),
-            new("Mieszany", "mixed"),
+            new("Zewnętrzna wymiana wierzchołków", "external-vertices"),
+            new("Wewnętrzna wymiana krawędzi", "internal-edges"),
+            new("Mieszany", "mixed")
           }
         };
         ParameterVariants.SelectedIndex = 0;
@@ -160,7 +160,7 @@ public sealed partial class MainWindow : Window {
 
     ParameterInitializers.Items = new List<Option<Algorithm>> {
       new("Przypadkowe próbkowanie", Algorithm.Random),
-      new("Rozszerzanie z k-żalem", Algorithm.CycleExpansionWithKRegret)
+      new("Rozszerzanie z k-żalem", Algorithm.CycleExpansionWithKRegretAndWeight)
     };
     ParameterInitializers.SelectedIndex = 0;
   }
