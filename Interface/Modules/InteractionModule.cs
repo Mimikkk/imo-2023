@@ -28,7 +28,7 @@ internal sealed record InteractionModule(MainWindow Self) {
     public int PopulationSize => (int)Self.ParameterPopulationSize.Value;
     public float Weight => (float)Self.ParameterWeight.Value;
     public float TimeLimit => (float)Self.ParameterTimeLimit.Value;
-    public string Variant => Self.Algorithms.SelectedItem.As<Option<string>>().Value;
+    public string Variant => Self.ParameterVariants.SelectedItem.As<Option<string>>().Value;
 
     public Algorithm Initializer => Self.ParameterInitializers.SelectedItem.As<Option<Algorithm>>().Value;
 

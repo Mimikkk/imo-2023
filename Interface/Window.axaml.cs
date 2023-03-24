@@ -99,6 +99,23 @@ public sealed partial class MainWindow : Window {
         ? I.Hull.Count() - 1
         : I.Instance.Dimension;
       ParameterStartIndex.Value = Math.Min(ParameterStartIndex.Maximum, ParameterStartIndex.Value);
+
+      if (I.Algorithm.UsesVariant) {
+        var size = I.Parameter.PopulationSize;
+
+        ParameterVariants.Items = size switch {
+          1 => new List<Option<string>> {
+            new("Wewnętrzna wymiana krawędzi", "external-vertices"),
+          },
+          _ => new List<Option<string>> {
+            new("Wewnętrzna wymiana wierzchołków", "internal-vertices"),
+            new("Zewnętrzna wymiana wierzchołków", "internal-edges"),
+            new("Wewnętrzna wymiana krawędzi", "external-vertices"),
+            new("Mieszany", "mixed"),
+          }
+        };
+        ParameterVariants.SelectedIndex = 0;
+      }
     };
 
     Algorithms.SelectionChanged += (_, _) => {
@@ -107,6 +124,24 @@ public sealed partial class MainWindow : Window {
       ParameterTimeLimitBox.IsVisible = I.Algorithm.UsesTimeLimit;
       ParameterInitializersBox.IsVisible = I.Algorithm.UsesInitializer;
       ParameterVariantsBox.IsVisible = I.Algorithm.UsesVariant;
+      if (I.Algorithm.UsesVariant) {
+        var size = I.Parameter.PopulationSize;
+
+        ParameterVariants.Items = size switch {
+          1 => new List<Option<string>> {
+            new("Wewnętrzna wymiana krawędzi", "external-vertices"),
+          },
+          _ => new List<Option<string>> {
+            new("Wewnętrzna wymiana wierzchołków", "internal-vertices"),
+            new("Zewnętrzna wymiana wierzchołków", "internal-edges"),
+            new("Wewnętrzna wymiana krawędzi", "external-vertices"),
+            new("Mieszany", "mixed"),
+          }
+        };
+        ParameterVariants.SelectedIndex = 0;
+      }
+
+
       ParameterRegret.Value = 2;
       M.ClearAverage();
       C.Notify();
@@ -128,14 +163,6 @@ public sealed partial class MainWindow : Window {
       new("Rozszerzanie z k-żalem", Algorithm.CycleExpansionWithKRegret)
     };
     ParameterInitializers.SelectedIndex = 0;
-
-    ParameterVariants.Items = new List<Option<string>> {
-      new("Wewnętrzna wymiana wierzchołków", "internal-vertices"),
-      new("Zewnętrzna wymiana wierzchołków", "internal-edges"),
-      new("Wewnętrzna wymiana krawędzi", "external-vertices"),
-      new("Mieszany", "mixed"),
-    };
-    ParameterVariants.SelectedItem = 0;
   }
 
   private void InitializeChart() {
