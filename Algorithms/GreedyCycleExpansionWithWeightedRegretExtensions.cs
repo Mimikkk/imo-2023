@@ -29,47 +29,60 @@ internal static class GreedyWeightedRegretCycleExpansionExtensions {
   }
 
   private static IEnumerable<IEnumerable<Node>>
-    SearchSingle(this Instance instance, IList<Node>? cycle, int? start, int regret, float weight) {
-    cycle ??= new List<Node>();
+    SearchSingle(this Instance instance, ObservableList<Node> cycle, int? start, int regret, float weight) {
     cycle.Add(start is null ? Node.Choose(instance.Nodes) : instance.Nodes[start.Value]);
+    cycle.Notify();
     cycle.Add(instance.Move.ClosestTo(cycle.First()));
+    cycle.Notify();
 
     while (cycle.Count < instance.Dimension) {
-      var (previous, best, _) = instance.Move.FindBestFitByWeightedRegretToInsertGain(cycle, cycle, regret, weight);
-      cycle.Insert(cycle.IndexOf(previous), best);
+      Moves.AppendFit(cycle, instance.Move.FindBestFitByWeightedRegretToInsertGain(cycle, cycle, regret, weight));
+      cycle.Notify();
     }
 
     return Yield(cycle);
   }
 
   private static IEnumerable<IEnumerable<Node>>
-    SearchDouble(this Instance instance, IList<Node>? first, IList<Node>? second, int? start, int regret,
+    SearchDouble(this Instance instance, ObservableList<Node> first, ObservableList<Node> second, int? start,
+      int regret,
       float weight) {
-    first ??= new List<Node>();
     first.Add(start is null ? Node.Choose(instance.Nodes) : instance.Nodes[start.Value]);
+    first.Notify();
     first.Add(instance.Move.ClosestTo(first.First()));
+    first.Notify();
 
-    second ??= new List<Node>();
     second.Add(instance.Move.FurthestTo(first.First()));
+    second.Notify();
     second.Add(instance.Move.ClosestTo(second.First()));
+    second.Notify();
 
     while (true) {
       if (first.Count + second.Count == instance.Dimension) break;
       Moves.AppendFit(first, instance.Move.FindBestFitByWeightedRegretToInsertGain(first, second, regret, weight));
+      first.Notify();
+
       if (first.Count + second.Count == instance.Dimension) break;
       Moves.AppendFit(second, instance.Move.FindBestFitByWeightedRegretToInsertGain(second, first, regret, weight));
+      second.Notify();
     }
 
     return Yield(first, second);
   }
 
   private static IEnumerable<IEnumerable<Node>>
-    SearchMultiple(this Instance instance, IEnumerable<IList<Node>> cycles, int regret, float weight) {
+    SearchMultiple(this Instance instance, IEnumerable<ObservableList<Node>> cycles, int regret, float weight) {
     cycles = cycles.ToArray();
 
-    var points = instance.Move.FindFurthest(cycles.Count());
-    foreach (var (path, point) in cycles.Zip(points)) path.Add(point);
-    foreach (var path in cycles) instance.Move.ClosestTo(path.First(), cycles.Flatten());
+    foreach (var (cycle, point) in cycles.Zip(instance.Move.FindFurthest(cycles.Count()))) {
+      cycle.Add(point);
+      cycle.Notify();
+    }
+
+    foreach (var cycle in cycles) {
+      instance.Move.ClosestTo(cycle.First(), cycles.Flatten());
+      cycle.Notify();
+    }
 
     var count = cycles.Flatten().Count();
     while (true) {
@@ -78,6 +91,7 @@ internal static class GreedyWeightedRegretCycleExpansionExtensions {
           cycle,
           instance.Move.FindBestFitByWeightedRegretToInsertGain(cycle, cycles.Flatten(), regret, weight)
         );
+        cycle.Notify();
         if (++count == instance.Dimension) return cycles;
       }
     }

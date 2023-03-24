@@ -23,34 +23,39 @@ internal static class GreedyNearestNeighbourExtensions {
   }
 
   private static IEnumerable<IEnumerable<Node>>
-    SearchSingle(this Instance instance, IList<Node>? path, int? start) {
-    path ??= new List<Node>();
+    SearchSingle(this Instance instance, ObservableList<Node> path, int? start) {
     path.Add(start is null ? Node.Choose(instance.Nodes) : instance.Nodes[start.Value]);
+    path.Notify();
 
-    while (path.Count < instance.Dimension) instance.Move.AppendClosestToHeadOrTail(path, path);
+    while (path.Count < instance.Dimension) {
+      instance.Move.AppendClosestToHeadOrTail(path, path);
+      path.Notify();
+    }
 
     return Yield(path);
   }
 
   private static IEnumerable<IEnumerable<Node>>
-    SearchDouble(this Instance instance, IList<Node>? first, IList<Node>? second, int? start) {
-    first ??= new List<Node>();
+    SearchDouble(this Instance instance, ObservableList<Node> first, ObservableList<Node> second, int? start) {
     first.Add(start is null ? Node.Choose(instance.Nodes) : instance.Nodes[start.Value]);
-    second ??= new List<Node>();
+    first.Notify();
     second.Add(instance.Move.FurthestTo(first.First()));
+    second.Notify();
 
     while (true) {
       if (first.Count + second.Count == instance.Dimension) break;
       instance.Move.AppendClosestToHeadOrTail(first, first.Concat(second));
+      first.Notify();
       if (first.Count + second.Count == instance.Dimension) break;
       instance.Move.AppendClosestToHeadOrTail(second, first.Concat(second));
+      second.Notify();
     }
 
     return Yield(first, second);
   }
 
   private static IEnumerable<IEnumerable<Node>>
-    SearchMultiple(this Instance instance, IEnumerable<IList<Node>> paths) {
+    SearchMultiple(this Instance instance, IEnumerable<ObservableList<Node>> paths) {
     paths = paths.ToArray();
 
     var points = instance.Move.FindFurthest(paths.Count());
@@ -59,6 +64,7 @@ internal static class GreedyNearestNeighbourExtensions {
     while (true) {
       foreach (var path in paths) {
         instance.Move.AppendClosestToHeadOrTail(path, paths.Flatten());
+        path.Notify();
         if (paths.Flatten().Count() == instance.Dimension) return paths;
       }
     }

@@ -23,43 +23,52 @@ internal static class RandomSearchExtensions {
   }
 
   private static IEnumerable<IEnumerable<Node>>
-    SearchSingle(Instance instance, IList<Node>? cycle, int? start) {
-    cycle ??= new List<Node>();
+    SearchSingle(Instance instance, ObservableList<Node> cycle, int? start) {
     cycle.Add(start is null ? Node.Choose(instance.Nodes) : instance.Nodes[start.Value]);
+    cycle.Notify();
 
-    while (cycle.Count < instance.Dimension) cycle.Add(Node.Choose(instance.Nodes.Except(cycle)));
+    while (cycle.Count < instance.Dimension) {
+      cycle.Add(Node.Choose(instance.Nodes.Except(cycle)));
+      cycle.Notify();
+    }
 
     return Yield(cycle);
   }
 
   private static IEnumerable<IEnumerable<Node>>
-    SearchDouble(Instance instance, IList<Node>? first, IList<Node>? second, int? start) {
-    first ??= new List<Node>();
+    SearchDouble(Instance instance, ObservableList<Node> first, ObservableList<Node> second, int? start) {
     first.Add(start is null ? Node.Choose(instance.Nodes) : instance.Nodes[start.Value]);
-
-    second ??= new List<Node>();
+    first.Notify();
     second.Add(instance.Move.FurthestTo(first.First()));
+    second.Notify();
 
     while (true) {
+      if (first.Count + second.Count == instance.Dimension) break;
       first.Add(Node.Choose(instance.Nodes.Except(first).Except(second)));
+      first.Notify();
       if (first.Count + second.Count == instance.Dimension) break;
       second.Add(Node.Choose(instance.Nodes.Except(first).Except(second)));
-      if (first.Count + second.Count == instance.Dimension) break;
+      second.Notify();
     }
 
     return Yield(first, second);
   }
 
   private static IEnumerable<IEnumerable<Node>>
-    SearchMultiple(this Instance instance, IEnumerable<IList<Node>> cycles) {
+    SearchMultiple(this Instance instance, IEnumerable<ObservableList<Node>> cycles) {
     cycles = cycles.ToArray();
 
-    foreach (var (path, point) in cycles.Zip(instance.Move.FindFurthest(cycles.Count()))) path.Add(point);
+    foreach (var (cycle, point) in cycles.Zip(instance.Move.FindFurthest(cycles.Count()))) {
+      cycle.Add(point);
+      cycle.Notify();
+    }
+
     var count = cycles.Flatten().Count();
 
     while (true) {
       foreach (var cycle in cycles) {
         cycle.Add(Node.Choose(instance.Nodes.Except(cycles.Flatten())));
+        cycle.Notify();
         if (++count == instance.Dimension) return cycles;
       }
     }

@@ -25,7 +25,7 @@ internal static class GreedyRandomAdaptiveSearchExtensions {
   }
 
   private static IEnumerable<IEnumerable<Node>>
-    SearchMultiple(Instance instance, IEnumerable<IList<Node>> population, float timeLimit) {
+    SearchMultiple(Instance instance, IEnumerable<ObservableList<Node>> population, float timeLimit) {
     var bestSolutions = population.Select(solution => solution.ToList()).ToList();
     var bestDistance = bestSolutions.Sum(solution => instance[solution]);
 
@@ -38,6 +38,7 @@ internal static class GreedyRandomAdaptiveSearchExtensions {
       if (distance >= bestDistance) continue;
       bestDistance = distance;
       bestSolutions = solutions;
+      // bestSolutions.ForEach(solution => solution.Notify());
     }
 
     return bestSolutions;

@@ -23,50 +23,64 @@ internal static class GreedyCycleExpansionExtensions {
   }
 
   private static IEnumerable<IEnumerable<Node>>
-    SearchSingle(Instance instance, IList<Node>? cycle, int? start) {
-    cycle ??= new List<Node>();
+    SearchSingle(Instance instance, ObservableList<Node> cycle, int? start) {
     cycle.Add(start is null ? Node.Choose(instance.Nodes) : instance.Nodes[start.Value]);
+    cycle.Notify();
     cycle.Add(instance.Move.ClosestTo(cycle.First()));
+    cycle.Notify();
 
-    while (cycle.Count < instance.Dimension)
+    while (cycle.Count < instance.Dimension) {
       Moves.AppendFit(cycle, instance.Move.FindBestFitByLowestGain(cycle, cycle));
+      cycle.Notify();
+    }
 
     return Yield(cycle);
   }
 
   private static IEnumerable<IEnumerable<Node>>
-    SearchDouble(Instance instance, IList<Node>? first, IList<Node>? second, int? start) {
-    first ??= new List<Node>();
+    SearchDouble(Instance instance, ObservableList<Node> first, ObservableList<Node> second, int? start) {
     first.Add(start is null ? Node.Choose(instance.Nodes) : instance.Nodes[start.Value]);
+    first.Notify();
     first.Add(instance.Move.ClosestTo(first.First()));
-
-    second ??= new List<Node>();
+    first.Notify();
+    
     second.Add(instance.Move.FurthestTo(first.First()));
+    second.Notify();
     second.Add(instance.Move.ClosestTo(second.First()));
+    second.Notify();
 
     while (true) {
       if (first.Count + second.Count == instance.Dimension) break;
       Moves.AppendFit(first, instance.Move.FindBestFitByLowestGain(first, second));
+      first.Notify();
       if (first.Count + second.Count == instance.Dimension) break;
       Moves.AppendFit(second, instance.Move.FindBestFitByLowestGain(second, first));
+      second.Notify();
     }
 
     return Yield(first, second);
   }
 
   private static IEnumerable<IEnumerable<Node>>
-    SearchMultiple(this Instance instance, IEnumerable<IList<Node>> paths) {
-    paths = paths.ToArray();
+    SearchMultiple(this Instance instance, IEnumerable<ObservableList<Node>> cycles) {
+    cycles = cycles.ToArray();
 
-    var points = instance.Move.FindFurthest(paths.Count());
-    foreach (var (path, point) in paths.Zip(points)) path.Add(point);
-    foreach (var path in paths) instance.Move.ClosestTo(path.First(), paths.Flatten());
+    foreach (var (cycle, point) in cycles.Zip(instance.Move.FindFurthest(cycles.Count()))) {
+      cycle.Add(point);
+      cycle.Notify();
+    }
 
-    var count = paths.Flatten().Count();
+    foreach (var cycle in cycles) {
+      instance.Move.ClosestTo(cycle.First(), cycles.Flatten());
+      cycle.Notify();
+    }
+
+    var count = cycles.Flatten().Count();
     while (true) {
-      foreach (var path in paths) {
-        Moves.AppendFit(path, instance.Move.FindBestFitByLowestGain(path, paths.Flatten().Except(path)));
-        if (++count == instance.Dimension) return paths;
+      foreach (var cycle in cycles) {
+        Moves.AppendFit(cycle, instance.Move.FindBestFitByLowestGain(cycle, cycles.Flatten().Except(cycle)));
+        cycle.Notify();
+        if (++count == instance.Dimension) return cycles;
       }
     }
   }
