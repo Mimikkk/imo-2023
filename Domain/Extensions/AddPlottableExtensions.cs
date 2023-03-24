@@ -14,6 +14,8 @@ public static class AddPlottableExtensions {
       ys: nodes.Select(node => (double)node.Y).Append(nodes.First().Y).ToArray()
     );
     scatter.Label = $"Długość cyklu: {instance[nodes.Append(nodes.First())]}";
+    scatter.LineStyle.Width = 2f;
+    scatter.MarkerStyle.Size = 6f;
 
     return add;
   }
@@ -27,6 +29,8 @@ public static class AddPlottableExtensions {
       ys: nodes.Select(node => (double)node.Y).ToArray()
     );
     scatter.Label = $"Długość ścieżki: {instance[nodes.Append(nodes.First())]}";
+    scatter.LineStyle.Width = 2f;
+    scatter.MarkerStyle.Size = 6f;
 
     return add;
   }
@@ -41,6 +45,7 @@ public static class AddPlottableExtensions {
 
     scatter.LineStyle.Width = 0.01f;
     scatter.Label = $"Liczba punktów: {nodes.Count()}";
+    scatter.MarkerStyle.Size = 5f;
 
     return add;
   }
@@ -50,7 +55,9 @@ public static class AddPlottableExtensions {
       xs: new[] { (double)node.X },
       ys: new[] { (double)node.Y }
     );
-    scatter.MarkerStyle = new(MarkerShape.OpenCircle, 10f);
+    scatter.MarkerStyle = new(MarkerShape.OpenCircle, default) {
+      Outline = { Width = 5f }
+    };
     return add;
   }
 
@@ -59,8 +66,9 @@ public static class AddPlottableExtensions {
       xs: new[] { (double)node.X },
       ys: new[] { (double)node.Y }
     );
-    scatter.MarkerStyle = new(MarkerShape.OpenCircle, 10f) {
-      Fill = { Color = color.Into() },
+    scatter.MarkerStyle = new(MarkerShape.OpenCircle, default) {
+      Outline = { Width = 5f },
+      Fill = { Color = color.Into() }
     };
     return add;
   }
@@ -73,7 +81,6 @@ public static class AddPlottableExtensions {
 
     return add;
   }
-
 
   public static AddPlottable DistanceTo(this AddPlottable add, Node from, Node to, SKColor? color = null) {
     add.Plottable(new Annotation {
@@ -91,7 +98,6 @@ public static class AddPlottableExtensions {
 
   public static (double minx, double maxx, double miny, double maxy) Bounds(this Plot chart)
     => (chart.XAxis.Min, chart.XAxis.Max, chart.YAxis.Min, chart.YAxis.Max);
-
 
   public static AddPlottable LineTo(this AddPlottable add, Node from, Node to) {
     var scatter = add.Scatter(
