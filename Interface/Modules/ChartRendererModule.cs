@@ -41,12 +41,15 @@ internal sealed record ChartRendererModule {
             .Except(Mouse.Selection));
       },
       () => Mouse.Selection.ForEach(Add.Point),
-      () => M.BestScore.Let(average => Add.Label($"Najlepsza długość: {average:F2}")),
-      () => M.BestTime.Let(average => Add.Label($"Najlepszy czas wykonywania: {average:F2}[ms]")),
-      () => M.AverageScore.Let(average => Add.Label($"Przeciętna długość: {average:F2}")),
-      () => M.AverageTime.Let(average => Add.Label($"Przeciętny czas wykonywania: {average:F2}[ms]")),
-      () => M.WorstScore.Let(average => Add.Label($"Najgorsza długość: {average:F2}")),
-      () => M.WorstTime.Let(average => Add.Label($"Najgorszy czas wykonywania: {average:F2}[ms]")),
+      () => M.BestScore.Let(value => Add.Label($"Najlepsza długość: {value:F2}")),
+      () => M.AverageScore.Let(value => Add.Label($"Przeciętna długość: {value:F2}")),
+      () => M.WorstScore.Let(value => Add.Label($"Najgorsza długość: {value:F2}")),
+      () => M.BestTime.Let(value => Add.Label($"Najlepszy czas wykonywania: {value:F2}[ms]")),
+      () => M.AverageTime.Let(value => Add.Label($"Przeciętny czas wykonywania: {value:F2}[ms]")),
+      () => M.WorstTime.Let(value => Add.Label($"Najgorszy czas wykonywania: {value:F2}[ms]")),
+      () => M.BestGain.Let(value => Add.Label($"Najlepszy zysk w długości: {value:F2}")),
+      () => M.AverageGain.Let(value => Add.Label($"Przeciętny zysk w długości: {value:F2}")),
+      () => M.WorstGain.Let(value => Add.Label($"Najgorszy zysk w długości: {value:F2}")),
       () => (I.Parameter.PopulationSize > 1).And(() =>
         Add.Label($"Łączna długość: {
           M.Histories.Sum(history =>

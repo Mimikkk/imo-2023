@@ -12,30 +12,47 @@ internal sealed record MemoryModule(MainWindow Self) {
   public double? AverageScore { get; private set; }
   public double? BestScore { get; private set; }
   public double? WorstScore { get; private set; }
+
   public double? AverageTime { get; private set; }
   public double? BestTime { get; private set; }
   public double? WorstTime { get; private set; }
 
-  public void CalculateAverage(int start, int end) {
+  public double? AverageGain { get; private set; }
+  public double? BestGain { get; private set; }
+  public double? WorstGain { get; private set; }
+
+  public int BestIndex { get; private set; }
+  public int WorstIndex { get; private set; }
+
+  public void Measure(int start, int end) {
     var measurements = Enumerable.Range(start, end)
       .Select(index => {
         var timer = Stopwatch.StartNew();
 
-        var distance = I.Algorithm.Search(I.Instance, I.Parameter.Configuration with { Start = index })
+        var configuration = I.Parameter.Configuration with { Start = index };
+        var distance = I.Algorithm.Search(I.Instance, configuration)
           .Sum(nodes => I.Instance[nodes]);
 
         var time = timer.ElapsedMilliseconds;
 
-        return (distance, time);
+        return (distance, time, configuration.Gains);
       }).ToList();
 
 
+    BestIndex = measurements.IndexOf(measurements.MinBy(m => m.distance));
+    WorstIndex = measurements.IndexOf(measurements.MaxBy(m => m.distance));
+
     AverageScore = measurements.Average(m => m.distance);
-    AverageTime = measurements.Average(m => m.time);
     WorstScore = measurements.Max(m => m.distance);
-    WorstTime = measurements.Max(m => m.time);
     BestScore = measurements.Min(m => m.distance);
+
+    AverageTime = measurements.Average(m => m.time);
+    WorstTime = measurements.Max(m => m.time);
     BestTime = measurements.Min(m => m.time);
+
+    AverageGain = measurements.Average(m => m.Gains.Count == 0 ? 0 : m.Gains.Average());
+    WorstGain = measurements.Max(m => m.Gains.Count == 0 ? null : m.Gains.Max());
+    BestGain = measurements.Min(m => m.Gains.Count == 0 ? null : m.Gains.Min());
   }
 
   public void ClearAverage() {

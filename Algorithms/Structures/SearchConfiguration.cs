@@ -9,5 +9,6 @@ public record SearchConfiguration {
   public int Regret;
   public Algorithm? Initializer = null;
   public string Variant;
+  public readonly List<int> Gains = new();
   public List<ObservableList<Node>> Population = null!;
 }

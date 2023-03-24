@@ -46,25 +46,17 @@ public sealed partial class MainWindow : Window {
     ClearParameterPopulationSizeButton.Click += (_, _) => ParameterPopulationSize.Value = 1;
     ParameterPopulationSize.Value = 1;
     FindBestButton.Click += (_, _) => {
-      ParameterStartIndex.Value = Range((int)ParameterStartIndex.Minimum + 1, (int)ParameterStartIndex.Maximum - 1)
-        .MinBy(start => I.Algorithm.Search(
-            I.Instance,
-            I.Parameter.Configuration with { Start = start })
-          .Sum(nodes => I.Instance[nodes])
-        );
+      M.Measure(0, (int)ParameterStartIndex.Maximum);
+      ParameterStartIndex.Value = M.BestIndex + 1;
       HandleRunCommand();
     };
     FindWorstButton.Click += (_, _) => {
-      ParameterStartIndex.Value = Range((int)ParameterStartIndex.Minimum + 1, (int)ParameterStartIndex.Maximum - 1)
-        .MinBy(start => I.Algorithm.Search(
-            I.Instance,
-            I.Parameter.Configuration with { Start = start })
-          .Sum(nodes => I.Instance[nodes])
-        );
+      M.Measure(0, (int)ParameterStartIndex.Maximum);
+      ParameterStartIndex.Value = M.WorstIndex + 1;
       HandleRunCommand();
     };
     CalculateAverageButton.Click += (_, _) => {
-      M.CalculateAverage((int)ParameterStartIndex.Minimum + 1, (int)ParameterStartIndex.Maximum - 1);
+      M.Measure(0, (int)ParameterStartIndex.Maximum);
       C.Notify();
     };
   }

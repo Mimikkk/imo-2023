@@ -10,6 +10,7 @@ internal static class GreedyLocalSearch {
     var population = configuration.Population.ToArray();
     var initializer = configuration.Initializer;
     var variant = configuration.Variant;
+    var gains = configuration.Gains;
 
     var hullSize = instance.Nodes.Hull().Count();
     if (population.Length > hullSize) throw new ArgumentOutOfRangeException(nameof(configuration));
@@ -18,19 +19,22 @@ internal static class GreedyLocalSearch {
     return (population.Length, variant) switch {
       (< 0, _) => throw new ArgumentOutOfRangeException(nameof(configuration)),
       (0, _) => Enumerable.Empty<IEnumerable<Node>>(),
-      (_, "internal-vertices") => SearchMultipleInternalVertices(instance, population),
-      (_, "external-vertices") => SearchMultipleExternalVertices(instance, population),
-      (_, "internal-edges") => SearchMultipleInternalEdges(instance, population),
-      (_, "mixed") => SearchMultipleMixed(instance, population),
+      (_, "internal-vertices") => SearchMultipleInternalVertices(instance, population, gains),
+      (_, "external-vertices") => SearchMultipleExternalVertices(instance, population, gains),
+      (_, "internal-edges") => SearchMultipleInternalEdges(instance, population, gains),
+      (_, "mixed") => SearchMultipleMixed(instance, population, gains),
     };
   }
 
   private static IEnumerable<IEnumerable<Node>>
-    SearchMultipleExternalVertices(Instance instance, IEnumerable<ObservableList<Node>> population) {
+    SearchMultipleExternalVertices(
+      Instance instance,
+      IEnumerable<ObservableList<Node>> population,
+      ICollection<int> gains
+    ) {
     var enumerable = population.ToArray();
 
     var bestCycles = enumerable.Select(solution => solution.ToList()).ToList();
-    var gains = new List<int>();
 
     while (true) {
       var previousBestCycles = bestCycles;
@@ -63,11 +67,14 @@ internal static class GreedyLocalSearch {
   }
 
   private static IEnumerable<IEnumerable<Node>>
-    SearchMultipleInternalVertices(Instance instance, IEnumerable<ObservableList<Node>> population) {
+    SearchMultipleInternalVertices(
+      Instance instance,
+      IEnumerable<ObservableList<Node>> population,
+      ICollection<int> gains
+    ) {
     var enumerable = population.ToArray();
 
     var bestCycles = enumerable.Select(solution => solution.ToList()).ToList();
-    var gains = new List<int>();
 
     while (true) {
       var previousBestCycles = bestCycles;
@@ -96,11 +103,14 @@ internal static class GreedyLocalSearch {
   }
 
   private static IEnumerable<IEnumerable<Node>>
-    SearchMultipleInternalEdges(Instance instance, IEnumerable<ObservableList<Node>> population) {
+    SearchMultipleInternalEdges(
+      Instance instance,
+      IEnumerable<ObservableList<Node>> population,
+      ICollection<int> gains
+    ) {
     var enumerable = population.ToArray();
 
     var bestCycles = enumerable.Select(solution => solution.ToList()).ToList();
-    var gains = new List<int>();
 
 
     while (true) {
@@ -130,11 +140,14 @@ internal static class GreedyLocalSearch {
   }
 
   private static IEnumerable<IEnumerable<Node>>
-    SearchMultipleMixed(Instance instance, IEnumerable<ObservableList<Node>> population) {
+    SearchMultipleMixed(
+      Instance instance,
+      IEnumerable<ObservableList<Node>> population,
+      ICollection<int> gains
+    ) {
     var enumerable = population.ToArray();
 
     var bestCycles = enumerable.Select(solution => solution.ToList()).ToList();
-    var gains = new List<int>();
 
     while (true) {
       var previousBestCycles = bestCycles;

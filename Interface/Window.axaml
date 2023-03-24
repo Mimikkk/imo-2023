@@ -110,7 +110,7 @@
                     <Button Name="RunButton" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center">Rozpocznij</Button>
                     <Button Name="CalculateAverageButton" HorizontalAlignment="Stretch"
                             HorizontalContentAlignment="Center">
-                        Oblicz średnią
+                        Oblicz średnie
                     </Button>
                     <Button Margin="0 4 0 0" Name="FindWorstButton" HorizontalAlignment="Stretch"
                             HorizontalContentAlignment="Center">
