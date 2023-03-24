@@ -160,8 +160,8 @@ public sealed partial class MainWindow : Window {
     };
     Algorithms.SelectedIndex = 0;
 
-    ParameterVariants.Items = new List<Option<string>>();
-
+    ParameterVariants.Items = new List<Option<string>> { new("Domyślny", "default") };
+    ParameterVariants.SelectedIndex = 0;
 
     ParameterInitializers.Items = new List<Option<Algorithm>> {
       new("Przypadkowe próbkowanie", Algorithm.Random),
@@ -194,14 +194,9 @@ public sealed partial class MainWindow : Window {
     var histories = Times(I.Parameter.PopulationSize, () => new List<List<Node>> { new() })
       .ToList();
 
-    var timer = Stopwatch.StartNew();
     I.Algorithm.Search(I.Instance, I.Parameter.Configuration with {
       Population = histories.Select(history => new ObservableList<Node>(items => history.Add(items.ToList()))).ToList()
     });
-
-    timer.Stop();
-    var elapsed = timer.ElapsedMilliseconds;
-    ParameterTimeLimit.Value = Math.Round((float)elapsed / 1000, 2);
 
     histories.ForEach(M.Histories.Add);
     HistorySlider.Maximum = histories.MaxBy(x => x.Count)!.Count - 1;

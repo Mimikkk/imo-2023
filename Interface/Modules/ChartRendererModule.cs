@@ -41,7 +41,12 @@ internal sealed record ChartRendererModule {
             .Except(Mouse.Selection));
       },
       () => Mouse.Selection.ForEach(Add.Point),
-      () => M.Average.Let(average => Add.Label($"Przeciętna długość: {average:F2}")),
+      () => M.BestScore.Let(average => Add.Label($"Najlepsza długość: {average:F2}")),
+      () => M.BestTime.Let(average => Add.Label($"Najlepszy czas wykonywania: {average:F2}[ms]")),
+      () => M.AverageScore.Let(average => Add.Label($"Przeciętna długość: {average:F2}")),
+      () => M.AverageTime.Let(average => Add.Label($"Przeciętny czas wykonywania: {average:F2}[ms]")),
+      () => M.WorstScore.Let(average => Add.Label($"Najgorsza długość: {average:F2}")),
+      () => M.WorstTime.Let(average => Add.Label($"Najgorszy czas wykonywania: {average:F2}[ms]")),
       () => (I.Parameter.PopulationSize > 1).And(() =>
         Add.Label($"Łączna długość: {
           M.Histories.Sum(history =>
