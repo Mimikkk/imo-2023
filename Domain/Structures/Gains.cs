@@ -1,6 +1,4 @@
-﻿using System.Diagnostics;
-using System.Net.NetworkInformation;
-using Domain.Extensions;
+﻿using Domain.Extensions;
 
 namespace Domain.Structures;
 
