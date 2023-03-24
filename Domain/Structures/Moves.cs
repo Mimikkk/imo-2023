@@ -1,7 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Immutable;
-using Ardalis.SmartEnum;
-using Domain.Extensions;
+﻿using Domain.Extensions;
 
 namespace Domain.Structures;
 

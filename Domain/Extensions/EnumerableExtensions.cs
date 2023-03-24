@@ -1,6 +1,4 @@
-﻿using System.Collections;
-
-namespace Domain.Extensions;
+﻿namespace Domain.Extensions;
 
 public static class EnumerableExtensions {
   public static IEnumerable<T> Yield<T>(params T[] items) => items;

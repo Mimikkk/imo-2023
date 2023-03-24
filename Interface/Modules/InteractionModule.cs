@@ -4,7 +4,6 @@ using Algorithms.Structures;
 using Domain.Extensions;
 using Domain.Structures;
 using Interface.Types;
-using static System.Linq.Enumerable;
 
 namespace Interface.Modules;
 
