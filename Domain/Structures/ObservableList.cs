@@ -11,6 +11,7 @@ public sealed class ObservableList<T> : IList<T> {
   public static ObservableList<T> Create() => new();
 
   public void Notify() => Changed?.Invoke(this, EventArgs.Empty);
+  public void Fill(List<T> content) => _list = content;
 
   public int Count => _list.Count;
   public bool IsReadOnly => false;
@@ -33,5 +34,5 @@ public sealed class ObservableList<T> : IList<T> {
     set => _list[index] = value;
   }
 
-  private readonly List<T> _list = new();
+  private List<T> _list = new();
 }

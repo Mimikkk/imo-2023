@@ -1,9 +1,12 @@
-﻿using Domain.Extensions;
+﻿using System.Collections;
+using System.Collections.Immutable;
+using Ardalis.SmartEnum;
+using Domain.Extensions;
 
 namespace Domain.Structures;
 
 public sealed record Moves(Instance Instance) {
-  public void Insert(IList<Node> cycle, Node node, (Node a, Node b) edge) {
+  public static void Insert(IList<Node> cycle, Node node, (Node a, Node b) edge) {
     if (edge.a == cycle.First() && edge.b == cycle.Last() || edge.b == cycle.First() && edge.a == cycle.Last()) {
       cycle.Add(node);
       return;
@@ -15,7 +18,7 @@ public sealed record Moves(Instance Instance) {
     cycle.Insert(ia > ib ? ia : ib, node);
   }
 
-  public void ExchangeVertex(IList<Node> first, IList<Node> second, Node a, Node b) {
+  public static void ExchangeVertex(IList<Node> first, IList<Node> second, Node a, Node b) {
     var (ia, ib) = (first.IndexOf(a), second.IndexOf(b));
     first.Remove(a);
     first.Insert(ia, b);
@@ -23,9 +26,9 @@ public sealed record Moves(Instance Instance) {
     second.Insert(ib, a);
   }
 
-  public void ExchangeVertex(IList<Node> cycle, Node a, Node b) => cycle.Swap(a, b);
+  public static void ExchangeVertex(IList<Node> cycle, Node a, Node b) => cycle.Swap(a, b);
 
-  public void ExchangeEdge(IList<Node> cycle, Node a, Node b) {
+  public static void ExchangeEdge(IList<Node> cycle, Node a, Node b) {
     var ia = cycle.IndexOf(a);
     var ib = cycle.IndexOf(b);
     if (ia > ib) (ia, ib) = (ib, ia);
@@ -138,36 +141,7 @@ public sealed record Moves(Instance Instance) {
       .First()
       .MinBy(match => match.gain);
   }
-
-  public void PerformRandomMove(IEnumerable<IList<Node>> cycles) {
-    var enumerated = cycles.ToList();
-
-    var action = Random.Shared.Next(0, enumerated.Count > 1 ? 4 : 3);
-    var first = Random.Shared.Choose(enumerated);
-
-    switch (action) {
-      case 1: {
-        var a = Random.Shared.Choose(first);
-        var b = Random.Shared.Choose(first.Except(a));
-        ExchangeVertex(first, a, b);
-        break;
-      }
-      case 2: {
-        var second = Random.Shared.Choose(enumerated.Except(first));
-        var a = Random.Shared.Choose(first);
-        var b = Random.Shared.Choose(second);
-        ExchangeVertex(first, second, a, b);
-        break;
-      }
-      case 3: {
-        var a = Random.Shared.Choose(first);
-        var b = Random.Shared.Choose(first.Except(a));
-        ExchangeEdge(first, a, b);
-        break;
-      }
-    }
-  }
-
+  
   private static int CalculateRegret(IEnumerable<int> gains, int k) {
     var enumerable = gains as int[] ?? gains.ToArray();
 

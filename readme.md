@@ -200,17 +200,21 @@ odnalezionym cyklu.
 W ramach zadania należało:
 
 - [x] Zaimplemnetować algorytm losowego przeszukiwania ( _RS_ ).
-- [ ] Zaimplemnetować algorytm losowego zachłannego adapcyjnego przeszukiwania ( _GRASP_ ).
+- [x] Zaimplemnetować algorytm losowego zachłannego adapcyjnego przeszukiwania ( _GRASP_ ).
 - [ ] Zaimplementować algorytm przeszukiwania lokalnego w wersji stromej ( _steepest_ ).
     - [ ] Przy wykorzystaniu sąsiedztwa z wymianą wierzchołków między cyklami.
+        - [ ] Zaczynającą od rozwiązania uzyskanego w algorytmie zachłannym.
+        - [ ] Zaczynający od rozwiązania uzyskanego w algorytmie losowym ( _RS_ ).
     - [ ] Przy wykorzystaniu sąsiedztwa z wymianą wierzchołków wewnątrz cyklu.
-    - [ ] Zaczynającą od rozwiązania uzyskanego w algorytmie zachłannym.
-    - [ ] Zaczynający od rozwiązania uzyskanego w algorytmie losowym ( grasp ).
+        - [ ] Zaczynającą od rozwiązania uzyskanego w algorytmie zachłannym.
+        - [ ] Zaczynający od rozwiązania uzyskanego w algorytmie losowym ( _RS_ ).
 - [ ] Zaimplementować algorytm przeszukiwania lokalnego w wersji zachłannej ( _greedy_ ).
     - [ ] Przy wykorzystaniu sąsiedztwa z wymianą wierzchołków między cyklami.
+        - [ ] Zaczynającą od rozwiązania uzyskanego w algorytmie zachłannym.
+        - [ ] Zaczynający od rozwiązania uzyskanego w algorytmie losowym ( _RS_ ).
     - [ ] Przy wykorzystaniu sąsiedztwa z wymianą wierzchołków wewnątrz cyklu.
-    - [ ] Zaczynającą od rozwiązania uzyskanego w algorytmie zachłannym.
-    - [ ] Zaczynający od rozwiązania uzyskanego w algorytmie losowym ( grasp ).
+        - [ ] Zaczynającą od rozwiązania uzyskanego w algorytmie zachłannym.
+        - [ ] Zaczynający od rozwiązania uzyskanego w algorytmie losowym ( _RS_ ).
 
 ## Implementacja algorytmu losowego zachłannego adapcyjnego przeszukiwania ( _GRASP_ ).
 

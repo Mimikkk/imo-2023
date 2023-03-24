@@ -22,7 +22,7 @@ public sealed record Gains(Instance Instance) {
   public int ExchangeEdge(IEnumerable<Node> cycle, Node a, Node b) {
     var original = cycle as Node[] ?? cycle.ToArray();
     var result = original.ToList();
-    Instance.Move.ExchangeEdge(result, a, b);
+    Moves.ExchangeEdge(result, a, b);
 
     return Instance[result] - Instance[original];
   }
