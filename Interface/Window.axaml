@@ -108,9 +108,13 @@
                         <NumericUpDown Increment="0.01" Minimum="0" Maximum="1" Name="ParameterWeight" />
                     </Panel>
                     <Button Name="RunButton" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center">Rozpocznij</Button>
-                    <Button Name="CalculateAverageButton" HorizontalAlignment="Stretch"
+                    <Button Name="CalculateAveragesButton" HorizontalAlignment="Stretch"
                             HorizontalContentAlignment="Center">
                         Oblicz średnie
+                    </Button>
+                    <Button Name="CalculateAverageButton" HorizontalAlignment="Stretch"
+                            HorizontalContentAlignment="Center">
+                        Oblicz średnią punktu
                     </Button>
                     <Button Margin="0 4 0 0" Name="FindWorstButton" HorizontalAlignment="Stretch"
                             HorizontalContentAlignment="Center">

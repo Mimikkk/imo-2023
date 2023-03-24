@@ -70,8 +70,8 @@ internal sealed record MemoryModule(MainWindow Self) {
     BestTime = measurements.Min(m => m.time);
 
     AverageGain = measurements.Average(m => m.Gains.Count == 0 ? 0 : m.Gains.Average());
-    WorstGain = measurements.Max(m => m.Gains.Count == 0 ? null : m.Gains.Max());
-    BestGain = measurements.Min(m => m.Gains.Count == 0 ? null : m.Gains.Min());
+    WorstGain = measurements.Min(m => m.Gains.Count == 0 ? null : m.Gains.Min());
+    BestGain = measurements.Max(m => m.Gains.Count == 0 ? null : m.Gains.Max());
   }
 
   public readonly IPalette Palette = new Category10();

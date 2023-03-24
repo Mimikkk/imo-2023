@@ -40,11 +40,18 @@ public sealed partial class MainWindow : Window {
     RunButton.Click += (_, _) => HandleRunCommand();
 
     ClearParameterStartIndexButton.Click += (_, _) => ParameterStartIndex.Value = 0;
-    ParameterStartIndex.Value = 0;
     ParameterStartIndex.PropertyChanged += (_, change) => {
       if (change.Property.Name != "Maximum") return;
       M.Invalidate();
     };
+    ParameterStartIndex.ValueChanged += (_, _) => {
+      CalculateAverageButton.IsVisible = ParameterStartIndex.Value > 0;
+      CalculateAveragesButton.IsVisible = ParameterStartIndex.Value == 0;
+    };
+    ParameterStartIndex.Value = 0;
+    CalculateAverageButton.IsVisible = ParameterStartIndex.Value > 0;
+    CalculateAveragesButton.IsVisible = ParameterStartIndex.Value == 0;
+
     ClearParameterRegretButton.Click += (_, _) => ParameterRegret.Value = 2;
     ParameterRegret.Value = 2;
     ClearParameterPopulationSizeButton.Click += (_, _) => ParameterPopulationSize.Value = 1;
@@ -59,8 +66,14 @@ public sealed partial class MainWindow : Window {
       ParameterStartIndex.Value = M.WorstIndex + 1;
       HandleRunCommand();
     };
-    CalculateAverageButton.Click += (_, _) => {
+    CalculateAveragesButton.Click += (_, _) => {
+      M.Invalidate();
       M.Measure(0, (int)ParameterStartIndex.Maximum);
+      C.Notify();
+    };
+    CalculateAverageButton.Click += (_, _) => {
+      M.Invalidate();
+      M.Measure((int)ParameterStartIndex.Value - 1, (int)ParameterStartIndex.Value - 1);
       C.Notify();
     };
   }

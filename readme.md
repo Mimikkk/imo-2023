@@ -199,36 +199,42 @@ odnalezionym cyklu.
 
 W ramach zadania należało:
 
-- [x] Zaimplemnetować algorytm losowego przeszukiwania ( _RS_ ).
-- [x] Zaimplemnetować algorytm losowego zachłannego adapcyjnego przeszukiwania ( _GRASP_ ).
-- [ ] Zaimplementować algorytm przeszukiwania lokalnego w wersji stromej ( _steepest_ ).
+- [x] Zaimplementować algorytm losowego przeszukiwania ( _RS_ ).
+- [x] Zaimplementować algorytm losowego zachłannego adaptacyjnego przeszukiwania ( _GRASP_ ).
+- [x] Zaimplementować algorytm przeszukiwania lokalnego w wersji stromej ( _steepest_ ).
     - [x] Przy wykorzystaniu sąsiedztwa z wymianą wierzchołków między cyklami.
         - [x] Zaczynającą od rozwiązania uzyskanego w algorytmie zachłannym.
         - [x] Zaczynający od rozwiązania uzyskanego w algorytmie losowym ( _RS_ ).
-    - [ ] Przy wykorzystaniu sąsiedztwa z wymianą wierzchołków wewnątrz cyklu.
+    - [x] Przy wykorzystaniu sąsiedztwa z wymianą wierzchołków wewnątrz cyklu.
         - [x] Zaczynającą od rozwiązania uzyskanego w algorytmie zachłannym.
         - [x] Zaczynający od rozwiązania uzyskanego w algorytmie losowym ( _RS_ ).
-    - [ ] Przy wykorzystaniu sąsiedztwa z wymianą krawędzi wewnątrz cyklu.
+    - [x] Przy wykorzystaniu sąsiedztwa z wymianą krawędzi wewnątrz cyklu.
         - [x] Zaczynającą od rozwiązania uzyskanego w algorytmie zachłannym.
         - [x] Zaczynający od rozwiązania uzyskanego w algorytmie losowym ( _RS_ ).
-  - [ ] **Dodatkowo**: Przy wykorzystaniu sąsiedztwa z wykorzystaniem wszystkich operacji.
-      - [x] Zaczynającą od rozwiązania uzyskanego w algorytmie zachłannym.
-      - [x] Zaczynający od rozwiązania uzyskanego w algorytmie losowym ( _RS_ ).
-- [ ] Zaimplementować algorytm przeszukiwania lokalnego w wersji zachłannej ( _greedy_ ).
+    - [x] **Dodatkowo**: Przy wykorzystaniu sąsiedztwa z wykorzystaniem wszystkich operacji.
+        - [x] Zaczynającą od rozwiązania uzyskanego w algorytmie zachłannym.
+        - [x] Zaczynający od rozwiązania uzyskanego w algorytmie losowym ( _RS_ ).
+- [x] Zaimplementować algorytm przeszukiwania lokalnego w wersji zachłannej ( _greedy_ ).
     - [x] Przy wykorzystaniu sąsiedztwa z wymianą wierzchołków między cyklami.
         - [x] Zaczynającą od rozwiązania uzyskanego w algorytmie zachłannym.
         - [x] Zaczynający od rozwiązania uzyskanego w algorytmie losowym ( _RS_ ).
-    - [ ] Przy wykorzystaniu sąsiedztwa z wymianą wierzchołków wewnątrz cyklu.
+    - [x] Przy wykorzystaniu sąsiedztwa z wymianą wierzchołków wewnątrz cyklu.
         - [x] Zaczynającą od rozwiązania uzyskanego w algorytmie zachłannym.
         - [x] Zaczynający od rozwiązania uzyskanego w algorytmie losowym ( _RS_ ).
-    - [ ] Przy wykorzystaniu sąsiedztwa z wymianą krawędzi wewnątrz cyklu.
+    - [x] Przy wykorzystaniu sąsiedztwa z wymianą krawędzi wewnątrz cyklu.
         - [x] Zaczynającą od rozwiązania uzyskanego w algorytmie zachłannym.
         - [x] Zaczynający od rozwiązania uzyskanego w algorytmie losowym ( _RS_ ).
-    - [ ] **Dodatkowo**: Przy wykorzystaniu sąsiedztwa z wykorzystaniem wszystkich operacji.
+    - [x] **Dodatkowo**: Przy wykorzystaniu sąsiedztwa z wykorzystaniem wszystkich operacji.
         - [x] Zaczynającą od rozwiązania uzyskanego w algorytmie zachłannym.
         - [x] Zaczynający od rozwiązania uzyskanego w algorytmie losowym ( _RS_ ).
 
-## Implementacja algorytmu losowego zachłannego adapcyjnego przeszukiwania ( _GRASP_ ).
+## Implementacja algorytmu losowego przeszukiwania ( _RS_ ).
+
+### Pseudokod
+
+### Opis
+
+## Implementacja algorytmu losowego zachłannego adaptacyjnego przeszukiwania ( _GRASP_ ).
 
 ### Pseudokod
 
@@ -248,43 +254,31 @@ W ramach zadania należało:
 
 #### Opis
 
-### Wersja zaczynająca od rozwiązania uzyskanego w algorytmie zachłannym
+### Wersja z wymianą krawędzi wewnątrz cyklu
 
 #### Pseudokod
 
 #### Opis
 
-### Wersja zaczynająca od rozwiązania uzyskanego w algorytmie losowym ( grasp )
+### Wersja z mieszana krawędzi wewnątrz cyklu
 
-#### Pseudokod
-
-#### Opis
+Tak sami sam proces, ale zaczynając od rozwiązania uzyskanego w algorytmie losowym ( _RS_ ).
 
 ## Implementacja algorytmu przeszukiwania lokalnego w wersji zachłannej ( _greedy_ ).
 
-### Wersja z wymianą wierzchołków między cyklami
-
-#### Pseudokod
+## Wersje algorytmów zaczynających się od rozwiązania uzyskanego w algorytmie zachłannym z ważonym 2-żalem.
 
 #### Opis
 
-### Wersja z wymianą wierzchołków wewnątrz cyklu
+Początkowo w miejscach wcześniej wskazanych populacja jest generowana zgodnie z algorytmem zachłannym.
+Następnie jest ona procesowi przeszukiwania lokalnego w odpowiedniej wersji ( _steepest_ / _greedy_ ).
 
-#### Pseudokod
-
-#### Opis
-
-### Wersja zaczynająca od rozwiązania uzyskanego w algorytmie zachłannym
-
-#### Pseudokod
+## Wersje algorytmów zaczynająca od rozwiązania uzyskanego w algorytmie losowym ( _RS_ )
 
 #### Opis
 
-### Wersja zaczynająca od rozwiązania uzyskanego w algorytmie losowym ( grasp )
-
-#### Pseudokod
-
-#### Opis
+Tak jak w przypadku wersji rozpoczynającej się od rozwiązania zachłannego lecz zamiast tego rozwiązania jest używane rozwiązanie uzyskane w algorytmie losowym ( _RS_ ).
+Następnie tak jak poprzednio jest ona procesowi przeszukiwania lokalnego w odpowiedniej wersji ( _steepest_ / _greedy_ ).
 
 ## Eksperyment
 
