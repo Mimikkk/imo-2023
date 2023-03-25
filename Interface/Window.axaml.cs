@@ -46,11 +46,9 @@ public sealed partial class MainWindow : Window {
     };
     ParameterStartIndex.ValueChanged += (_, _) => {
       CalculateAverageButton.IsVisible = ParameterStartIndex.Value > 0;
-      CalculateAveragesButton.IsVisible = ParameterStartIndex.Value == 0;
     };
     ParameterStartIndex.Value = 0;
     CalculateAverageButton.IsVisible = ParameterStartIndex.Value > 0;
-    CalculateAveragesButton.IsVisible = ParameterStartIndex.Value == 0;
 
     ClearParameterRegretButton.Click += (_, _) => ParameterRegret.Value = 2;
     ParameterRegret.Value = 2;
@@ -58,12 +56,12 @@ public sealed partial class MainWindow : Window {
     ParameterPopulationSize.Value = 1;
     FindBestButton.Click += (_, _) => {
       M.Measure(0, (int)ParameterStartIndex.Maximum);
-      ParameterStartIndex.Value = M.BestIndex + 1;
+      ParameterStartIndex.Value = M.BestIndex;
       HandleRunCommand();
     };
     FindWorstButton.Click += (_, _) => {
       M.Measure(0, (int)ParameterStartIndex.Maximum);
-      ParameterStartIndex.Value = M.WorstIndex + 1;
+      ParameterStartIndex.Value = M.WorstIndex;
       HandleRunCommand();
     };
     CalculateAveragesButton.Click += (_, _) => {
