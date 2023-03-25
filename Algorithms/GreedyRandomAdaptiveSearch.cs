@@ -12,6 +12,7 @@ internal static class GreedyRandomAdaptiveSearch {
     var population = configuration.Population.ToArray();
     var timeLimit = configuration.TimeLimit;
     var initializer = configuration.Initializer;
+    var gains = configuration.Gains;
 
     var hullSize = instance.Nodes.Hull().Count();
     if (population.Length > hullSize) throw new ArgumentOutOfRangeException(nameof(configuration));
@@ -20,12 +21,12 @@ internal static class GreedyRandomAdaptiveSearch {
     return population.Length switch {
       < 0 => throw new ArgumentOutOfRangeException(nameof(configuration)),
       0 => Enumerable.Empty<IEnumerable<Node>>(),
-      _ => SearchMultiple(instance, population, timeLimit),
+      _ => SearchMultiple(instance, population, timeLimit, gains),
     };
   }
 
   private static IEnumerable<IEnumerable<Node>>
-    SearchMultiple(Instance instance, IEnumerable<ObservableList<Node>> population, float timeLimit) {
+    SearchMultiple(Instance instance, IEnumerable<ObservableList<Node>> population, float timeLimit, List<int> gains) {
     var enumerable = population.ToArray();
 
     var bestSolutions = enumerable.Select(solution => solution.ToList()).ToList();
@@ -38,8 +39,10 @@ internal static class GreedyRandomAdaptiveSearch {
 
       var distance = solutions.Sum(solution => instance[solution]);
       if (distance >= bestDistance) continue;
+      gains.Add(bestDistance - distance);
       bestDistance = distance;
       bestSolutions = solutions;
+      
       enumerable.Zip(solutions).ForEach(p => {
         p.First.Fill(p.Second);
         p.First.Notify();
