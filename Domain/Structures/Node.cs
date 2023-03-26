@@ -3,8 +3,6 @@ using ScottPlot;
 namespace Domain.Structures;
 
 public sealed record Node(int Index, int X, int Y) : IComparable {
-  private static readonly Random Random = new();
-
   public static IEnumerable<Node> From(IEnumerable<string> descriptors) =>
     descriptors
       .Select(descriptor => descriptor.Split(" ").Select(int.Parse).ToArray())
@@ -18,7 +16,7 @@ public sealed record Node(int Index, int X, int Y) : IComparable {
   public static Node Choose(IEnumerable<Node> nodes) {
     var items = nodes.ToArray();
 
-    return items[Random.Next(items.Length)];
+    return items[Globals.Random.Next(items.Length)];
   }
 
   public static implicit operator (int X, int Y)(Node node) => (node.X, node.Y);

@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Algorithms.Structures;
+using Domain;
 using Domain.Extensions;
 using Domain.Structures;
 using Interface.Types;
@@ -32,15 +33,20 @@ internal sealed record InteractionModule(MainWindow Self) {
 
     public Algorithm Initializer => Self.ParameterInitializers.SelectedItem.As<Option<Algorithm>>().Value;
 
-    public SearchConfiguration Configuration => new() {
-      Population = Times(PopulationSize, ObservableList<Node>.Create).ToList(),
-      Regret = Regret,
-      Start = StartIndex,
-      Weight = Weight,
-      TimeLimit = TimeLimit,
-      Initializer = Initializer,
-      Variant = Variant
-    };
+    public SearchConfiguration Configuration {
+      get {
+        Globals.Random = new(StartIndex ?? -1);
+        return new() {
+          Population = Times(PopulationSize, ObservableList<Node>.Create).ToList(),
+          Regret = Regret,
+          Start = StartIndex,
+          Weight = Weight,
+          TimeLimit = TimeLimit,
+          Initializer = Initializer,
+          Variant = Variant
+        };
+      }
+    }
   }
 
   public readonly Parameters Parameter = new(Self);

@@ -1,6 +1,7 @@
 using System.Diagnostics;
 using Algorithms.Structures;
 using Ardalis.SmartEnum;
+using Domain;
 using Domain.Extensions;
 using Domain.Structures;
 
@@ -55,29 +56,29 @@ internal static class GreedyRandomAdaptiveSearch {
   private static void PerformRandomMove(List<List<Node>> cycles) {
     var moves = Move.List;
     if (cycles.Count == 1) moves = moves.Except(Move.TradeExternalTwoVertices).ToList();
-    Random.Shared.Choose(moves).Invoke(cycles);
+    Globals.Random.Choose(moves).Invoke(cycles);
   }
 
   private class Move : SmartEnum<Move> {
     public static readonly Move TradeInternalTwoVertices = new(cycles => {
-      var first = Random.Shared.Choose(cycles);
-      var a = Random.Shared.Choose(first);
-      var b = Random.Shared.Choose(first.Except(a));
+      var first = Globals.Random.Choose(cycles);
+      var a = Globals.Random.Choose(first);
+      var b = Globals.Random.Choose(first.Except(a));
       Moves.ExchangeVertex(first, a, b);
     });
 
     public static readonly Move TradeExternalTwoVertices = new(cycles => {
-      var first = Random.Shared.Choose(cycles);
-      var second = Random.Shared.Choose(cycles.Except(first));
-      var a = Random.Shared.Choose(first);
-      var b = Random.Shared.Choose(second);
+      var first = Globals.Random.Choose(cycles);
+      var second = Globals.Random.Choose(cycles.Except(first));
+      var a = Globals.Random.Choose(first);
+      var b = Globals.Random.Choose(second);
       Moves.ExchangeVertex(first, second, a, b);
     });
 
     public static readonly Move TradeInternalTwoEdges = new(cycles => {
-      var first = Random.Shared.Choose(cycles);
-      var a = Random.Shared.Choose(first);
-      var b = Random.Shared.Choose(first.Except(a));
+      var first = Globals.Random.Choose(cycles);
+      var a = Globals.Random.Choose(first);
+      var b = Globals.Random.Choose(first.Except(a));
       Moves.ExchangeEdge(first, a, b);
     });
 

@@ -45,7 +45,7 @@ public static class EnumerableExtensions {
     return tail.Combinations(k - 1).Select(x => new[] { head }.Concat(x)).Concat(tail.Combinations(k));
   }
 
-  public static IEnumerable<T> Shuffle<T>(this IEnumerable<T> items) => items.OrderBy(_ => Random.Shared.Next());
+  public static IEnumerable<T> Shuffle<T>(this IEnumerable<T> items) => items.OrderBy(_ => Globals.Random.Next());
 
   public static void ForEach<T>(this IEnumerable<T> items, Action<T> action) {
     foreach (var item in items) action(item);

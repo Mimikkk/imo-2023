@@ -1,4 +1,5 @@
 using Algorithms.Structures;
+using Domain;
 using Domain.Extensions;
 using Domain.Structures;
 
@@ -138,7 +139,7 @@ internal static class SteepestLocalSearch {
         var second = cycles.Find(c => c.Contains(edge.b))!;
 
         var operation = (first == second) switch {
-          true when Random.Shared.NextDouble() > 0.5d => "internal-edges",
+          true when Globals.Random.NextDouble() > 0.5d => "internal-edges",
           true => "internal-vertices",
           _ => "external-vertices"
         };
