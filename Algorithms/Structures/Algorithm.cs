@@ -38,7 +38,9 @@ public sealed class Algorithm : SmartEnum<Algorithm> {
     DisplayType.Cycle,
     GreedyRandomAdaptiveSearch.Search,
     usesTimeLimit: true,
-    usesInitializer: true
+    usesInitializer: true,
+    usesRegret: true,
+    usesWeight: true
   );
 
   public static readonly Algorithm GreedyLocal = new(
