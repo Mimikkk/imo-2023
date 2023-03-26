@@ -54,7 +54,7 @@ internal sealed record MemoryModule(MainWindow Self) {
         Console.WriteLine($"Processing index: {index}");
 
         var configuration = I.Parameter.Configuration with { Start = index };
-        Globals.Random = new(index);
+        Globals.Random = new(configuration.Start ?? 999);
 
         var timer = Stopwatch.StartNew();
         var distance = I.Algorithm.Search(I.Instance, configuration).Sum(nodes => I.Instance[nodes]);
@@ -82,26 +82,26 @@ internal sealed record MemoryModule(MainWindow Self) {
     Self.ParameterStartIndex.Value = BestIndex;
     Self.HandleRunCommand();
     Self.Mod.Chart.Notify();
-    Self.Chart.Plot.Save($"{Self.Algorithms.SelectedItem.As<Option<Algorithm>>().Name}-{I.Instance.Name}-{I.Parameter.Variant}-best");
+    Self.Chart.Plot.Save($"{Self.Algorithms.SelectedItem.As<Option<Algorithm>>().Name}-{Self.ParameterInitializers.SelectedItem.As<Option<Algorithm>>().Name}-{I.Instance.Name}-{I.Parameter.Variant}-best");
 
     Self.ParameterStartIndex.Value = WorstIndex;
     Self.HandleRunCommand();
     Self.Mod.Chart.Notify();
-    Self.Chart.Plot.Save($"{Self.Algorithms.SelectedItem.As<Option<Algorithm>>().Name}-{I.Instance.Name}-{I.Parameter.Variant}-worst");
+    Self.Chart.Plot.Save($"{Self.Algorithms.SelectedItem.As<Option<Algorithm>>().Name}-{Self.ParameterInitializers.SelectedItem.As<Option<Algorithm>>().Name}-{I.Instance.Name}-{I.Parameter.Variant}-worst");
 
-    Console.WriteLine($"{Self.Algorithms.SelectedItem.As<Option<Algorithm>>().Name}-{I.Instance.Name}-{I.Parameter.Variant}");
+    Self.Chart.Plot.Save($"{Self.Algorithms.SelectedItem.As<Option<Algorithm>>().Name}-{Self.ParameterInitializers.SelectedItem.As<Option<Algorithm>>().Name}-{I.Instance.Name}-{I.Parameter.Variant}-worst");
     Console.WriteLine($"Score:");
     Console.WriteLine($"  \\multicolumn{{1}}{{c|}}{{{AverageScore.Value}}} &");
     Console.WriteLine($"  \\multicolumn{{1}}{{c|}}{{{WorstScore.Value}}} &");
     Console.WriteLine($"  \\multicolumn{{1}}{{c|}}{{{BestScore.Value}}} {(I.Instance.Name == "kroA100" ? "&" : "\\\\")}");
-    Console.WriteLine($"Time:");
-    Console.WriteLine($"  \\multicolumn{{1}}{{c|}}{{{AverageTime.Value}}} &");
-    Console.WriteLine($"  \\multicolumn{{1}}{{c|}}{{{WorstTime.Value}}} &");
-    Console.WriteLine($"  \\multicolumn{{1}}{{c|}}{{{BestTime.Value}}} {(I.Instance.Name == "kroA100" ? "&" : "\\\\")}");
     Console.WriteLine($"Gains:");
     Console.WriteLine($"  \\multicolumn{{1}}{{c|}}{{{AverageGain.Value}}} &");
     Console.WriteLine($"  \\multicolumn{{1}}{{c|}}{{{WorstGain.Value}}} &");
     Console.WriteLine($"  \\multicolumn{{1}}{{c|}}{{{BestGain.Value}}} {(I.Instance.Name == "kroA100" ? "&" : "\\\\")}");
+    Console.WriteLine($"Time:");
+    Console.WriteLine($"  \\multicolumn{{1}}{{c|}}{{{AverageTime.Value}}} &");
+    Console.WriteLine($"  \\multicolumn{{1}}{{c|}}{{{WorstTime.Value}}} &");
+    Console.WriteLine($"  \\multicolumn{{1}}{{c|}}{{{BestTime.Value}}} {(I.Instance.Name == "kroA100" ? "&" : "\\\\")}");
   }
 
   public readonly IPalette Palette = new Category10();

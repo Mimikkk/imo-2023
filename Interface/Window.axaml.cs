@@ -115,8 +115,8 @@ public sealed partial class MainWindow : Window {
             new("Wewnętrzna wymiana krawędzi", "internal-edges")
           },
           _ => new List<Option<string>> {
-            new("Wewnętrzna wymiana wierzchołków", "internal-vertices"),
             new("Zewnętrzna wymiana wierzchołków", "external-vertices"),
+            new("Wewnętrzna wymiana wierzchołków", "internal-vertices"),
             new("Wewnętrzna wymiana krawędzi", "internal-edges"),
             new("Mieszany", "mixed")
           }
@@ -140,8 +140,8 @@ public sealed partial class MainWindow : Window {
             new("Wewnętrzna wymiana krawędzi", "internal-edges")
           },
           _ => new List<Option<string>> {
-            new("Wewnętrzna wymiana wierzchołków", "internal-vertices"),
             new("Zewnętrzna wymiana wierzchołków", "external-vertices"),
+            new("Wewnętrzna wymiana wierzchołków", "internal-vertices"),
             new("Wewnętrzna wymiana krawędzi", "internal-edges"),
             new("Mieszany", "mixed")
           }
