@@ -2,7 +2,9 @@
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
+using Domain;
 using Domain.Structures;
+using Microsoft.CodeAnalysis;
 using ScottPlot;
 using ScottPlot.Palettes;
 
@@ -44,34 +46,57 @@ internal sealed record MemoryModule(MainWindow Self) {
   public void Measure(int start, int end) {
     if (AverageScore is not null) return;
 
+    var worst = int.MinValue;
+    var best = int.MaxValue;
     var measurements = Enumerable.Range(start, end)
       .Select(index => {
-        var timer = Stopwatch.StartNew();
-
         var configuration = I.Parameter.Configuration with { Start = index };
-        var distance = I.Algorithm.Search(I.Instance, configuration)
-          .Sum(nodes => I.Instance[nodes]);
+        Globals.Random = new(index);
 
+        var timer = Stopwatch.StartNew();
+        var distance = I.Algorithm.Search(I.Instance, configuration).Sum(nodes => I.Instance[nodes]);
         var time = timer.ElapsedMilliseconds;
 
+        if (distance < best) {
+          best = distance;
+          BestIndex = index;
+        }
+
+        if (distance > worst) {
+          worst = distance;
+          WorstIndex = index;
+        }
+
         return (distance, time, configuration.Gains);
-      }).ToList();
-
-
-    BestIndex = measurements.IndexOf(measurements.MinBy(m => m.distance));
-    WorstIndex = measurements.IndexOf(measurements.MaxBy(m => m.distance));
+      })
+      .ToList();
 
     AverageScore = measurements.Average(m => m.distance);
     WorstScore = measurements.Max(m => m.distance);
     BestScore = measurements.Min(m => m.distance);
 
+    Console.WriteLine($"Best index {BestIndex}");
+    Console.WriteLine($"Best index {WorstIndex}");
+    
+    Console.WriteLine($"\\multicolumn{{1}}{{c|}}{{{AverageScore.Value}}} &");
+    Console.WriteLine($"\\multicolumn{{1}}{{c|}}{{{WorstScore.Value}}} &");
+    Console.WriteLine($"\\multicolumn{{1}}{{c|}}{{{BestScore.Value}}} {(I.Instance.Name == "kroA100" ? "&" : "\\\\")}");
+
     AverageTime = measurements.Average(m => m.time);
     WorstTime = measurements.Max(m => m.time);
     BestTime = measurements.Min(m => m.time);
 
+    Console.WriteLine($"\\multicolumn{{1}}{{c|}}{{{AverageTime.Value}}} &");
+    Console.WriteLine($"\\multicolumn{{1}}{{c|}}{{{WorstTime.Value}}} &");
+    Console.WriteLine($"\\multicolumn{{1}}{{c|}}{{{BestTime.Value}}} {(I.Instance.Name == "kroA100" ? "&" : "\\\\")}");
+
     AverageGain = measurements.Average(m => m.Gains.Count == 0 ? 0 : m.Gains.Average());
-    WorstGain = measurements.Min(m => m.Gains.Count == 0 ? null : m.Gains.Min());
-    BestGain = measurements.Max(m => m.Gains.Count == 0 ? null : m.Gains.Max());
+    WorstGain = measurements.Min(m => m.Gains.Count == 0 ? null : m.Gains.Min()) ?? 0;
+    BestGain = measurements.Max(m => m.Gains.Count == 0 ? null : m.Gains.Max()) ?? 0;
+
+    Console.WriteLine($"\\multicolumn{{1}}{{c|}}{{{AverageGain.Value}}} &");
+    Console.WriteLine($"\\multicolumn{{1}}{{c|}}{{{WorstGain.Value}}} &");
+    Console.WriteLine($"\\multicolumn{{1}}{{c|}}{{{BestGain.Value}}} {(I.Instance.Name == "kroA100" ? "&" : "\\\\")}");
   }
 
   public readonly IPalette Palette = new Category10();

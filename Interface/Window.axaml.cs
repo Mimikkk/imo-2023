@@ -4,6 +4,7 @@ using System.Linq;
 using Algorithms.Structures;
 using Avalonia.Controls;
 using Avalonia.Input;
+using Domain;
 using Domain.Extensions;
 using Domain.Structures;
 using Interface.Modules;
@@ -201,9 +202,11 @@ public sealed partial class MainWindow : Window {
     var histories = Times(I.Parameter.PopulationSize, () => new List<List<Node>> { new() })
       .ToList();
 
-    I.Algorithm.Search(I.Instance, I.Parameter.Configuration with {
+    var configuration = I.Parameter.Configuration with {
       Population = histories.Select(history => new ObservableList<Node>(items => history.Add(items.ToList()))).ToList()
-    });
+    };
+    Globals.Random = new(configuration.Start ?? 999);
+    I.Algorithm.Search(I.Instance, configuration);
 
     histories.ForEach(M.Histories.Add);
     HistorySlider.Maximum = histories.MaxBy(x => x.Count)!.Count - 1;
