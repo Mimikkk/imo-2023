@@ -21,8 +21,8 @@ internal static class GreedyRandomAdaptiveSearch {
 
     return population.Length switch {
       < 0 => throw new ArgumentOutOfRangeException(nameof(configuration)),
-      0 => Enumerable.Empty<IEnumerable<Node>>(),
-      _ => SearchMultiple(instance, population, timeLimit, gains),
+      0   => Enumerable.Empty<IEnumerable<Node>>(),
+      _   => SearchMultiple(instance, population, timeLimit, gains),
     };
   }
 
@@ -34,7 +34,7 @@ internal static class GreedyRandomAdaptiveSearch {
     var bestDistance = bestSolutions.Sum(solution => instance[solution]);
 
     var timer = Stopwatch.StartNew();
-    while (timer.ElapsedMilliseconds < 1000 * timeLimit) {
+    while (timer.ElapsedMilliseconds < timeLimit) {
       var solutions = bestSolutions.Select(solution => solution.ToList()).ToList();
       PerformRandomMove(solutions);
 
@@ -43,11 +43,12 @@ internal static class GreedyRandomAdaptiveSearch {
       gains.Add(bestDistance - distance);
       bestDistance = distance;
       bestSolutions = solutions;
-      
-      enumerable.Zip(solutions).ForEach(p => {
-        p.First.Fill(p.Second);
-        p.First.Notify();
-      });
+
+      enumerable.Zip(solutions)
+        .ForEach(p => {
+          p.First.Fill(p.Second);
+          p.First.Notify();
+        });
     }
 
     return bestSolutions;
@@ -82,7 +83,8 @@ internal static class GreedyRandomAdaptiveSearch {
       Moves.ExchangeEdge(first, a, b);
     });
 
-    private Move(Action<List<List<Node>>> invoke) : base(_value++.ToString(), _value) => Invoke = invoke;
+    private Move(Action<List<List<Node>>> invoke)
+      : base(_value++.ToString(), _value) => Invoke = invoke;
     private static int _value;
     public readonly Action<List<List<Node>>> Invoke;
   }

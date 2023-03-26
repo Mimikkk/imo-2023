@@ -10,149 +10,149 @@
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:Class="Interface.MainWindow"
         Title="IMO - 2023">
-    <Grid Background="#3b82f6" RowDefinitions="*,Auto" ColumnDefinitions="*,Auto">
-        <ScottPlot:AvaPlot Grid.Row="0" Grid.Column="0" RelativePanel.Above="True" Name="Chart" />
-        <StackPanel Grid.Row="0" Grid.Column="1" Spacing="4" Margin="8" Width="200">
-            <Border CornerRadius="4" BorderBrush="#4f46e5" Background="#1e40af">
-                <StackPanel Margin="4">
-                    <TextBlock Name="HistoryText" Padding="4" Margin="0 0 0 -20" />
-                    <Slider Name="HistorySlider" IsSnapToTickEnabled="True" TickFrequency="1"
-                            TickPlacement="BottomRight" />
-                </StackPanel>
-            </Border>
-            <Panel>
-                <TextBlock Margin="8 -8 0 0" ZIndex="1" FontSize="12">Instancja</TextBlock>
-                <ComboBox Name="Instances" HorizontalAlignment="Stretch" SelectedIndex="0">
-                    <ComboBox.ItemTemplate>
-                        <DataTemplate>
-                            <TextBlock Text="{Binding Name}" />
-                        </DataTemplate>
-                    </ComboBox.ItemTemplate>
-                </ComboBox>
-            </Panel>
-            <Panel>
-                <TextBlock Margin="8 -8 0 0" ZIndex="1" FontSize="12">Algorytm</TextBlock>
-                <ComboBox Name="Algorithms" HorizontalAlignment="Stretch">
-                    <ComboBox.ItemTemplate>
-                        <DataTemplate>
-                            <TextBlock Text="{Binding Name}" />
-                        </DataTemplate>
-                    </ComboBox.ItemTemplate>
-                </ComboBox>
-            </Panel>
-            <Panel Name="ParameterInitializersBox">
-                <TextBlock Margin="8 -8 0 0" ZIndex="1" FontSize="12">Inicjalizator</TextBlock>
-                <ComboBox Name="ParameterInitializers" HorizontalAlignment="Stretch">
-                    <ComboBox.ItemTemplate>
-                        <DataTemplate>
-                            <TextBlock Text="{Binding Name}" />
-                        </DataTemplate>
-                    </ComboBox.ItemTemplate>
-                </ComboBox>
-            </Panel>
-            <Panel Name="ParameterVariantsBox">
-                <TextBlock Margin="8 -8 0 0" ZIndex="1" FontSize="12">Wariant</TextBlock>
-                <ComboBox Name="ParameterVariants" HorizontalAlignment="Stretch">
-                    <ComboBox.ItemTemplate>
-                        <DataTemplate>
-                            <TextBlock Text="{Binding Name}" />
-                        </DataTemplate>
-                    </ComboBox.ItemTemplate>
-                </ComboBox>
-            </Panel>
-            <Border VerticalAlignment="Bottom" Padding="4" CornerRadius="4" BorderBrush="#4f46e5" Background="#1e40af">
-                <StackPanel Spacing="4">
-                    <Panel Name="ParameterStartIndexBox">
-                        <TextBlock Margin="8 -8 0 0" ZIndex="1" FontSize="12">Rozpocznij od</TextBlock>
-                        <Button Name="ClearParameterStartIndexButton"
-                                Padding="0 0 0 0" Margin="100 0 0 0" ZIndex="1" Height="18" Width="18"
-                                HorizontalContentAlignment="Center" FontSize="12">
-                            X
-                        </Button>
-                        <NumericUpDown Minimum="0" Name="ParameterStartIndex" />
-                    </Panel>
-                    <Panel Name="ParameterPopulationSizeBox">
-                        <TextBlock Margin="8 -8 0 0" ZIndex="1" FontSize="12">Rozmiar populacji</TextBlock>
-                        <Button Name="ClearParameterPopulationSizeButton"
-                                Padding="0 0 0 0" Margin="100 0 0 0" ZIndex="1" Height="18" Width="18"
-                                HorizontalContentAlignment="Center" FontSize="12">
-                            X
-                        </Button>
-                        <NumericUpDown Minimum="1" Name="ParameterPopulationSize" />
-                    </Panel>
-                    <Panel Name="ParameterRegretBox">
-                        <TextBlock Margin="8 -8 0 0" ZIndex="1" FontSize="12">Rozmiar k-żalu</TextBlock>
-                        <Button Name="ClearParameterRegretButton"
-                                Padding="0 0 0 0" Margin="100 0 0 0" ZIndex="1" Height="18" Width="18"
-                                HorizontalContentAlignment="Center" FontSize="12">
-                            X
-                        </Button>
-                        <NumericUpDown Minimum="1" Name="ParameterRegret" />
-                    </Panel>
-                    <Panel Name="ParameterTimeLimitBox">
-                        <TextBlock Margin="8 -8 0 0" ZIndex="1" FontSize="12">Limit sekund</TextBlock>
-                        <Button Name="ClearParameterTimeLimitButton"
-                                Padding="0 0 0 0" Margin="100 0 0 0" ZIndex="1" Height="18" Width="18"
-                                HorizontalContentAlignment="Center" FontSize="12">
-                            X
-                        </Button>
-                        <NumericUpDown Minimum="1" Name="ParameterTimeLimit" />
-                    </Panel>
-                    <Panel Name="ParameterWeightBox">
-                        <TextBlock Margin="8 -8 0 0" ZIndex="1" FontSize="12">Waga kosztu wsadzenia</TextBlock>
-                        <Button Name="ClearParameterWeightButton"
-                                Padding="0 0 0 0" Margin="100 0 0 0" ZIndex="1" Height="18" Width="18"
-                                HorizontalContentAlignment="Center" FontSize="12">
-                            X
-                        </Button>
-                        <NumericUpDown Increment="0.01" Minimum="0" Maximum="1" Name="ParameterWeight" />
-                    </Panel>
-                    <Button Name="RunButton" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center">Rozpocznij</Button>
-                    <Button Name="CalculateAveragesButton" HorizontalAlignment="Stretch"
-                            HorizontalContentAlignment="Center">
-                        Oblicz średnie
-                    </Button>
-                    <Button Name="CalculateAverageButton" HorizontalAlignment="Stretch"
-                            HorizontalContentAlignment="Center">
-                        Oblicz średnią punktu
-                    </Button>
-                    <Button Margin="0 4 0 0" Name="FindWorstButton" HorizontalAlignment="Stretch"
-                            HorizontalContentAlignment="Center">
-                        Znajdź najgorsze
-                    </Button>
-                    <Button Name="FindBestButton" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center">Znajdź najlepsze</Button>
-                </StackPanel>
-            </Border>
-            <Border VerticalAlignment="Bottom" Padding="8" CornerRadius="4" BorderBrush="#4f46e5" Background="#1e40af">
-                <StackPanel Spacing="4">
-                    <TextBlock Name="TextMousePosition" />
-                    <TextBlock Name="NodePanelDescription" IsVisible="False">Wybrane wierzchołki:</TextBlock>
-                    <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto"
-                                  MaxHeight="200">
-                        <ItemsRepeater Name="NodePanelNodes" IsVisible="False">
-                            <ItemsRepeater.ItemTemplate>
-                                <DataTemplate>
-                                    <TextBlock Text="{Binding Name}" />
-                                </DataTemplate>
-                            </ItemsRepeater.ItemTemplate>
-                        </ItemsRepeater>
-                    </ScrollViewer>
-                    <ComboBox Name="NodeOperations" HorizontalAlignment="Stretch" IsVisible="False">
-                        <ComboBox.ItemTemplate>
-                            <DataTemplate>
-                                <TextBlock Text="{Binding Name}" />
-                            </DataTemplate>
-                        </ComboBox.ItemTemplate>
-                    </ComboBox>
-                    <Button Name="NodeOperationButton" HorizontalAlignment="Stretch"
-                            HorizontalContentAlignment="Center" IsVisible="False">
-                        Wykonaj
-                    </Button>
-                </StackPanel>
-            </Border>
+  <Grid Background="#3b82f6" RowDefinitions="*,Auto" ColumnDefinitions="*,Auto">
+    <ScottPlot:AvaPlot Grid.Row="0" Grid.Column="0" RelativePanel.Above="True" Name="Chart" />
+    <StackPanel Grid.Row="0" Grid.Column="1" Spacing="4" Margin="8" Width="200">
+      <Border CornerRadius="4" BorderBrush="#4f46e5" Background="#1e40af">
+        <StackPanel Margin="4">
+          <TextBlock Name="HistoryText" Padding="4" Margin="0 0 0 -20" />
+          <Slider Name="HistorySlider" IsSnapToTickEnabled="True" TickFrequency="1"
+                  TickPlacement="BottomRight" />
         </StackPanel>
-        <StackPanel Background="#6366f1" Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2" Orientation="Horizontal">
-            <TextBlock Padding="2" Foreground="#c7d2fe">@2023 IMO - Inteligentne Metody Optymalizacji</TextBlock>
+      </Border>
+      <Panel>
+        <TextBlock Margin="8 -8 0 0" ZIndex="1" FontSize="12">Instancja</TextBlock>
+        <ComboBox Name="Instances" HorizontalAlignment="Stretch" SelectedIndex="0">
+          <ComboBox.ItemTemplate>
+            <DataTemplate>
+              <TextBlock Text="{Binding Name}" />
+            </DataTemplate>
+          </ComboBox.ItemTemplate>
+        </ComboBox>
+      </Panel>
+      <Panel>
+        <TextBlock Margin="8 -8 0 0" ZIndex="1" FontSize="12">Algorytm</TextBlock>
+        <ComboBox Name="Algorithms" HorizontalAlignment="Stretch">
+          <ComboBox.ItemTemplate>
+            <DataTemplate>
+              <TextBlock Text="{Binding Name}" />
+            </DataTemplate>
+          </ComboBox.ItemTemplate>
+        </ComboBox>
+      </Panel>
+      <Panel Name="ParameterInitializersBox">
+        <TextBlock Margin="8 -8 0 0" ZIndex="1" FontSize="12">Inicjalizator</TextBlock>
+        <ComboBox Name="ParameterInitializers" HorizontalAlignment="Stretch">
+          <ComboBox.ItemTemplate>
+            <DataTemplate>
+              <TextBlock Text="{Binding Name}" />
+            </DataTemplate>
+          </ComboBox.ItemTemplate>
+        </ComboBox>
+      </Panel>
+      <Panel Name="ParameterVariantsBox">
+        <TextBlock Margin="8 -8 0 0" ZIndex="1" FontSize="12">Wariant</TextBlock>
+        <ComboBox Name="ParameterVariants" HorizontalAlignment="Stretch">
+          <ComboBox.ItemTemplate>
+            <DataTemplate>
+              <TextBlock Text="{Binding Name}" />
+            </DataTemplate>
+          </ComboBox.ItemTemplate>
+        </ComboBox>
+      </Panel>
+      <Border VerticalAlignment="Bottom" Padding="4" CornerRadius="4" BorderBrush="#4f46e5" Background="#1e40af">
+        <StackPanel Spacing="4">
+          <Panel Name="ParameterStartIndexBox">
+            <TextBlock Margin="8 -8 0 0" ZIndex="1" FontSize="12">Rozpocznij od</TextBlock>
+            <Button Name="ClearParameterStartIndexButton"
+                    Padding="0 0 0 0" Margin="100 0 0 0" ZIndex="1" Height="18" Width="18"
+                    HorizontalContentAlignment="Center" FontSize="12">
+              X
+            </Button>
+            <NumericUpDown Minimum="0" Name="ParameterStartIndex" />
+          </Panel>
+          <Panel Name="ParameterPopulationSizeBox">
+            <TextBlock Margin="8 -8 0 0" ZIndex="1" FontSize="12">Rozmiar populacji</TextBlock>
+            <Button Name="ClearParameterPopulationSizeButton"
+                    Padding="0 0 0 0" Margin="100 0 0 0" ZIndex="1" Height="18" Width="18"
+                    HorizontalContentAlignment="Center" FontSize="12">
+              X
+            </Button>
+            <NumericUpDown Minimum="1" Name="ParameterPopulationSize" />
+          </Panel>
+          <Panel Name="ParameterRegretBox">
+            <TextBlock Margin="8 -8 0 0" ZIndex="1" FontSize="12">Rozmiar k-żalu</TextBlock>
+            <Button Name="ClearParameterRegretButton"
+                    Padding="0 0 0 0" Margin="100 0 0 0" ZIndex="1" Height="18" Width="18"
+                    HorizontalContentAlignment="Center" FontSize="12">
+              X
+            </Button>
+            <NumericUpDown Minimum="1" Name="ParameterRegret" />
+          </Panel>
+          <Panel Name="ParameterTimeLimitBox">
+            <TextBlock Margin="8 -8 0 0" ZIndex="1" FontSize="12">Limit milisekund</TextBlock>
+            <Button Name="ClearParameterTimeLimitButton"
+                    Padding="0 0 0 0" Margin="100 0 0 0" ZIndex="1" Height="18" Width="18"
+                    HorizontalContentAlignment="Center" FontSize="12">
+              X
+            </Button>
+            <NumericUpDown Increment="0.01" Minimum="0.01" Name="ParameterTimeLimit" />
+          </Panel>
+          <Panel Name="ParameterWeightBox">
+            <TextBlock Margin="8 -8 0 0" ZIndex="1" FontSize="12">Waga kosztu wsadzenia</TextBlock>
+            <Button Name="ClearParameterWeightButton"
+                    Padding="0 0 0 0" Margin="100 0 0 0" ZIndex="1" Height="18" Width="18"
+                    HorizontalContentAlignment="Center" FontSize="12">
+              X
+            </Button>
+            <NumericUpDown Increment="0.01" Minimum="0" Maximum="1" Name="ParameterWeight" />
+          </Panel>
+          <Button Name="RunButton" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center">Rozpocznij</Button>
+          <Button Name="CalculateAveragesButton" HorizontalAlignment="Stretch"
+                  HorizontalContentAlignment="Center">
+            Oblicz średnie
+          </Button>
+          <Button Name="CalculateAverageButton" HorizontalAlignment="Stretch"
+                  HorizontalContentAlignment="Center">
+            Oblicz średnią punktu
+          </Button>
+          <Button Margin="0 4 0 0" Name="FindWorstButton" HorizontalAlignment="Stretch"
+                  HorizontalContentAlignment="Center">
+            Znajdź najgorsze
+          </Button>
+          <Button Name="FindBestButton" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center">Znajdź najlepsze</Button>
         </StackPanel>
-    </Grid>
+      </Border>
+      <Border VerticalAlignment="Bottom" Padding="8" CornerRadius="4" BorderBrush="#4f46e5" Background="#1e40af">
+        <StackPanel Spacing="4">
+          <TextBlock Name="TextMousePosition" />
+          <TextBlock Name="NodePanelDescription" IsVisible="False">Wybrane wierzchołki:</TextBlock>
+          <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto"
+                        MaxHeight="200">
+            <ItemsRepeater Name="NodePanelNodes" IsVisible="False">
+              <ItemsRepeater.ItemTemplate>
+                <DataTemplate>
+                  <TextBlock Text="{Binding Name}" />
+                </DataTemplate>
+              </ItemsRepeater.ItemTemplate>
+            </ItemsRepeater>
+          </ScrollViewer>
+          <ComboBox Name="NodeOperations" HorizontalAlignment="Stretch" IsVisible="False">
+            <ComboBox.ItemTemplate>
+              <DataTemplate>
+                <TextBlock Text="{Binding Name}" />
+              </DataTemplate>
+            </ComboBox.ItemTemplate>
+          </ComboBox>
+          <Button Name="NodeOperationButton" HorizontalAlignment="Stretch"
+                  HorizontalContentAlignment="Center" IsVisible="False">
+            Wykonaj
+          </Button>
+        </StackPanel>
+      </Border>
+    </StackPanel>
+    <StackPanel Background="#6366f1" Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2" Orientation="Horizontal">
+      <TextBlock Padding="2" Foreground="#c7d2fe">@2023 IMO - Inteligentne Metody Optymalizacji</TextBlock>
+    </StackPanel>
+  </Grid>
 </Window>
