@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using Algorithms.Structures;
 using Avalonia.Controls;
@@ -9,7 +8,6 @@ using Domain.Extensions;
 using Domain.Structures;
 using Interface.Modules;
 using Interface.Types;
-using static System.Linq.Enumerable;
 
 namespace Interface;
 
@@ -196,7 +194,7 @@ public sealed partial class MainWindow : Window {
     };
   }
 
-  private void HandleRunCommand() {
+  public void HandleRunCommand() {
     M.Histories.Clear();
 
     var histories = Times(I.Parameter.PopulationSize, () => new List<List<Node>> { new() })

@@ -4,8 +4,9 @@ using System.Diagnostics;
 using System.Linq;
 using Algorithms.Structures;
 using Domain;
+using Domain.Extensions;
 using Domain.Structures;
-using Microsoft.CodeAnalysis;
+using Interface.Types;
 using ScottPlot;
 using ScottPlot.Palettes;
 
@@ -70,27 +71,33 @@ internal sealed record MemoryModule(MainWindow Self) {
     AverageScore = measurements.Average(m => m.distance);
     WorstScore = measurements.Max(m => m.distance);
     BestScore = measurements.Min(m => m.distance);
-
-    Console.Clear();
-    Console.WriteLine($"{I.Algorithm.Name} : {I.Instance.Name} : {I.Parameter.Variant}");
-    Console.WriteLine($"Score:");
-    Console.WriteLine($"  \\multicolumn{{1}}{{c|}}{{{AverageScore.Value}}} &");
-    Console.WriteLine($"  \\multicolumn{{1}}{{c|}}{{{WorstScore.Value}}} &");
-    Console.WriteLine($"  \\multicolumn{{1}}{{c|}}{{{BestScore.Value}}} {(I.Instance.Name == "kroA100" ? "&" : "\\\\")}");
-
     AverageTime = measurements.Average(m => m.time);
     WorstTime = measurements.Max(m => m.time);
     BestTime = measurements.Min(m => m.time);
-
-    Console.WriteLine($"Time:");
-    Console.WriteLine($"  \\multicolumn{{1}}{{c|}}{{{AverageTime.Value}}} &");
-    Console.WriteLine($"  \\multicolumn{{1}}{{c|}}{{{WorstTime.Value}}} &");
-    Console.WriteLine($"  \\multicolumn{{1}}{{c|}}{{{BestTime.Value}}} {(I.Instance.Name == "kroA100" ? "&" : "\\\\")}");
-
     AverageGain = measurements.Average(m => m.Gains.Count == 0 ? 0 : m.Gains.Average());
     WorstGain = measurements.Min(m => m.Gains.Count == 0 ? null : m.Gains.Min()) ?? 0;
     BestGain = measurements.Max(m => m.Gains.Count == 0 ? null : m.Gains.Max()) ?? 0;
 
+    Console.Clear();
+    Self.ParameterStartIndex.Value = BestIndex;
+    Self.HandleRunCommand();
+    Self.Mod.Chart.Notify();
+    Self.Chart.Plot.Save($"{Self.Algorithms.SelectedItem.As<Option<Algorithm>>().Name}-{I.Instance.Name}-{I.Parameter.Variant}-best");
+
+    Self.ParameterStartIndex.Value = WorstIndex;
+    Self.HandleRunCommand();
+    Self.Mod.Chart.Notify();
+    Self.Chart.Plot.Save($"{Self.Algorithms.SelectedItem.As<Option<Algorithm>>().Name}-{I.Instance.Name}-{I.Parameter.Variant}-worst");
+
+    Console.WriteLine($"{Self.Algorithms.SelectedItem.As<Option<Algorithm>>().Name}-{I.Instance.Name}-{I.Parameter.Variant}");
+    Console.WriteLine($"Score:");
+    Console.WriteLine($"  \\multicolumn{{1}}{{c|}}{{{AverageScore.Value}}} &");
+    Console.WriteLine($"  \\multicolumn{{1}}{{c|}}{{{WorstScore.Value}}} &");
+    Console.WriteLine($"  \\multicolumn{{1}}{{c|}}{{{BestScore.Value}}} {(I.Instance.Name == "kroA100" ? "&" : "\\\\")}");
+    Console.WriteLine($"Time:");
+    Console.WriteLine($"  \\multicolumn{{1}}{{c|}}{{{AverageTime.Value}}} &");
+    Console.WriteLine($"  \\multicolumn{{1}}{{c|}}{{{WorstTime.Value}}} &");
+    Console.WriteLine($"  \\multicolumn{{1}}{{c|}}{{{BestTime.Value}}} {(I.Instance.Name == "kroA100" ? "&" : "\\\\")}");
     Console.WriteLine($"Gains:");
     Console.WriteLine($"  \\multicolumn{{1}}{{c|}}{{{AverageGain.Value}}} &");
     Console.WriteLine($"  \\multicolumn{{1}}{{c|}}{{{WorstGain.Value}}} &");

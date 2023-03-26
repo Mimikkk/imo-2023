@@ -1,5 +1,4 @@
 using Algorithms.Structures;
-using Domain;
 using Domain.Extensions;
 using Domain.Structures;
 

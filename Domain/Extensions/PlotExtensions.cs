@@ -4,8 +4,8 @@ namespace Domain.Extensions;
 
 public static class PlotExtensions {
   public static void Save(this Plot chart, string filename) {
-    if (!Directory.Exists($"{ProjectDirectory}/resources/graphs")) Directory.CreateDirectory($"{ProjectDirectory}/resources/graphs");
+    if (!Directory.Exists($"{ProjectDirectory}/Resources/graphs")) Directory.CreateDirectory($"{ProjectDirectory}/Resources/Graphs");
 
-    chart.SavePng($"{ProjectDirectory}/resources/graphs/{filename}.png", 1200, 800);
+    chart.SavePng($"{ProjectDirectory}/Resources/Graphs/{filename}.png", 1200, 800);
   }
 }

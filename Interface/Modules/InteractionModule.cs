@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Algorithms.Structures;
-using Domain;
 using Domain.Extensions;
 using Domain.Structures;
 using Interface.Types;
