@@ -90,7 +90,9 @@ public sealed partial class MainWindow : Window {
     };
     Instances.Items = new List<Option<string>> {
       new("KroA 100", "kroA100"),
-      new("KroB 100", "kroB100")
+      new("KroB 100", "kroA200"),
+      new("KroB 100", "kroB100"),
+      new("KroB 100", "kroB200")
     };
     Instances.SelectedIndex = 0;
 
@@ -197,8 +199,7 @@ public sealed partial class MainWindow : Window {
   public void HandleRunCommand() {
     M.Histories.Clear();
 
-    var histories = Times(I.Parameter.PopulationSize, () => new List<List<Node>> { new() })
-      .ToList();
+    var histories = Times(I.Parameter.PopulationSize, () => new List<List<Node>> { new() }).ToList();
 
     var configuration = I.Parameter.Configuration with {
       Population = histories.Select(history => new ObservableList<Node>(items => history.Add(items.ToList()))).ToList()

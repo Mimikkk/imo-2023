@@ -1,6 +1,6 @@
 using Domain.Extensions;
 
-namespace Domain.Structures;
+namespace Domain.Structures.Instances;
 
 public sealed record Instance {
   public static Instance Read(string name) {

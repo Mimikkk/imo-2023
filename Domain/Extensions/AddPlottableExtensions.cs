@@ -1,4 +1,5 @@
 ﻿using Domain.Structures;
+using Domain.Structures.Instances;
 using ScottPlot;
 using SkiaSharp;
 

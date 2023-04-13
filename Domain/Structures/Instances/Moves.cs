@@ -1,6 +1,6 @@
 ﻿using Domain.Extensions;
 
-namespace Domain.Structures;
+namespace Domain.Structures.Instances;
 
 public sealed record Moves(Instance Instance) {
   public static void Insert(IList<Node> cycle, Node node, (Node a, Node b) edge) {

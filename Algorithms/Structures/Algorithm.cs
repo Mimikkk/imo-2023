@@ -1,5 +1,6 @@
 using Ardalis.SmartEnum;
 using Domain.Structures;
+using Domain.Structures.Instances;
 
 namespace Algorithms.Structures;
 

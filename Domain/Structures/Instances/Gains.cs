@@ -1,6 +1,6 @@
 ﻿using Domain.Extensions;
 
-namespace Domain.Structures;
+namespace Domain.Structures.Instances;
 
 public sealed record Gains(Instance Instance) {
   public int Insert((Node a, Node b) edge, Node node) =>

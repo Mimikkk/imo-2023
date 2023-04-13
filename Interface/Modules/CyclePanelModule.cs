@@ -2,6 +2,7 @@
 using System.Linq;
 using Domain.Extensions;
 using Domain.Structures;
+using Domain.Structures.Instances;
 using Interface.Types;
 using ScottPlot;
 
