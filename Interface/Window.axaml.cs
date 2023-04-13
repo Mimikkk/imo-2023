@@ -90,9 +90,9 @@ public sealed partial class MainWindow : Window {
     };
     Instances.Items = new List<Option<string>> {
       new("KroA 100", "kroA100"),
-      new("KroB 100", "kroA200"),
+      new("KroA 200", "kroA200"),
       new("KroB 100", "kroB100"),
-      new("KroB 100", "kroB200")
+      new("KroB 200", "kroB200")
     };
     Instances.SelectedIndex = 0;
 
