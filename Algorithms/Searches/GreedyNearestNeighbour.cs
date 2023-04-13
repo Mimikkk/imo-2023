@@ -16,14 +16,14 @@ internal sealed class GreedyNearestNeighbour : ISearch {
     return population.Length switch {
       < 0 => throw new ArgumentOutOfRangeException(nameof(configuration)),
       0   => Enumerable.Empty<IEnumerable<Node>>(),
-      1   => SearchSingle(instance, population.First(), start),
-      2   => SearchDouble(instance, population.First(), population.Last(), start),
-      _   => SearchMultiple(instance, population)
+      1   => Single(instance, population.First(), start),
+      2   => Double(instance, population.First(), population.Last(), start),
+      _   => Multiple(instance, population)
     };
   }
 
   private static IEnumerable<IEnumerable<Node>>
-    SearchSingle(Instance instance, ObservableList<Node> path, int? start) {
+    Single(Instance instance, ObservableList<Node> path, int? start) {
     path.Add(start is null ? Node.Choose(instance.Nodes) : instance.Nodes[start.Value]);
     path.Notify();
 
@@ -36,7 +36,7 @@ internal sealed class GreedyNearestNeighbour : ISearch {
   }
 
   private static IEnumerable<IEnumerable<Node>>
-    SearchDouble(Instance instance, ObservableList<Node> first, ObservableList<Node> second, int? start) {
+    Double(Instance instance, ObservableList<Node> first, ObservableList<Node> second, int? start) {
     first.Add(start is null ? Node.Choose(instance.Nodes) : instance.Nodes[start.Value]);
     first.Notify();
     second.Add(instance.Move.FurthestTo(first.First()));
@@ -55,7 +55,7 @@ internal sealed class GreedyNearestNeighbour : ISearch {
   }
 
   private static IEnumerable<IEnumerable<Node>>
-    SearchMultiple(Instance instance, IEnumerable<ObservableList<Node>> paths) {
+    Multiple(Instance instance, IEnumerable<ObservableList<Node>> paths) {
     paths = paths.ToArray();
 
     var points = instance.Move.FindFurthest(paths.Count());

@@ -20,17 +20,17 @@ internal sealed class GreedyLocalSearch : ISearch {
     return (population.Length, variant) switch {
       (< 0, _)                                => throw new ArgumentOutOfRangeException(nameof(configuration)),
       (0, _)                                  => Enumerable.Empty<IEnumerable<Node>>(),
-      (_, "internal-vertices")                => SearchInternalVertices(instance, population, gains),
-      (_, "external-vertices")                => SearchExternalVertices(instance, population, gains),
-      (_, "internal-edges")                   => SearchInternalEdges(instance, population, gains),
-      (_, "vertices")                         => SearchVertices(instance, population, gains),
-      (_, "external-vertices-internal-edges") => SearchInternalEdgesExternalVertices(instance, population, gains),
-      (_, "mixed")                            => SearchMixed(instance, population, gains),
+      (_, "internal-vertices")                => InternalVertices(instance, population, gains),
+      (_, "external-vertices")                => ExternalVertices(instance, population, gains),
+      (_, "internal-edges")                   => InternalEdges(instance, population, gains),
+      (_, "vertices")                         => Vertices(instance, population, gains),
+      (_, "external-vertices-internal-edges") => InternalEdgesExternalVertices(instance, population, gains),
+      (_, "mixed")                            => Mixed(instance, population, gains),
     };
   }
 
   private static IEnumerable<IEnumerable<Node>>
-    SearchExternalVertices(
+    ExternalVertices(
       Instance instance,
       IEnumerable<ObservableList<Node>> population,
       ICollection<int> gains
@@ -70,7 +70,7 @@ internal sealed class GreedyLocalSearch : ISearch {
   }
 
   private static IEnumerable<IEnumerable<Node>>
-    SearchInternalVertices(
+    InternalVertices(
       Instance instance,
       IEnumerable<ObservableList<Node>> population,
       ICollection<int> gains
@@ -107,7 +107,7 @@ internal sealed class GreedyLocalSearch : ISearch {
   }
 
   private static IEnumerable<IEnumerable<Node>>
-    SearchInternalEdges(
+    InternalEdges(
       Instance instance,
       IEnumerable<ObservableList<Node>> population,
       ICollection<int> gains
@@ -146,7 +146,7 @@ internal sealed class GreedyLocalSearch : ISearch {
 
 
   private static IEnumerable<IEnumerable<Node>>
-    SearchVertices(
+    Vertices(
       Instance instance,
       IEnumerable<ObservableList<Node>> population,
       ICollection<int> gains
@@ -190,7 +190,7 @@ internal sealed class GreedyLocalSearch : ISearch {
   }
 
   private static IEnumerable<IEnumerable<Node>>
-    SearchInternalEdgesExternalVertices(
+    InternalEdgesExternalVertices(
       Instance instance,
       IEnumerable<ObservableList<Node>> population,
       ICollection<int> gains
@@ -234,7 +234,7 @@ internal sealed class GreedyLocalSearch : ISearch {
   }
 
   private static IEnumerable<IEnumerable<Node>>
-    SearchMixed(
+    Mixed(
       Instance instance,
       IEnumerable<ObservableList<Node>> population,
       ICollection<int> gains

@@ -22,12 +22,12 @@ internal sealed class GreedyRandomAdaptiveSearch : ISearch {
     return population.Length switch {
       < 0 => throw new ArgumentOutOfRangeException(nameof(configuration)),
       0   => Enumerable.Empty<IEnumerable<Node>>(),
-      _   => SearchMultiple(instance, population, timeLimit, gains),
+      _   => Multiple(instance, population, timeLimit, gains),
     };
   }
 
   private static IEnumerable<IEnumerable<Node>>
-    SearchMultiple(Instance instance, IEnumerable<ObservableList<Node>> population, float timeLimit, ICollection<int> gains) {
+    Multiple(Instance instance, IEnumerable<ObservableList<Node>> population, float timeLimit, ICollection<int> gains) {
     var enumerable = population.ToArray();
 
     var bestSolutions = enumerable.Select(solution => solution.ToList()).ToList();

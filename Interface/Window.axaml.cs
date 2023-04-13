@@ -166,6 +166,8 @@ public sealed partial class MainWindow : Window {
       new("Rozszerzanie cyklu z ważonym k-żalem", Algorithm.CycleExpansionWithKRegretAndWeight),
       new("Zachłanne sąsiedztwo", Algorithm.GreedyLocal),
       new("Strome sąsiedztwo", Algorithm.SteepestLocal),
+      new("Strome sąsiedztwo z pamięcią", Algorithm.SteepestMemory),
+      new("Strome sąsiedztwo z listą kandydatów", Algorithm.SteepestCandidates),
       new("Przypadkowe próbkowanie", Algorithm.Random),
       new("GRASP", Algorithm.RandomAdaptive)
     };

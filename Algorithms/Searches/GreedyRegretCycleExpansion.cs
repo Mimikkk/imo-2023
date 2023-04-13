@@ -21,14 +21,14 @@ internal sealed class GreedyRegretCycleExpansion : ISearch {
     return population.Length switch {
       < 0 => throw new ArgumentOutOfRangeException(nameof(configuration), "Population must be non-negative."),
       0   => Enumerable.Empty<IEnumerable<Node>>(),
-      1   => SearchSingle(instance, population.First(), start, regret),
-      2   => SearchDouble(instance, population.First(), population.Last(), start, regret),
-      _   => SearchMultiple(instance, population, regret)
+      1   => Single(instance, population.First(), start, regret),
+      2   => Double(instance, population.First(), population.Last(), start, regret),
+      _   => Multiple(instance, population, regret)
     };
   }
 
   private static IEnumerable<IEnumerable<Node>>
-    SearchSingle(Instance instance, ObservableList<Node> cycle, int? start, int regret) {
+    Single(Instance instance, ObservableList<Node> cycle, int? start, int regret) {
     cycle.Add(start is null ? Node.Choose(instance.Nodes) : instance.Nodes[start.Value]);
     cycle.Notify();
     cycle.Add(instance.Move.ClosestTo(cycle.First()));
@@ -43,7 +43,7 @@ internal sealed class GreedyRegretCycleExpansion : ISearch {
   }
 
   private static IEnumerable<IEnumerable<Node>>
-    SearchDouble(Instance instance, ObservableList<Node> first, ObservableList<Node> second, int? start,
+    Double(Instance instance, ObservableList<Node> first, ObservableList<Node> second, int? start,
       int regret) {
     first.Add(start is null ? Node.Choose(instance.Nodes) : instance.Nodes[start.Value]);
     first.Notify();
@@ -68,7 +68,7 @@ internal sealed class GreedyRegretCycleExpansion : ISearch {
   }
 
   private static IEnumerable<IEnumerable<Node>>
-    SearchMultiple(Instance instance, IEnumerable<ObservableList<Node>> cycles, int regret) {
+    Multiple(Instance instance, IEnumerable<ObservableList<Node>> cycles, int regret) {
     cycles = cycles.ToArray();
 
     foreach (var (cycle, point) in cycles.Zip(instance.Move.FindFurthest(cycles.Count()))) {

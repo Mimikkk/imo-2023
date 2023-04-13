@@ -21,14 +21,14 @@ internal sealed class GreedyWeightedRegretCycleExpansion : ISearch {
     return population.Length switch {
       < 0 => throw new ArgumentOutOfRangeException(nameof(configuration), "Population must be non-negative."),
       0   => Enumerable.Empty<IEnumerable<Node>>(),
-      1   => SearchSingle(instance, population.First(), start, regret, weight),
-      2   => SearchDouble(instance, population.First(), population.Last(), start, regret, weight),
-      _   => SearchMultiple(instance, population, regret, weight)
+      1   => Single(instance, population.First(), start, regret, weight),
+      2   => Double(instance, population.First(), population.Last(), start, regret, weight),
+      _   => Multiple(instance, population, regret, weight)
     };
   }
 
   private static IEnumerable<IEnumerable<Node>>
-    SearchSingle(Instance instance, ObservableList<Node> cycle, int? start, int regret, float weight) {
+    Single(Instance instance, ObservableList<Node> cycle, int? start, int regret, float weight) {
     cycle.Add(start is null ? Node.Choose(instance.Nodes) : instance.Nodes[start.Value]);
     cycle.Notify();
     cycle.Add(instance.Move.ClosestTo(cycle.First()));
@@ -43,7 +43,7 @@ internal sealed class GreedyWeightedRegretCycleExpansion : ISearch {
   }
 
   private static IEnumerable<IEnumerable<Node>>
-    SearchDouble(Instance instance, ObservableList<Node> first, ObservableList<Node> second, int? start,
+    Double(Instance instance, ObservableList<Node> first, ObservableList<Node> second, int? start,
       int regret,
       float weight) {
     first.Add(start is null ? Node.Choose(instance.Nodes) : instance.Nodes[start.Value]);
@@ -70,7 +70,7 @@ internal sealed class GreedyWeightedRegretCycleExpansion : ISearch {
   }
 
   private static IEnumerable<IEnumerable<Node>>
-    SearchMultiple(Instance instance, IEnumerable<ObservableList<Node>> cycles, int regret, float weight) {
+    Multiple(Instance instance, IEnumerable<ObservableList<Node>> cycles, int regret, float weight) {
     cycles = cycles.ToArray();
 
     foreach (var (cycle, point) in cycles.Zip(instance.Move.FindFurthest(cycles.Count()))) {
