@@ -5,7 +5,7 @@ using Domain.Structures.Instances;
 
 namespace Algorithms.Searches;
 
-internal sealed class SteepestCandidatesSearch : ISearch {
+internal sealed class SteepestCandidateSearch : ISearch {
   public static IEnumerable<IEnumerable<Node>>
     Search(Instance instance, ISearch.Configuration configuration) {
     var population = configuration.Population.ToArray();

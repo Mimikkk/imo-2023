@@ -55,7 +55,7 @@ public sealed class Algorithm : SmartEnum<Algorithm> {
 
   public static readonly Algorithm SteepestCandidates = new(
     DisplayType.Cycle,
-    SteepestCandidatesSearch.Search,
+    SteepestCandidateSearch.Search,
     usesInitializer: true,
     usesRegret: true,
     usesWeight: true

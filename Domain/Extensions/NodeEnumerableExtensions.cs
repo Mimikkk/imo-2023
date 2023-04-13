@@ -38,6 +38,30 @@ public static class NodeEnumerableExtensions {
     return Yield(previous, next).Contains(b);
   }
 
+
+  public enum Orientation { Before, After }
+  public static Orientation? OrientationOf(IList<Node> cycle, Node a, Node b) {
+    if (cycle.IsBefore(a, b)) return Orientation.Before;
+    if (cycle.IsBefore(b, a)) return Orientation.After;
+    return null;
+  }
+  public static Orientation? OrientationOf(IList<Node> cycle, (Node a, Node b) edge) => OrientationOf(cycle, edge.a, edge.b);
+
+  public static bool IsBefore(this IEnumerable<Node> cycle, Node a, Node b) {
+    var enumerable = cycle as Node[] ?? cycle.ToArray();
+    if (!enumerable.Contains(a) && enumerable.Contains(b)) return false;
+    var (previous, _, _) = enumerable.Neighbourhood(a);
+
+    return previous == b;
+  }
+  public static bool IsAfter(this IEnumerable<Node> cycle, Node a, Node b) {
+    var enumerable = cycle as Node[] ?? cycle.ToArray();
+    if (!enumerable.Contains(a) && enumerable.Contains(b)) return false;
+    var (_, _, next) = enumerable.Neighbourhood(a);
+
+    return next == b;
+  }
+
   public static Node PreviousTo(this IEnumerable<Node> cycle, Node node) {
     var nodes = cycle.ToList();
 
@@ -59,8 +83,8 @@ public static class NodeEnumerableExtensions {
   private static GeometricRelation CalculateRelation(Node a, Node b, Node c) =>
     ((float)(a.X - c.X) * (b.Y - c.Y) - (a.Y - c.Y) * (b.X - c.X)) switch {
       < 0.00001f and > -0.00001f => GeometricRelation.Collinear,
-      < 0 => GeometricRelation.RightOf,
-      _ => GeometricRelation.LeftOf
+      < 0                        => GeometricRelation.RightOf,
+      _                          => GeometricRelation.LeftOf
     };
 
   public static IEnumerable<Node> Hull(this IEnumerable<Node> nodes) {
