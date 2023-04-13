@@ -121,7 +121,7 @@ public sealed partial class MainWindow : Window {
           new("Wewnętrzna wymiana wierzchołków", "internal-vertices"),
           new("Wewnętrzna wymiana krawędzi", "internal-edges"),
           new("Wymiana wierzchołków", "vertices"),
-          new("Zewnętrzna Wymiana", "external"),
+          new("Zew. wym. wierzch. wraz z wew. wym. krawędzi", "external-vertices-internal-edges"),
           new("Mieszany", "mixed")
         }
       };
@@ -147,7 +147,7 @@ public sealed partial class MainWindow : Window {
             new("Wewnętrzna wymiana wierzchołków", "internal-vertices"),
             new("Wewnętrzna wymiana krawędzi", "internal-edges"),
             new("Wymiana wierzchołków", "vertices"),
-            new("Zewnętrzna Wymiana", "external"),
+            new("Zew. wym. wierzch. wraz z wew. wym. krawędzi", "external-vertices-internal-edges"),
             new("Mieszany", "mixed")
           }
         };

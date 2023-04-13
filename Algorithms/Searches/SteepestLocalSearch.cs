@@ -18,14 +18,14 @@ internal sealed class SteepestLocalSearch : ISearch {
     if (population.Flatten().Count() != instance.Dimension) initializer!.Search(instance, configuration);
 
     return (population.Length, variant) switch {
-      (< 0, _)                 => throw new ArgumentOutOfRangeException(nameof(configuration)),
-      (0, _)                   => Enumerable.Empty<IEnumerable<Node>>(),
-      (_, "internal-vertices") => SearchInternalVertices(instance, population, gains),
-      (_, "external-vertices") => SearchExternalVertices(instance, population, gains),
-      (_, "internal-edges")    => SearchInternalEdges(instance, population, gains),
-      (_, "vertices")          => SearchVertices(instance, population, gains),
-      (_, "external")          => SearchExternal(instance, population, gains),
-      (_, "mixed")             => SearchMixed(instance, population, gains),
+      (< 0, _)                                => throw new ArgumentOutOfRangeException(nameof(configuration)),
+      (0, _)                                  => Enumerable.Empty<IEnumerable<Node>>(),
+      (_, "internal-vertices")                => SearchInternalVertices(instance, population, gains),
+      (_, "external-vertices")                => SearchExternalVertices(instance, population, gains),
+      (_, "internal-edges")                   => SearchInternalEdges(instance, population, gains),
+      (_, "vertices")                         => SearchVertices(instance, population, gains),
+      (_, "external-vertices-internal-edges") => SearchInternalEdgesExternalVertices(instance, population, gains),
+      (_, "mixed")                            => SearchMixed(instance, population, gains),
     };
   }
 
@@ -141,24 +141,29 @@ internal sealed class SteepestLocalSearch : ISearch {
     var cycles = enumerable.Select(solution => solution.ToList()).ToList();
 
     while (true) {
-      var (a, b) = Moves.Candidates(cycles)
-        .MaxBy(p => {
-          var first = cycles.Find(cycle => cycle.Contains(p.a))!;
-          var second = cycles.Find(cycle => cycle.Contains(p.b))!;
-          return instance.Gain.ExchangeVertex(first, second, p.a, p.b);
-        });
-      var first = cycles.Find(cycle => cycle.Contains(a))!;
-      var second = cycles.Find(cycle => cycle.Contains(b))!;
+      var candidates = Moves.Candidates(cycles)
+        .Concat(cycles.SelectMany(Moves.Candidates))
+        .Select(edge => {
+          var first = cycles.Find(c => c.Contains(edge.a))!;
+          var second = cycles.Find(c => c.Contains(edge.b))!;
+          var gain = first == second
+            ? instance.Gain.ExchangeVertex(first, second, edge.a, edge.b)
+            : instance.Gain.ExchangeVertex(first, edge.a, edge.b);
 
-      var gain = instance.Gain.ExchangeVertex(first, second, a, b);
+          return (edge, first, second, gain);
+        });
+      var ((a, b), first, second, gain) = candidates.MaxBy(m => m.gain);
+
       if (gain <= 0) break;
       gains.Add(gain);
 
-      Moves.ExchangeVertex(first, second, a, b);
+      if (first == second) Moves.ExchangeVertex(first, a, b);
+      else Moves.ExchangeVertex(first, second, a, b);
+
       enumerable.Zip(cycles)
-        .ForEach(p => {
-          p.First.Fill(p.Second);
-          p.First.Notify();
+        .ForEach(pair => {
+          pair.First.Fill(pair.Second);
+          pair.First.Notify();
         });
     }
 
@@ -166,7 +171,7 @@ internal sealed class SteepestLocalSearch : ISearch {
   }
 
   private static IEnumerable<IEnumerable<Node>>
-    SearchExternal(
+    SearchInternalEdgesExternalVertices(
       Instance instance,
       IEnumerable<ObservableList<Node>> population,
       ICollection<int> gains
@@ -176,24 +181,30 @@ internal sealed class SteepestLocalSearch : ISearch {
     var cycles = enumerable.Select(solution => solution.ToList()).ToList();
 
     while (true) {
-      var (a, b) = Moves.Candidates(cycles)
-        .MaxBy(p => {
-          var first = cycles.Find(cycle => cycle.Contains(p.a))!;
-          var second = cycles.Find(cycle => cycle.Contains(p.b))!;
-          return instance.Gain.ExchangeVertex(first, second, p.a, p.b);
-        });
-      var first = cycles.Find(cycle => cycle.Contains(a))!;
-      var second = cycles.Find(cycle => cycle.Contains(b))!;
+      var candidates = Moves.Candidates(cycles)
+        .Concat(cycles.SelectMany(Moves.Candidates))
+        .Select(edge => {
+          var first = cycles.Find(c => c.Contains(edge.a))!;
+          var second = cycles.Find(c => c.Contains(edge.b))!;
 
-      var gain = instance.Gain.ExchangeVertex(first, second, a, b);
+          var gain = first == second
+            ? instance.Gain.ExchangeEdge(first, edge.a, edge.b)
+            : instance.Gain.ExchangeVertex(first, second, edge.a, edge.b);
+
+          return (edge, first, second, gain);
+        });
+      var ((a, b), first, second, gain) = candidates.MaxBy(m => m.gain);
+
       if (gain <= 0) break;
       gains.Add(gain);
 
-      Moves.ExchangeVertex(first, second, a, b);
+      if (first == second) Moves.ExchangeEdge(first, a, b);
+      else Moves.ExchangeVertex(first, second, a, b);
+
       enumerable.Zip(cycles)
-        .ForEach(p => {
-          p.First.Fill(p.Second);
-          p.First.Notify();
+        .ForEach(pair => {
+          pair.First.Fill(pair.Second);
+          pair.First.Notify();
         });
     }
 
