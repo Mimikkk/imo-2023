@@ -22,6 +22,11 @@ public static class NullableExtensions {
     return any;
   }
 
+  public static T Also<T, Y>(this T any, Func<T, Y> action, bool predicate = true) {
+    predicate.And(() => action(any));
+    return any;
+  }
+
   public static bool And(this bool predicate, Action action) {
     if (predicate) action();
     return predicate;

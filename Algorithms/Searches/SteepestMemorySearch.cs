@@ -30,37 +30,60 @@ internal sealed class SteepestMemorySearch : ISearch {
       IEnumerable<ObservableList<Node>> population,
       ICollection<int> gains
     ) {
-    throw new NotImplementedException();
     var enumerable = population.ToArray();
 
     var cycles = enumerable.Select(solution => solution.ToList()).ToList();
 
-    while (true) {
-      var candidates = Moves.Candidates(cycles)
-        .Concat(cycles.SelectMany(Moves.Candidates))
-        .Select(edge => {
-          var first = cycles.Find(c => c.Contains(edge.a))!;
-          var second = cycles.Find(c => c.Contains(edge.b))!;
+    var candidates = Moves.Candidates(cycles)
+      .Concat(cycles.SelectMany(Moves.Candidates))
+      .Select(candidate => {
+        var first = cycles.Find(c => c.Contains(candidate.a))!;
+        var second = cycles.Find(c => c.Contains(candidate.b))!;
 
-          var gain = first == second
-            ? instance.Gain.ExchangeEdge(first, edge.a, edge.b)
-            : instance.Gain.ExchangeVertex(first, second, edge.a, edge.b);
+        var gain = first == second
+          ? instance.Gain.ExchangeEdge(first, candidate.a, candidate.b)
+          : instance.Gain.ExchangeVertex(first, second, candidate.a, candidate.b);
 
-          return (edge, first, second, gain);
-        });
-      var ((a, b), first, second, gain) = candidates.MaxBy(m => m.gain);
+        return (edge: candidate, first, second, gain);
+      })
+      .Where(candidate => candidate.gain > 0)
+      .OrderByDescending(candidate => candidate.gain)
+      .ToList();
 
-      if (gain <= 0) break;
+    while (candidates.Count > 0) {
+      var ((a, b), first, second, gain) = candidates.MaxBy(m => m.gain).Also(candidates.Remove);
+
       gains.Add(gain);
+      if (first == second) {
+        Moves.ExchangeEdge(first, a, b);
+        // find moves to remove
+        // find new moves to evaluate
+        throw new NotImplementedException();
+      } else {
+        Moves.ExchangeVertex(first, second, a, b);
+        // find moves to remove
 
-      if (first == second) Moves.ExchangeEdge(first, a, b);
-      else Moves.ExchangeVertex(first, second, a, b);
+        var affected = first.Neighbourhood(b)
+          .Flat()
+          .Concat(first.Neighbourhood(a).Flat())
+          .Distinct()
+          .ToList();
+
+        foreach (var node in affected) {
+           
+        }
+
+        // find new moves to evaluate
+        throw new NotImplementedException();
+      }
 
       enumerable.Zip(cycles)
         .ForEach(pair => {
           pair.First.Fill(pair.Second);
           pair.First.Notify();
         });
+
+      candidates.Sort((a, b) => b.gain - a.gain);
     }
 
     return cycles;
