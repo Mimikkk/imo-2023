@@ -27,7 +27,7 @@ internal sealed class GreedyRandomAdaptiveSearch : ISearch {
   }
 
   private static IEnumerable<IEnumerable<Node>>
-    SearchMultiple(Instance instance, IEnumerable<ObservableList<Node>> population, float timeLimit, List<int> gains) {
+    SearchMultiple(Instance instance, IEnumerable<ObservableList<Node>> population, float timeLimit, ICollection<int> gains) {
     var enumerable = population.ToArray();
 
     var bestSolutions = enumerable.Select(solution => solution.ToList()).ToList();

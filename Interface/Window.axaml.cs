@@ -108,23 +108,24 @@ public sealed partial class MainWindow : Window {
         : I.Instance.Dimension;
       ParameterStartIndex.Value = Math.Min(ParameterStartIndex.Maximum, ParameterStartIndex.Value);
 
-      if (I.Algorithm.UsesVariant) {
-        var size = I.Parameter.PopulationSize;
+      if (!I.Algorithm.UsesVariant) return;
+      var size = I.Parameter.PopulationSize;
 
-        ParameterVariants.Items = size switch {
-          1 => new List<Option<string>> {
-            new("Wewnętrzna wymiana wierzchołków", "internal-vertices"),
-            new("Wewnętrzna wymiana krawędzi", "internal-edges")
-          },
-          _ => new List<Option<string>> {
-            new("Zewnętrzna wymiana wierzchołków", "external-vertices"),
-            new("Wewnętrzna wymiana wierzchołków", "internal-vertices"),
-            new("Wewnętrzna wymiana krawędzi", "internal-edges"),
-            new("Mieszany", "mixed")
-          }
-        };
-        ParameterVariants.SelectedIndex = 0;
-      }
+      ParameterVariants.Items = size switch {
+        1 => new List<Option<string>> {
+          new("Wewnętrzna wymiana wierzchołków", "internal-vertices"),
+          new("Wewnętrzna wymiana krawędzi", "internal-edges")
+        },
+        _ => new List<Option<string>> {
+          new("Zewnętrzna wymiana wierzchołków", "external-vertices"),
+          new("Wewnętrzna wymiana wierzchołków", "internal-vertices"),
+          new("Wewnętrzna wymiana krawędzi", "internal-edges"),
+          new("Wymiana wierzchołków", "vertices"),
+          new("Zewnętrzna Wymiana", "external"),
+          new("Mieszany", "mixed")
+        }
+      };
+      ParameterVariants.SelectedIndex = 0;
     };
 
     Algorithms.SelectionChanged += (_, _) => {
@@ -145,6 +146,8 @@ public sealed partial class MainWindow : Window {
             new("Zewnętrzna wymiana wierzchołków", "external-vertices"),
             new("Wewnętrzna wymiana wierzchołków", "internal-vertices"),
             new("Wewnętrzna wymiana krawędzi", "internal-edges"),
+            new("Wymiana wierzchołków", "vertices"),
+            new("Zewnętrzna Wymiana", "external"),
             new("Mieszany", "mixed")
           }
         };

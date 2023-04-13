@@ -20,15 +20,17 @@ internal sealed class SteepestLocalSearch : ISearch {
     return (population.Length, variant) switch {
       (< 0, _)                 => throw new ArgumentOutOfRangeException(nameof(configuration)),
       (0, _)                   => Enumerable.Empty<IEnumerable<Node>>(),
-      (_, "internal-vertices") => SearchMultipleInternalVertices(instance, population, gains),
-      (_, "external-vertices") => SearchMultipleExternalVertices(instance, population, gains),
-      (_, "internal-edges")    => SearchMultipleInternalEdges(instance, population, gains),
-      (_, "mixed")             => SearchMultipleMixed(instance, population, gains),
+      (_, "internal-vertices") => SearchInternalVertices(instance, population, gains),
+      (_, "external-vertices") => SearchExternalVertices(instance, population, gains),
+      (_, "internal-edges")    => SearchInternalEdges(instance, population, gains),
+      (_, "vertices")          => SearchVertices(instance, population, gains),
+      (_, "external")          => SearchExternal(instance, population, gains),
+      (_, "mixed")             => SearchMixed(instance, population, gains),
     };
   }
 
   private static IEnumerable<IEnumerable<Node>>
-    SearchMultipleExternalVertices(
+    SearchExternalVertices(
       Instance instance,
       IEnumerable<ObservableList<Node>> population,
       ICollection<int> gains
@@ -63,7 +65,7 @@ internal sealed class SteepestLocalSearch : ISearch {
   }
 
   private static IEnumerable<IEnumerable<Node>>
-    SearchMultipleInternalVertices(
+    SearchInternalVertices(
       Instance instance,
       IEnumerable<ObservableList<Node>> population,
       ICollection<int> gains
@@ -96,7 +98,7 @@ internal sealed class SteepestLocalSearch : ISearch {
   }
 
   private static IEnumerable<IEnumerable<Node>>
-    SearchMultipleInternalEdges(
+    SearchInternalEdges(
       Instance instance,
       IEnumerable<ObservableList<Node>> population,
       ICollection<int> gains
@@ -129,7 +131,77 @@ internal sealed class SteepestLocalSearch : ISearch {
   }
 
   private static IEnumerable<IEnumerable<Node>>
-    SearchMultipleMixed(
+    SearchVertices(
+      Instance instance,
+      IEnumerable<ObservableList<Node>> population,
+      ICollection<int> gains
+    ) {
+    var enumerable = population.ToArray();
+
+    var cycles = enumerable.Select(solution => solution.ToList()).ToList();
+
+    while (true) {
+      var (a, b) = Moves.Candidates(cycles)
+        .MaxBy(p => {
+          var first = cycles.Find(cycle => cycle.Contains(p.a))!;
+          var second = cycles.Find(cycle => cycle.Contains(p.b))!;
+          return instance.Gain.ExchangeVertex(first, second, p.a, p.b);
+        });
+      var first = cycles.Find(cycle => cycle.Contains(a))!;
+      var second = cycles.Find(cycle => cycle.Contains(b))!;
+
+      var gain = instance.Gain.ExchangeVertex(first, second, a, b);
+      if (gain <= 0) break;
+      gains.Add(gain);
+
+      Moves.ExchangeVertex(first, second, a, b);
+      enumerable.Zip(cycles)
+        .ForEach(p => {
+          p.First.Fill(p.Second);
+          p.First.Notify();
+        });
+    }
+
+    return cycles;
+  }
+
+  private static IEnumerable<IEnumerable<Node>>
+    SearchExternal(
+      Instance instance,
+      IEnumerable<ObservableList<Node>> population,
+      ICollection<int> gains
+    ) {
+    var enumerable = population.ToArray();
+
+    var cycles = enumerable.Select(solution => solution.ToList()).ToList();
+
+    while (true) {
+      var (a, b) = Moves.Candidates(cycles)
+        .MaxBy(p => {
+          var first = cycles.Find(cycle => cycle.Contains(p.a))!;
+          var second = cycles.Find(cycle => cycle.Contains(p.b))!;
+          return instance.Gain.ExchangeVertex(first, second, p.a, p.b);
+        });
+      var first = cycles.Find(cycle => cycle.Contains(a))!;
+      var second = cycles.Find(cycle => cycle.Contains(b))!;
+
+      var gain = instance.Gain.ExchangeVertex(first, second, a, b);
+      if (gain <= 0) break;
+      gains.Add(gain);
+
+      Moves.ExchangeVertex(first, second, a, b);
+      enumerable.Zip(cycles)
+        .ForEach(p => {
+          p.First.Fill(p.Second);
+          p.First.Notify();
+        });
+    }
+
+    return cycles;
+  }
+
+  private static IEnumerable<IEnumerable<Node>>
+    SearchMixed(
       Instance instance,
       IEnumerable<ObservableList<Node>> population,
       ICollection<int> gains
@@ -157,7 +229,7 @@ internal sealed class SteepestLocalSearch : ISearch {
             _                   => instance.Gain.ExchangeEdge(first, edge.a, edge.b)
           };
 
-          return (edge, first: first, second, operation, gain);
+          return (edge, first, second, operation, gain);
         });
       var ((a, b), first, second, operation, gain) = candidates.MaxBy(m => m.gain);
 
