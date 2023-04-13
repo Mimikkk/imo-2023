@@ -1,13 +1,12 @@
-using Algorithms.Structures;
 using Domain.Extensions;
 using Domain.Structures;
 using Domain.Structures.Instances;
 
-namespace Algorithms;
+namespace Algorithms.Searches;
 
-internal static class GreedyNearestNeighbour {
+internal sealed class GreedyNearestNeighbour : ISearch {
   public static IEnumerable<IEnumerable<Node>>
-    Search(this Instance instance, SearchConfiguration configuration) {
+    Search(Instance instance, ISearch.Configuration configuration) {
     var population = configuration.Population.ToArray();
     var start = configuration.Start;
 
@@ -16,15 +15,15 @@ internal static class GreedyNearestNeighbour {
 
     return population.Length switch {
       < 0 => throw new ArgumentOutOfRangeException(nameof(configuration)),
-      0 => Enumerable.Empty<IEnumerable<Node>>(),
-      1 => SearchSingle(instance, population.First(), start),
-      2 => SearchDouble(instance, population.First(), population.Last(), start),
-      _ => instance.SearchMultiple(population)
+      0   => Enumerable.Empty<IEnumerable<Node>>(),
+      1   => SearchSingle(instance, population.First(), start),
+      2   => SearchDouble(instance, population.First(), population.Last(), start),
+      _   => SearchMultiple(instance, population)
     };
   }
 
   private static IEnumerable<IEnumerable<Node>>
-    SearchSingle(this Instance instance, ObservableList<Node> path, int? start) {
+    SearchSingle(Instance instance, ObservableList<Node> path, int? start) {
     path.Add(start is null ? Node.Choose(instance.Nodes) : instance.Nodes[start.Value]);
     path.Notify();
 
@@ -37,7 +36,7 @@ internal static class GreedyNearestNeighbour {
   }
 
   private static IEnumerable<IEnumerable<Node>>
-    SearchDouble(this Instance instance, ObservableList<Node> first, ObservableList<Node> second, int? start) {
+    SearchDouble(Instance instance, ObservableList<Node> first, ObservableList<Node> second, int? start) {
     first.Add(start is null ? Node.Choose(instance.Nodes) : instance.Nodes[start.Value]);
     first.Notify();
     second.Add(instance.Move.FurthestTo(first.First()));
@@ -56,7 +55,7 @@ internal static class GreedyNearestNeighbour {
   }
 
   private static IEnumerable<IEnumerable<Node>>
-    SearchMultiple(this Instance instance, IEnumerable<ObservableList<Node>> paths) {
+    SearchMultiple(Instance instance, IEnumerable<ObservableList<Node>> paths) {
     paths = paths.ToArray();
 
     var points = instance.Move.FindFurthest(paths.Count());

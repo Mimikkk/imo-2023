@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Algorithms.Searches;
 using Algorithms.Structures;
 using Domain.Extensions;
 using Domain.Structures;
@@ -33,7 +34,7 @@ internal sealed record InteractionModule(MainWindow Self) {
 
     public Algorithm Initializer => Self.ParameterInitializers.SelectedItem.As<Option<Algorithm>>().Value;
 
-    public SearchConfiguration Configuration => new() {
+    public ISearch.Configuration Configuration => new() {
       Population = Times(PopulationSize, ObservableList<Node>.Create).ToList(),
       Regret = Regret,
       Start = StartIndex,

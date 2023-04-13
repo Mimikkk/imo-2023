@@ -1,10 +1,10 @@
+using Algorithms.Searches;
 using Ardalis.SmartEnum;
 using Domain.Structures;
 using Domain.Structures.Instances;
 
-namespace Algorithms.Structures;
-
-using SearchFn = Func<Instance, SearchConfiguration, IEnumerable<IEnumerable<Node>>>;
+namespace Algorithms.Structures {
+using SearchFn = Func<Instance, ISearch.Configuration, IEnumerable<IEnumerable<Node>>>;
 
 public sealed class Algorithm : SmartEnum<Algorithm> {
   public static readonly Algorithm NearestNeighbour = new(
@@ -80,10 +80,7 @@ public sealed class Algorithm : SmartEnum<Algorithm> {
     UsesVariant = usesVariant;
   }
 
-  public enum DisplayType {
-    Cycle,
-    Path
-  }
+  public enum DisplayType { Cycle, Path }
 
   public readonly bool UsesRegret;
   public readonly bool UsesWeight;
@@ -96,4 +93,5 @@ public sealed class Algorithm : SmartEnum<Algorithm> {
   public readonly SearchFn Search;
 
   public static implicit operator string(Algorithm algorithm) => algorithm.Name;
+}
 }

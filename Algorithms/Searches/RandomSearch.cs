@@ -1,13 +1,12 @@
-using Algorithms.Structures;
 using Domain.Extensions;
 using Domain.Structures;
 using Domain.Structures.Instances;
 
-namespace Algorithms;
+namespace Algorithms.Searches;
 
-internal static class RandomSearch {
+internal sealed class RandomSearch : ISearch {
   public static IEnumerable<IEnumerable<Node>>
-    Search(this Instance instance, SearchConfiguration configuration) {
+    Search(Instance instance, ISearch.Configuration configuration) {
     var population = configuration.Population.ToArray();
     var start = configuration.Start;
 
@@ -16,10 +15,10 @@ internal static class RandomSearch {
 
     return population.Length switch {
       < 0 => throw new ArgumentOutOfRangeException(nameof(configuration)),
-      0 => Enumerable.Empty<IEnumerable<Node>>(),
-      1 => SearchSingle(instance, population.First(), start),
-      2 => SearchDouble(instance, population.First(), population.Last(), start),
-      _ => SearchMultiple(instance, population)
+      0   => Enumerable.Empty<IEnumerable<Node>>(),
+      1   => SearchSingle(instance, population.First(), start),
+      2   => SearchDouble(instance, population.First(), population.Last(), start),
+      _   => SearchMultiple(instance, population)
     };
   }
 
@@ -56,7 +55,7 @@ internal static class RandomSearch {
   }
 
   private static IEnumerable<IEnumerable<Node>>
-    SearchMultiple(this Instance instance, IEnumerable<ObservableList<Node>> cycles) {
+    SearchMultiple(Instance instance, IEnumerable<ObservableList<Node>> cycles) {
     cycles = cycles.ToArray();
 
     foreach (var (cycle, point) in cycles.Zip(instance.Move.FindFurthest(cycles.Count()))) {

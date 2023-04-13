@@ -1,16 +1,15 @@
 using System.Diagnostics;
-using Algorithms.Structures;
 using Ardalis.SmartEnum;
 using Domain;
 using Domain.Extensions;
 using Domain.Structures;
 using Domain.Structures.Instances;
 
-namespace Algorithms;
+namespace Algorithms.Searches;
 
-internal static class GreedyRandomAdaptiveSearch {
+internal sealed class GreedyRandomAdaptiveSearch : ISearch {
   public static IEnumerable<IEnumerable<Node>>
-    Search(this Instance instance, SearchConfiguration configuration) {
+    Search(Instance instance, ISearch.Configuration configuration) {
     var population = configuration.Population.ToArray();
     var timeLimit = configuration.TimeLimit;
     var initializer = configuration.Initializer;

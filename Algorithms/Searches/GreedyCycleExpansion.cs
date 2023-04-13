@@ -1,13 +1,12 @@
-using Algorithms.Structures;
 using Domain.Extensions;
 using Domain.Structures;
 using Domain.Structures.Instances;
 
-namespace Algorithms;
+namespace Algorithms.Searches;
 
-internal static class GreedyCycleExpansion {
+internal sealed class GreedyCycleExpansion : ISearch {
   public static IEnumerable<IEnumerable<Node>>
-    Search(this Instance instance, SearchConfiguration configuration) {
+    Search(Instance instance, ISearch.Configuration configuration) {
     var population = configuration.Population.ToArray();
     var start = configuration.Start;
 
@@ -16,10 +15,10 @@ internal static class GreedyCycleExpansion {
 
     return population.Length switch {
       < 0 => throw new ArgumentOutOfRangeException(nameof(configuration)),
-      0 => Enumerable.Empty<IEnumerable<Node>>(),
-      1 => SearchSingle(instance, population.First(), start),
-      2 => SearchDouble(instance, population.First(), population.Last(), start),
-      _ => instance.SearchMultiple(population)
+      0   => Enumerable.Empty<IEnumerable<Node>>(),
+      1   => SearchSingle(instance, population.First(), start),
+      2   => SearchDouble(instance, population.First(), population.Last(), start),
+      _   => SearchMultiple(instance, population)
     };
   }
 
@@ -44,7 +43,7 @@ internal static class GreedyCycleExpansion {
     first.Notify();
     first.Add(instance.Move.ClosestTo(first.First()));
     first.Notify();
-    
+
     second.Add(instance.Move.FurthestTo(first.First()));
     second.Notify();
     second.Add(instance.Move.ClosestTo(second.First()));
@@ -63,7 +62,7 @@ internal static class GreedyCycleExpansion {
   }
 
   private static IEnumerable<IEnumerable<Node>>
-    SearchMultiple(this Instance instance, IEnumerable<ObservableList<Node>> cycles) {
+    SearchMultiple(Instance instance, IEnumerable<ObservableList<Node>> cycles) {
     cycles = cycles.ToArray();
 
     foreach (var (cycle, point) in cycles.Zip(instance.Move.FindFurthest(cycles.Count()))) {
