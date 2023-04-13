@@ -6,7 +6,7 @@ using Algorithms.Structures;
 using Domain;
 using Domain.Extensions;
 using Domain.Structures;
-using Interface.Types;
+using Interface.Structures;
 using ScottPlot;
 using ScottPlot.Palettes;
 

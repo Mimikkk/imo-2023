@@ -4,7 +4,6 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:ScottPlot="clr-namespace:ScottPlot.Avalonia;assembly=ScottPlot.Avalonia"
         xmlns:interface="clr-namespace:Interface"
-        xmlns:types="clr-namespace:Interface.Types"
         xmlns:domain="clr-namespace:Domain.Structures;assembly=Domain"
         xmlns:system="clr-namespace:System;assembly=System.Runtime"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"

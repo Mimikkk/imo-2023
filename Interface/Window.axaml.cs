@@ -7,7 +7,7 @@ using Domain;
 using Domain.Extensions;
 using Domain.Structures;
 using Interface.Modules;
-using Interface.Types;
+using Interface.Structures;
 
 namespace Interface;
 

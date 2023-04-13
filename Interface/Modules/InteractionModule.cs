@@ -4,7 +4,7 @@ using Algorithms.Structures;
 using Domain.Extensions;
 using Domain.Structures;
 using Domain.Structures.Instances;
-using Interface.Types;
+using Interface.Structures;
 
 namespace Interface.Modules;
 

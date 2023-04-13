@@ -13,4 +13,6 @@ public static class ListExtensions {
   public static bool ContainsAny<T>(this IList<T> list, IEnumerable<IEnumerable<T>> items) => items.Any(list.Contains);
   public static bool ContainsAny<T>(this IList<T> list, params T[] items) => items.Any(list.Contains);
   public static bool ContainsAny<T>(this IList<T> list, params T[][] items) => items.Any(list.Contains);
+
+  public static IList<T> AddWhen<T>(this IList<T> list, T item, bool predicate = false) => list.Also(_ => list.Add(item), predicate);
 }
