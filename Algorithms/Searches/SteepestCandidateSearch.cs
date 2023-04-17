@@ -1,3 +1,4 @@
+using System.Collections;
 using Domain;
 using Domain.Extensions;
 using Domain.Structures;
@@ -23,13 +24,30 @@ internal sealed class SteepestCandidateSearch : ISearch {
     };
   }
 
+  private static List<List<Node>> CreateCandidateMatrix(Instance instance, int size) {
+    var matrix = new List<List<Node>>(instance.Dimension);
+
+    for (var i = 0; i < matrix.Count; ++i) {
+      var vec = new List<(int distance, Node node)>(instance.Dimension);
+      for (var j = 0; j < matrix.Count; ++j) vec[j] = (instance[i, j], instance.Nodes[j]);
+      vec[i] = vec[i] with { distance = int.MaxValue };
+
+      vec.Sort((a, b) => b.distance - a.distance);
+
+      matrix.Add(vec.Take(size).Select(pair => pair.node).ToList());
+    }
+
+    return matrix;
+  }
+
   private static IEnumerable<IEnumerable<Node>>
     Multiple(
       Instance instance,
       IEnumerable<ObservableList<Node>> population,
       ICollection<int> gains
     ) {
-    throw new NotImplementedException();
+    var candidate_matrix = CreateCandidateMatrix(instance, 10);
+
     var enumerable = population.ToArray();
 
     var cycles = enumerable.Select(solution => solution.ToList()).ToList();
