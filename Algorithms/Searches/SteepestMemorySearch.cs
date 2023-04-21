@@ -54,7 +54,6 @@ internal sealed class SteepestMemorySearch : ISearch {
 
       for (var i = candidates.Count - 1; i >= 0; --i) {
         var candidate = candidates[i];
-
         var usable = IsUsable(candidate);
 
         if (usable == Usable.Yes) {
@@ -67,7 +66,7 @@ internal sealed class SteepestMemorySearch : ISearch {
           else Moves.ExchangeVertex(first, second, edge.a, edge.b);
 
           Notify(enumerable, cycles);
-          AddNewMoves(instance, cycles, candidates, candidate);
+          ConsiderMoves(instance, cycles, candidates, candidate);
 
           candidates.RemoveAt(i);
           break;
@@ -125,7 +124,7 @@ internal sealed class SteepestMemorySearch : ISearch {
     }
   }
 
-  private static void AddNewMoves(Instance instance, List<List<Node>> cycles,
+  private static void ConsiderMoves(Instance instance, List<List<Node>> cycles,
     List<(((Node a, Node b, Node c) va, (Node a, Node b, Node c) vb) neighbourhoods, (Node a, Node b) edge, List<Node>
       first, List<Node> second, int gain)> candidates,
     (((Node a, Node b, Node c) va, (Node a, Node b, Node c) vb) neighbourhoods, (Node a, Node b) edge, List<Node> first,
