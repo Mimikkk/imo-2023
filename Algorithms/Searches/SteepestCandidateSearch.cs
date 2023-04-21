@@ -44,17 +44,17 @@ internal sealed class SteepestCandidateSearch : ISearch {
     while (true) {
       ((List<Node> a, List<Node> b), (Node a, Node b), int gain)? best = null;
 
-      foreach (var candidate in candidates) {
-        var first = cycles.Find(c => c.Contains(candidate.a))!;
-        var second = cycles.Find(c => c.Contains(candidate.b))!;
+      foreach (var (a, b) in candidates) {
+        var first = cycles.Find(c => c.Contains(a))!;
+        var second = cycles.Find(c => c.Contains(b))!;
 
         if (first == second) {
-          var gain = instance.Gain.ExchangeEdge(first, candidate.a, candidate.b);
-          if (gain > 0 && (!best.HasValue || gain > best.Value.gain)) best = ((first, second), candidate, gain);
+          var gain = instance.Gain.ExchangeEdge(first, a, b);
+          if (gain > 0 && (!best.HasValue || gain > best.Value.gain)) best = ((first, second), (a, b), gain);
         }
         else {
-          var gain = instance.Gain.ExchangeVertex(first, second, candidate.a, candidate.b);
-          if (gain > 0 && (!best.HasValue || gain > best.Value.gain)) best = ((first, second), candidate, gain);
+          var gain = instance.Gain.ExchangeVertex(first, second, a, b);
+          if (gain > 0 && (!best.HasValue || gain > best.Value.gain)) best = ((first, second), (a, b), gain);
         }
       }
 
