@@ -39,64 +39,45 @@ internal sealed class SteepestCandidateSearch : ISearch {
     ) {
     var enumerable = population.ToArray();
     var cycles = enumerable.Select(solution => solution.ToList()).ToList();
-    var candidates = CreateCandidates(instance, 10);
+    var candidates = CreateCandidates(instance, 10).ToList();
 
     while (true) {
-      // TODO: Implement as a tuple not this fucking mess
-      (List<Node> a, List<Node> b)? best_cycle = null;
-      var best_gain = int.MinValue;
-      (Node a, Node b)? best_edge = null;
-      string? best_type = null;
-      
+      ((List<Node> a, List<Node> b), (Node a, Node b), int gain)? best = null;
+
       foreach (var candidate in candidates) {
         var first = cycles.Find(c => c.Contains(candidate.a))!;
         var second = cycles.Find(c => c.Contains(candidate.b))!;
 
         if (first == second) {
-
           var gain = instance.Gain.ExchangeEdge(first, candidate.a, candidate.b);
-          if (gain > best_gain) {
-            best_edge = candidate;
-            best_gain = gain;
-            best_cycle = (first, second);
-            best_type = "edge";
-          }
+          if (gain > 0 && (!best.HasValue || gain > best.Value.gain)) best = ((first, second), candidate, gain);
         }
         else {
           var gain = instance.Gain.ExchangeVertex(first, second, candidate.a, candidate.b);
-          if (gain > best_gain) {
-            best_edge = candidate;
-            best_gain = gain;
-            best_cycle = (first, second);
-            best_type = "vertex";
-          }
+          if (gain > 0 && (!best.HasValue || gain > best.Value.gain)) best = ((first, second), candidate, gain);
         }
       }
 
-      if (best_gain > 0) {
-        if (best_type == "edge") {
-          Moves.ExchangeEdge(best_cycle.Value.a, best_edge.Value.a, best_edge.Value.b);
-        }
+      if (best.HasValue) {
+        var ((first, second), (a, b), gain) = best.Value;
+        if (first == second) Moves.ExchangeEdge(first, a, b);
+        else Moves.ExchangeVertex(first, second, a, b);
 
-        if (best_type == "vertex") {
-          Moves.ExchangeVertex(best_cycle.Value.a, best_cycle.Value.b, best_edge.Value.a, best_edge.Value.b);
-        }
-
+        gains.Add(gain);
         Notify(enumerable, cycles);
       }
       else break;
     }
 
-    
 
     return cycles;
   }
-  private static void Notify(IEnumerable<ObservableList<Node>> observables, IEnumerable<List<Node>> cycles) {
-        observables.Zip(cycles)
-          .ForEach(p => {
-            p.First.Fill(p.Second);
-            p.First.Notify();
-          });
-      }
 
+  private static void Notify(IEnumerable<ObservableList<Node>> observables, IEnumerable<List<Node>> cycles) {
+    observables.Zip(cycles)
+      .ForEach(p => {
+        p.First.Fill(p.Second);
+        p.First.Notify();
+      });
+  }
 }
