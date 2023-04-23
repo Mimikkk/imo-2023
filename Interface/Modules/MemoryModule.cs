@@ -93,15 +93,15 @@ internal sealed record MemoryModule(MainWindow Self) {
     Console.WriteLine($"Score:");
     Console.WriteLine($"  \\multicolumn{{1}}{{c|}}{{{AverageScore.Value}}} &");
     Console.WriteLine($"  \\multicolumn{{1}}{{c|}}{{{WorstScore.Value}}} &");
-    Console.WriteLine($"  \\multicolumn{{1}}{{c|}}{{{BestScore.Value}}} {(I.Instance.Name == "kroA100" ? "&" : "\\\\")}");
+    Console.WriteLine($"  \\multicolumn{{1}}{{c|}}{{{BestScore.Value}}} {(I.Instance.Name == "kroA200" ? "&" : "\\\\")}");
     Console.WriteLine($"Gains:");
     Console.WriteLine($"  \\multicolumn{{1}}{{c|}}{{{AverageGain.Value}}} &");
     Console.WriteLine($"  \\multicolumn{{1}}{{c|}}{{{WorstGain.Value}}} &");
-    Console.WriteLine($"  \\multicolumn{{1}}{{c|}}{{{BestGain.Value}}} {(I.Instance.Name == "kroA100" ? "&" : "\\\\")}");
+    Console.WriteLine($"  \\multicolumn{{1}}{{c|}}{{{BestGain.Value}}} {(I.Instance.Name == "kroA200" ? "&" : "\\\\")}");
     Console.WriteLine($"Time:");
     Console.WriteLine($"  \\multicolumn{{1}}{{c|}}{{{AverageTime.Value}}} &");
     Console.WriteLine($"  \\multicolumn{{1}}{{c|}}{{{WorstTime.Value}}} &");
-    Console.WriteLine($"  \\multicolumn{{1}}{{c|}}{{{BestTime.Value}}} {(I.Instance.Name == "kroA100" ? "&" : "\\\\")}");
+    Console.WriteLine($"  \\multicolumn{{1}}{{c|}}{{{BestTime.Value}}} {(I.Instance.Name == "kroA200" ? "&" : "\\\\")}");
   }
 
   public readonly IPalette Palette = new Category10();
