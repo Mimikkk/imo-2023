@@ -84,7 +84,6 @@ internal sealed class SteepestMemorySearch : ISearch {
       List<Node> second, int gain) candidate) {
     var ((pva, pvb), edge, first, second, _) = candidate;
 
-    // Is applicable when both nodes are in not on the same cycle and the neighbourhoods are the same or inverted
     if (first != second) {
       if (
         (first.Contains(edge.a) && first.Contains(edge.b))
@@ -102,11 +101,8 @@ internal sealed class SteepestMemorySearch : ISearch {
 
       return Usable.No;
     }
-    // Is applicable when both nodes are in the same cycle and the neighbourhoods are the same or inverted
     else {
       if (!first.Contains(edge.a) || !first.Contains(edge.b)) return Usable.No;
-      // TODO: lacks memory of previous neighbourhood
-
       var cva = first.Neighbourhood(edge.a);
       var cvb = first.Neighbourhood(edge.b);
 
