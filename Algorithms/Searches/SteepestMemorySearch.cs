@@ -38,32 +38,38 @@ internal sealed class SteepestMemorySearch : ISearch {
         var first = cycles.Find(c => c.Contains(edge.a))!;
         var second = cycles.Find(c => c.Contains(edge.b))!;
 
-        var gain = first == second
-          ? instance.Gain.ExchangeEdge(first, edge.a, edge.b)
-          : instance.Gain.ExchangeVertex(first, second, edge.a, edge.b);
         var va = first.Neighbourhood(edge.a);
         var vb = second.Neighbourhood(edge.b);
-        return (neighbourhoods: (va, vb), edge, first, second, gain);
+        return (neighbourhoods: (va, vb), edge, first, second, gain: 0);
       })
-      .Where(candidate => candidate.gain > 0)
       .ToList();
 
     var hasMoved = true;
     while (hasMoved) {
-      candidates.Sort((a, b) => b.gain - a.gain);
-      candidates = candidates.Where(c => {
+      candidates = candidates
+        .Where(c => {
+          if (c.first == c.second && c.first.Contains(c.edge.a) && c.first.Contains(c.edge.b)) return true;
+          if (c.first != c.second && c.first.Contains(c.edge.a) && c.second.Contains(c.edge.b)) return true;
+          return false;
+        })
+        .Select(c => {
           var (_, edge, first, second, _) = c;
 
           var gain = first == second
             ? instance.Gain.ExchangeEdge(first, edge.a, edge.b)
             : instance.Gain.ExchangeVertex(first, second, edge.a, edge.b);
 
-          return gain > 0;
+          return c with { gain = gain };
         })
+        .Where(c => c.gain > 0)
         .DistinctBy(c => c.edge)
+        .OrderBy(c => c.gain)
         .ToList();
 
       hasMoved = false;
+      Console.WriteLine(candidates.Count);
+      Console.WriteLine(cycles.Sum(cycle => instance[cycle]));
+      Console.WriteLine();
 
       for (var i = candidates.Count - 1; i >= 0; --i) {
         var candidate = candidates[i];
