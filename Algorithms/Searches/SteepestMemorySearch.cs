@@ -67,9 +67,6 @@ internal sealed class SteepestMemorySearch : ISearch {
         .ToList();
 
       hasMoved = false;
-      Console.WriteLine(candidates.Count);
-      Console.WriteLine(cycles.Sum(cycle => instance[cycle]));
-      Console.WriteLine();
 
       for (var i = candidates.Count - 1; i >= 0; --i) {
         var candidate = candidates[i];
