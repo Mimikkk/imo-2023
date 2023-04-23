@@ -62,7 +62,7 @@ internal sealed class SteepestMemorySearch : ISearch {
           return c with { gain = gain };
         })
         .Where(c => c.gain > 0)
-        .DistinctBy(c => c.edge)
+        .DistinctBy(c => (c.edge, c.first, c.second))
         .OrderBy(c => c.gain)
         .ToList();
 
