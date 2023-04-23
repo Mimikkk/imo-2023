@@ -82,14 +82,17 @@ internal sealed record MemoryModule(MainWindow Self) {
     Self.ParameterStartIndex.Value = BestIndex;
     Self.HandleRunCommand();
     Self.Mod.Chart.Notify();
-    Self.Chart.Plot.Save($"{Self.Algorithms.SelectedItem.As<Option<Algorithm>>().Name}-{Self.ParameterInitializers.SelectedItem.As<Option<Algorithm>>().Name}-{I.Instance.Name}-{I.Parameter.Variant}-best");
+    Self.Chart.Plot.Save(
+      $"{Self.Algorithms.SelectedItem.As<Option<Algorithm>>().Name}-{Self.ParameterInitializers.SelectedItem.As<Option<Algorithm>>().Name}-{I.Instance.Name}-{I.Parameter.Variant}-best");
 
     Self.ParameterStartIndex.Value = WorstIndex;
     Self.HandleRunCommand();
     Self.Mod.Chart.Notify();
-    Self.Chart.Plot.Save($"{Self.Algorithms.SelectedItem.As<Option<Algorithm>>().Name}-{Self.ParameterInitializers.SelectedItem.As<Option<Algorithm>>().Name}-{I.Instance.Name}-{I.Parameter.Variant}-worst");
+    Self.Chart.Plot.Save(
+      $"{Self.Algorithms.SelectedItem.As<Option<Algorithm>>().Name}-{Self.ParameterInitializers.SelectedItem.As<Option<Algorithm>>().Name}-{I.Instance.Name}-{I.Parameter.Variant}-worst");
 
-    Self.Chart.Plot.Save($"{Self.Algorithms.SelectedItem.As<Option<Algorithm>>().Name}-{Self.ParameterInitializers.SelectedItem.As<Option<Algorithm>>().Name}-{I.Instance.Name}-{I.Parameter.Variant}-worst");
+    Self.Chart.Plot.Save(
+      $"{Self.Algorithms.SelectedItem.As<Option<Algorithm>>().Name}-{Self.ParameterInitializers.SelectedItem.As<Option<Algorithm>>().Name}-{I.Instance.Name}-{I.Parameter.Variant}-worst");
     Console.WriteLine($"Score:");
     Console.WriteLine($"  \\multicolumn{{1}}{{c|}}{{{AverageScore.Value}}} &");
     Console.WriteLine($"  \\multicolumn{{1}}{{c|}}{{{WorstScore.Value}}} &");
