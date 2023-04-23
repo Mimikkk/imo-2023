@@ -124,7 +124,7 @@ internal sealed class SteepestMemorySearch : ISearch {
 
       if ((pva.a == cva.a && pva.c == cva.c || pva.c == cva.a && pva.a == cva.c)
           && (pvb.a == cvb.c && pvb.c == cvb.a || pvb.a == cvb.c && pvb.c == cvb.a))
-        return Usable.No;
+        return Usable.Maybe;
 
       return Usable.No;
     }
