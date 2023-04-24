@@ -17,8 +17,8 @@ internal sealed class SteepestCandidateSearch : ISearch {
 
     return population.Length switch {
       < 0 => throw new ArgumentOutOfRangeException(nameof(configuration)),
-      0 => Enumerable.Empty<IEnumerable<Node>>(),
-      _ => Multiple(instance, population, gains),
+      0   => Enumerable.Empty<IEnumerable<Node>>(),
+      _   => Multiple(instance, population, gains),
     };
   }
 
@@ -48,11 +48,21 @@ internal sealed class SteepestCandidateSearch : ISearch {
         var first = cycles.Find(c => c.Contains(a))!;
         var second = cycles.Find(c => c.Contains(b))!;
 
-        var gain = first == second
-          ? instance.Gain.ExchangeEdge(first, a, b)
-          : instance.Gain.ExchangeVertex(first, second, a, b);
-
-        if (gain > 0 && (!best.HasValue || gain > best.Value.gain)) best = ((first, second), (a, b), gain);
+        if (first == second) {
+          var gain = instance.Gain.ExchangeEdge(first, a, b);
+          if (gain > 0 && (!best.HasValue || gain > best.Value.gain))
+            best = ((first, second), (a, b), gain);
+          gain = instance.Gain.ExchangeEdge(first, first.PreviousTo(a), first.PreviousTo(b));
+          if (gain > 0 && (!best.HasValue || gain > best.Value.gain))
+            best = ((first, second), (first.PreviousTo(a), first.PreviousTo(b)), gain);
+        } else {
+          var gain = instance.Gain.ExchangeVertex(first, second, first.NextTo(a), b);
+          if (gain > 0 && (!best.HasValue || gain > best.Value.gain))
+            best = ((first, second), (first.NextTo(a), b), gain);
+          gain = instance.Gain.ExchangeVertex(first, second, a, second.NextTo(b));
+          if (gain > 0 && (!best.HasValue || gain > best.Value.gain))
+            best = ((first, second), (a, second.NextTo(b)), gain);
+        }
       }
 
       if (best.HasValue) {
@@ -63,8 +73,7 @@ internal sealed class SteepestCandidateSearch : ISearch {
 
         gains.Add(gain);
         Notify(enumerable, cycles);
-      }
-      else break;
+      } else break;
     }
 
 
