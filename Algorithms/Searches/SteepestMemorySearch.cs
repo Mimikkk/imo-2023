@@ -40,7 +40,12 @@ internal sealed class SteepestMemorySearch : ISearch {
 
         var va = first.Neighbourhood(edge.a);
         var vb = second.Neighbourhood(edge.b);
-        return (neighbourhoods: (va, vb), edge, first, second, gain: 0);
+
+        var gain = first == second
+          ? instance.Gain.ExchangeEdge(first, edge.a, edge.b)
+          : instance.Gain.ExchangeVertex(first, second, edge.a, edge.b);
+        
+        return (neighbourhoods: (va, vb), edge, first, second, gain);
       })
       .ToList();
 
@@ -141,19 +146,19 @@ internal sealed class SteepestMemorySearch : ISearch {
             candidates.Add(((vn, vab), (node, va.b), second, second, gain));
           }
         }
-        
+
         gain = instance.Gain.ExchangeVertex(second, first, node, vb.a);
         if (gain > 0) {
           var vba = first.Neighbourhood(vb.a);
           candidates.Add(((vn, vba), (node, vb.a), second, first, gain));
         }
-        gain = instance.Gain.ExchangeVertex(second, first, node, vb.b); 
+        gain = instance.Gain.ExchangeVertex(second, first, node, vb.b);
         if (gain > 0) {
           var vbb = first.Neighbourhood(vb.b);
           candidates.Add(((vn, vbb), (node, vb.b), second, first, gain));
         }
       }
-      
+
       foreach (var node in first) {
         var vn = first.Neighbourhood(node);
         if (node != vb.a) {
@@ -170,7 +175,7 @@ internal sealed class SteepestMemorySearch : ISearch {
             candidates.Add(((vn, vbb), (node, vb.b), first, first, gain));
           }
         }
-        
+
         gain = instance.Gain.ExchangeVertex(first, second, node, va.a);
         if (gain > 0) {
           var vaa = second.Neighbourhood(va.a);
