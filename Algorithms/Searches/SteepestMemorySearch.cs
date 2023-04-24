@@ -200,19 +200,19 @@ internal sealed class SteepestMemorySearch : ISearch {
             var vac = second.Neighbourhood(va.c);
             candidates.Add(((vn, vac), (node, va.c), second, second, gain));
           }
-          if (node != va.b) {
-            gain = instance.Gain.ExchangeEdge(second, node, va.b);
-            if (gain > 0) {
-              var vab = second.Neighbourhood(va.b);
-              candidates.Add(((vn, vab), (node, va.b), second, second, gain));
-            }
+        }
+        if (node != va.b) {
+          gain = instance.Gain.ExchangeEdge(second, node, va.b);
+          if (gain > 0) {
+            var vab = second.Neighbourhood(va.b);
+            candidates.Add(((vn, vab), (node, va.b), second, second, gain));
           }
-          if (node != vb.b) {
-            gain = instance.Gain.ExchangeEdge(second, node, vb.b);
-            if (gain > 0) {
-              var vbb = first.Neighbourhood(vb.b);
-              candidates.Add(((vn, vbb), (node, vb.b), second, second, gain));
-            }
+        }
+        if (node != vb.b) {
+          gain = instance.Gain.ExchangeEdge(second, node, vb.b);
+          if (gain > 0) {
+            var vbb = first.Neighbourhood(vb.b);
+            candidates.Add(((vn, vbb), (node, vb.b), second, second, gain));
           }
         }
       }
