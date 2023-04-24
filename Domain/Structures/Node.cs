@@ -2,7 +2,7 @@ using ScottPlot;
 
 namespace Domain.Structures;
 
-public sealed record Node(int Index, int X, int Y) : IComparable {
+public readonly record struct Node(int Index, int X, int Y) : IComparable {
   public static IEnumerable<Node> From(IEnumerable<string> descriptors) =>
     descriptors
       .Select(descriptor => descriptor.Split(" ").Select(int.Parse).ToArray())
@@ -47,6 +47,8 @@ public sealed record Node(int Index, int X, int Y) : IComparable {
   public int CompareTo(object? obj) {
     return -1;
   }
+
+  public bool Equals(Node? other) => other is not null && other.Value.X == X && other.Value.Y == Y;
 
   public int CompareTo(Node node) =>
     node.X == X && Y == node.Y ? 0 : SquareMagnitude >= node.SquareMagnitude ? 1 : -1;

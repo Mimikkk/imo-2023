@@ -12,23 +12,22 @@ internal sealed record MouseModule(MainWindow Self) {
   }
 
   public void UpdateSelected() {
-    if (NotCloseEnough) return;
+    if (NotCloseEnough || !Closest.HasValue) return;
 
-    if (Selection.Contains(Closest)) {
-      if (Selection.First() == Closest) Selection.Remove(Closest);
-      else Selection.Swap(Selection[0], Closest);
-    }
-    else {
+    if (Selection.Contains(Closest.Value)) {
+      if (Selection.First() == Closest) Selection.Remove(Closest.Value);
+      else Selection.Swap(Selection[0], Closest.Value);
+    } else {
       Selection.Clear();
-      Selection.Add(Closest);
+      Selection.Add(Closest.Value);
     }
   }
 
   public void UpdateSelection() {
-    if (NotCloseEnough) return;
+    if (NotCloseEnough || !Closest.HasValue) return;
 
-    if (Selection.Contains(Closest)) Selection.Remove(Closest);
-    else Selection.Add(Closest);
+    if (Selection.Contains(Closest.Value)) Selection.Remove(Closest.Value);
+    else Selection.Add(Closest.Value);
   }
 
   public Node? Closest { get; private set; }
@@ -36,5 +35,5 @@ internal sealed record MouseModule(MainWindow Self) {
 
   private InteractionModule I => Self.Mod.Interaction;
   private Interaction CI => Self.Chart.Interaction;
-  private bool NotCloseEnough => Closest is null || CI.GetMouseCoordinates().DistanceTo(Closest) >= 125;
+  private bool NotCloseEnough => Closest is null || CI.GetMouseCoordinates().DistanceTo(Closest.Value) >= 125;
 }

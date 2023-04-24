@@ -9,7 +9,6 @@ internal sealed record TitleModule {
     _updates = new List<Func<string>> {
       () => M.Selection.FirstOrDefault() switch {
         var (index, x, y) => $"Wierzchołek - {index} - {x}x, {y}y",
-        null => "",
       },
       () => {
         if (M.Selection.Count < 1) return "";
