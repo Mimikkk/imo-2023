@@ -179,12 +179,11 @@ internal sealed class SteepestLocalSearch : ISearch {
     var enumerable = population.ToArray();
 
     var cycles = enumerable.Select(solution => solution.ToList()).ToList();
-    var candidates = Moves.Candidates(cycles)
-      .Concat(cycles.SelectMany(Moves.Candidates))
-      .ToList();
 
     while (true) {
-      var ((a, b), first, second, gain) = candidates.Select(edge => {
+      var candidates = Moves.Candidates(cycles)
+        .Concat(cycles.SelectMany(Moves.Candidates))
+        .Select(edge => {
           var first = cycles.Find(c => c.Contains(edge.a))!;
           var second = cycles.Find(c => c.Contains(edge.b))!;
 
@@ -193,8 +192,8 @@ internal sealed class SteepestLocalSearch : ISearch {
             : instance.Gain.ExchangeVertex(first, second, edge.a, edge.b);
 
           return (edge, first, second, gain);
-        })
-        .MaxBy(candidate => candidate.gain);
+        });
+      var ((a, b), first, second, gain) = candidates.MaxBy(m => m.gain);
 
       if (gain <= 0) break;
       gains.Add(gain);
