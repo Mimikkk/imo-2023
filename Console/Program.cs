@@ -1,13 +1,11 @@
-﻿// See https://aka.ms/new-console-template for more information
-
-using Algorithms.Searches;
+﻿using Algorithms.Searches;
 using Algorithms.Structures;
 using Domain;
 using Domain.Structures;
 using Domain.Structures.Instances;
 
 var search = Algorithm.SteepestLocal.Search;
-var instance = Instance.Predefined.KroA100;
+var instance = Instance.Predefined.KroA200;
 Globals.Random = new(42);
 
 var configuration = new ISearch.Configuration {
