@@ -47,22 +47,6 @@ internal sealed class SteepestMemorySearch : ISearch {
     var hasMoved = true;
     while (hasMoved) {
       candidates = candidates
-        .Where(c => {
-          if (c.first == c.second && c.first.Contains(c.edge.a) && c.first.Contains(c.edge.b)) return true;
-          if (c.first != c.second && c.first.Contains(c.edge.a) && c.second.Contains(c.edge.b)) return true;
-          return false;
-        })
-        .Select(c => {
-          var (_, edge, first, second, _) = c;
-
-          var gain = first == second
-            ? instance.Gain.ExchangeEdge(first, edge.a, edge.b)
-            : instance.Gain.ExchangeVertex(first, second, edge.a, edge.b);
-
-          return c with { gain = gain };
-        })
-        .Where(c => c.gain > 0)
-        .DistinctBy(c => (c.edge, c.first, c.second))
         .OrderBy(c => c.gain)
         .ToList();
 
@@ -137,29 +121,48 @@ internal sealed class SteepestMemorySearch : ISearch {
       List<Node> second, int gain) candidate) {
     var (_, edge, first, second, gain) = candidate;
 
-    if (first == second) {
-      var va = first.Neighbourhood(edge.a);
+    if (first != second) {
+      var va = second.Neighbourhood(edge.a);
       var vb = first.Neighbourhood(edge.b);
 
+      foreach (var node in second) {
+        var vn = second.Neighbourhood(node);
+        if (node != va.a) {
+          gain = instance.Gain.ExchangeEdge(second, node, va.a);
+          if (gain > 0) {
+            var vaa = second.Neighbourhood(va.a);
+            candidates.Add(((vn, vaa), (node, va.a), second, second, gain));
+          }
+        }
+        if (node != va.b) {
+          gain = instance.Gain.ExchangeEdge(second, node, va.b);
+          if (gain > 0) {
+            var vab = second.Neighbourhood(va.b);
+            candidates.Add(((vn, vab), (node, va.b), second, second, gain));
+          }
+        }
+        
+        gain = instance.Gain.ExchangeVertex(second, first, node, vb.a);
+        if (gain > 0) {
+          var vba = first.Neighbourhood(vb.a);
+          candidates.Add(((vn, vba), (node, vb.a), second, first, gain));
+        }
+        gain = instance.Gain.ExchangeVertex(second, first, node, vb.b); 
+        if (gain > 0) {
+          var vbb = first.Neighbourhood(vb.b);
+          candidates.Add(((vn, vbb), (node, vb.b), second, first, gain));
+        }
+      }
+      
       foreach (var node in first) {
         var vn = first.Neighbourhood(node);
-
-        if (node != va.c) {
-          gain = instance.Gain.ExchangeEdge(first, node, va.c);
+        if (node != vb.a) {
+          gain = instance.Gain.ExchangeEdge(first, node, vb.a);
           if (gain > 0) {
-            var vac = first.Neighbourhood(va.c);
-            candidates.Add(((vn, vac), (node, va.c), first, first, gain));
+            var vba = first.Neighbourhood(vb.a);
+            candidates.Add(((vn, vba), (node, vb.a), first, first, gain));
           }
         }
-
-        if (node != va.b) {
-          gain = instance.Gain.ExchangeEdge(first, node, va.b);
-          if (gain > 0) {
-            var vab = first.Neighbourhood(va.b);
-            candidates.Add(((vn, vab), (node, va.b), first, first, gain));
-          }
-        }
-
         if (node != vb.b) {
           gain = instance.Gain.ExchangeEdge(first, node, vb.b);
           if (gain > 0) {
@@ -167,97 +170,67 @@ internal sealed class SteepestMemorySearch : ISearch {
             candidates.Add(((vn, vbb), (node, vb.b), first, first, gain));
           }
         }
-      }
-
-      foreach (var cycle in cycles.Except(first)) {
-        foreach (var node in cycle) {
-          var vn = first.Neighbourhood(node);
-
-          gain = instance.Gain.ExchangeVertex(cycle, first, node, va.b);
-          if (gain > 0) {
-            var vab = first.Neighbourhood(va.b);
-            candidates.Add(((vn, vab), (node, va.b), cycle, first, gain));
-          }
-
-          gain = instance.Gain.ExchangeVertex(cycle, first, node, va.c);
-          if (gain > 0) {
-            var vac = first.Neighbourhood(va.c);
-            candidates.Add(((vn, vac), (node, va.c), cycle, first, gain));
-          }
-
-          gain = instance.Gain.ExchangeVertex(cycle, first, node, vb.b);
-          if (gain > 0) {
-            var vbb = first.Neighbourhood(vb.b);
-            candidates.Add(((vn, vbb), (node, vb.b), cycle, first, gain));
-          }
+        
+        gain = instance.Gain.ExchangeVertex(first, second, node, va.a);
+        if (gain > 0) {
+          var vaa = second.Neighbourhood(va.a);
+          candidates.Add(((vn, vaa), (node, va.a), first, second, gain));
+        }
+        gain = instance.Gain.ExchangeVertex(first, second, node, va.b);
+        if (gain > 0) {
+          var vab = second.Neighbourhood(va.b);
+          candidates.Add(((vn, vab), (node, va.b), first, second, gain));
         }
       }
     } else {
-      (first, second) = (second, first);
       var va = first.Neighbourhood(edge.a);
-      var vb = second.Neighbourhood(edge.b);
-
+      var vb = first.Neighbourhood(edge.b);
       foreach (var node in first) {
         var vn = first.Neighbourhood(node);
 
-        if (node != va.a) {
-          gain = instance.Gain.ExchangeEdge(first, node, va.a);
+        if (node != va.c) {
+          gain = instance.Gain.ExchangeEdge(second, node, va.c);
           if (gain > 0) {
-            var vaa = first.Neighbourhood(va.a);
-            candidates.Add(((vn, vaa), (node, va.a), first, first, gain));
+            var vac = second.Neighbourhood(va.c);
+            candidates.Add(((vn, vac), (node, va.c), second, second, gain));
           }
-        }
-
-        if (node != va.b) {
-          gain = instance.Gain.ExchangeEdge(first, node, va.b);
-          if (gain > 0) {
-            var vab = first.Neighbourhood(va.b);
-            candidates.Add(((vn, vab), (node, va.b), first, first, gain));
+          if (node != va.b) {
+            gain = instance.Gain.ExchangeEdge(second, node, va.b);
+            if (gain > 0) {
+              var vab = second.Neighbourhood(va.b);
+              candidates.Add(((vn, vab), (node, va.b), second, second, gain));
+            }
           }
-        }
-
-        gain = instance.Gain.ExchangeVertex(first, second, node, vb.a);
-        if (gain > 0) {
-          var vba = second.Neighbourhood(vb.a);
-          candidates.Add(((vn, vba), (node, vb.a), first, second, gain));
-        }
-
-        gain = instance.Gain.ExchangeVertex(first, second, node, vb.b);
-        if (gain > 0) {
-          var vbb = second.Neighbourhood(vb.b);
-          candidates.Add(((vn, vbb), (node, vb.b), first, second, gain));
+          if (node != vb.b) {
+            gain = instance.Gain.ExchangeEdge(second, node, vb.b);
+            if (gain > 0) {
+              var vbb = first.Neighbourhood(vb.b);
+              candidates.Add(((vn, vbb), (node, vb.b), second, second, gain));
+            }
+          }
         }
       }
 
+      second = cycles.Find(cycle => cycle != first);
+
+      if (second is null) return;
       foreach (var node in second) {
-        var vn = second.Neighbourhood(node);
+        var vn = first.Neighbourhood(node);
 
-        if (node != vb.a) {
-          gain = instance.Gain.ExchangeEdge(second, node, vb.a);
-          if (gain > 0) {
-            var vba = second.Neighbourhood(vb.a);
-            candidates.Add(((vn, vba), (node, vb.a), second, second, gain));
-          }
-        }
-
-        if (node != vb.b) {
-          gain = instance.Gain.ExchangeEdge(second, node, vb.b);
-          if (gain > 0) {
-            var vbb = second.Neighbourhood(vb.b);
-            candidates.Add(((vn, vbb), (node, vb.b), second, second, gain));
-          }
-        }
-
-        gain = instance.Gain.ExchangeVertex(first, second, node, vb.a);
+        gain = instance.Gain.ExchangeVertex(second, first, node, va.b);
         if (gain > 0) {
-          var vba = second.Neighbourhood(vb.a);
-          candidates.Add(((vn, vba), (node, vb.a), first, second, gain));
+          var vab = second.Neighbourhood(va.b);
+          candidates.Add(((vn, vab), (node, va.b), second, first, gain));
         }
-
-        gain = instance.Gain.ExchangeVertex(first, second, node, vb.b);
+        gain = instance.Gain.ExchangeVertex(second, first, node, va.c);
+        if (gain > 0) {
+          var vac = second.Neighbourhood(va.c);
+          candidates.Add(((vn, vac), (node, va.c), second, first, gain));
+        }
+        gain = instance.Gain.ExchangeVertex(second, first, node, vb.b);
         if (gain > 0) {
           var vbb = second.Neighbourhood(vb.b);
-          candidates.Add(((vn, vbb), (node, vb.b), first, second, gain));
+          candidates.Add(((vn, vbb), (node, vb.b), second, first, gain));
         }
       }
     }
