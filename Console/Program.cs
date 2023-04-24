@@ -5,13 +5,13 @@ using Domain.Structures;
 using Domain.Structures.Instances;
 
 var search = Algorithm.SteepestLocal.Search;
-var instance = Instance.Predefined.KroA100;
+var instance = Instance.Predefined.KroA200;
 Globals.Random = new(42);
 
 var configuration = new ISearch.Configuration {
   Initializer = Algorithm.Random,
   Population = Times(2, ObservableList<Node>.Create).ToList(),
-  Variant = "external-vertices-internal-edges"
+  Variant = "mixed"
 };
 
 var start = DateTime.Now;

@@ -38,19 +38,18 @@ internal sealed class SteepestLocalSearch : ISearch {
     var enumerable = population.ToArray();
 
     var cycles = enumerable.Select(solution => solution.ToList()).ToList();
-    var candidates = Moves.Candidates(cycles).ToArray();
 
     while (true) {
-      var (first, second, (a, b), gain) = candidates
-        .Select(candidate => {
-          var (a, b) = candidate;
-          var first = cycles.Find(cycle => cycle.Contains(a))!;
-          var second = cycles.Find(cycle => cycle.Contains(b))!;
+      var (a, b) = Moves.Candidates(cycles)
+        .MaxBy(p => {
+          var first = cycles.Find(cycle => cycle.Contains(p.a))!;
+          var second = cycles.Find(cycle => cycle.Contains(p.b))!;
+          return instance.Gain.ExchangeVertex(first, second, p.a, p.b);
+        });
+      var first = cycles.Find(cycle => cycle.Contains(a))!;
+      var second = cycles.Find(cycle => cycle.Contains(b))!;
 
-          return (first, second, candidate, gain: instance.Gain.ExchangeVertex(first, second, a, b));
-        })
-        .MaxBy(candidate => candidate.gain);
-
+      var gain = instance.Gain.ExchangeVertex(first, second, a, b);
       if (gain <= 0) break;
       gains.Add(gain);
 
@@ -74,17 +73,15 @@ internal sealed class SteepestLocalSearch : ISearch {
     var enumerable = population.ToArray();
 
     var cycles = enumerable.Select(solution => solution.ToList()).ToList();
-    var candidates = cycles.SelectMany(Moves.Candidates).ToArray();
 
     while (true) {
-      var ((a, b), cycle, gain) = candidates
+      var candidates = cycles.SelectMany(Moves.Candidates)
         .Select(edge => {
           var first = cycles.Find(c => c.Contains(edge.a))!;
 
           return (edge, first, gain: instance.Gain.ExchangeVertex(first, edge.a, edge.b));
-        })
-        .AsParallel()
-        .MaxBy(m => m.gain);
+        });
+      var ((a, b), cycle, gain) = candidates.MaxBy(m => m.gain);
 
       if (gain <= 0) break;
       gains.Add(gain);
@@ -109,17 +106,15 @@ internal sealed class SteepestLocalSearch : ISearch {
     var enumerable = population.ToArray();
 
     var cycles = enumerable.Select(solution => solution.ToList()).ToList();
-    var candidates = cycles.SelectMany(Moves.Candidates).ToArray();
 
     while (true) {
-      var ((a, b), cycle, gain) = candidates
+      var candidates = cycles.SelectMany(Moves.Candidates)
         .Select(edge => {
           var first = cycles.Find(c => c.Contains(edge.a))!;
 
           return (edge, first, gain: instance.Gain.ExchangeEdge(first, edge.a, edge.b));
-        })
-        .AsParallel()
-        .MaxBy(m => m.gain);
+        });
+      var ((a, b), cycle, gain) = candidates.MaxBy(m => m.gain);
 
       if (gain <= 0) break;
       gains.Add(gain);
@@ -144,12 +139,11 @@ internal sealed class SteepestLocalSearch : ISearch {
     var enumerable = population.ToArray();
 
     var cycles = enumerable.Select(solution => solution.ToList()).ToList();
-    var candidates = Moves.Candidates(cycles)
-      .Concat(cycles.SelectMany(Moves.Candidates))
-      .ToArray();
-      
+
     while (true) {
-      var ((a, b), first, second, gain) = candidates.Select(edge => {
+      var candidates = Moves.Candidates(cycles)
+        .Concat(cycles.SelectMany(Moves.Candidates))
+        .Select(edge => {
           var first = cycles.Find(c => c.Contains(edge.a))!;
           var second = cycles.Find(c => c.Contains(edge.b))!;
           var gain = first == second
@@ -157,9 +151,8 @@ internal sealed class SteepestLocalSearch : ISearch {
             : instance.Gain.ExchangeVertex(first, edge.a, edge.b);
 
           return (edge, first, second, gain);
-        })
-        .AsParallel()
-        .MaxBy(candidate => candidate.gain);
+        });
+      var ((a, b), first, second, gain) = candidates.MaxBy(m => m.gain);
 
       if (gain <= 0) break;
       gains.Add(gain);
@@ -188,7 +181,7 @@ internal sealed class SteepestLocalSearch : ISearch {
     var cycles = enumerable.Select(solution => solution.ToList()).ToList();
     var candidates = Moves.Candidates(cycles)
       .Concat(cycles.SelectMany(Moves.Candidates))
-      .ToArray();
+      .ToList();
 
     while (true) {
       var ((a, b), first, second, gain) = candidates.Select(edge => {
@@ -201,7 +194,6 @@ internal sealed class SteepestLocalSearch : ISearch {
 
           return (edge, first, second, gain);
         })
-        .AsParallel()
         .MaxBy(candidate => candidate.gain);
 
       if (gain <= 0) break;
@@ -229,12 +221,11 @@ internal sealed class SteepestLocalSearch : ISearch {
     var enumerable = population.ToArray();
 
     var cycles = enumerable.Select(solution => solution.ToList()).ToList();
-    var candidates = Moves.Candidates(cycles)
-      .Concat(cycles.SelectMany(Moves.Candidates))
-      .ToArray();
 
     while (true) {
-      var ((a, b), first, second, operation, gain) = candidates.Select(edge => {
+      var candidates = Moves.Candidates(cycles)
+        .Concat(cycles.SelectMany(Moves.Candidates))
+        .Select(edge => {
           var first = cycles.Find(c => c.Contains(edge.a))!;
           var second = cycles.Find(c => c.Contains(edge.b))!;
 
@@ -251,9 +242,8 @@ internal sealed class SteepestLocalSearch : ISearch {
           };
 
           return (edge, first, second, operation, gain);
-        })
-        .AsParallel()
-        .MaxBy(candidate => candidate.gain);
+        });
+      var ((a, b), first, second, operation, gain) = candidates.MaxBy(m => m.gain);
 
       if (gain <= 0) break;
       gains.Add(gain);

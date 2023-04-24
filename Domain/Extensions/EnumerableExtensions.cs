@@ -38,17 +38,11 @@ public static class EnumerableExtensions {
 
   public static IEnumerable<IEnumerable<T>> Combinations<T>(this IEnumerable<T> items, int k) {
     if (k == 0) return Yield(Enumerable.Empty<T>());
+    if (!items.Any()) return Enumerable.Empty<IEnumerable<T>>();
 
-    var enumerable = items as T[] ?? items.ToArray();
-    if (!enumerable.Any()) return Enumerable.Empty<IEnumerable<T>>();
-
-    return Enumerable
-      .Range(0, 1 << enumerable.Length)
-      .Select(index => enumerable
-        .Where((_, i) => (index & (1 << i)) != 0)
-        .ToArray()
-      )
-      .Where(c => c.Length == k);
+    var head = items.First();
+    var tail = items.Skip(1);
+    return tail.Combinations(k - 1).Select(x => new[] { head }.Concat(x)).Concat(tail.Combinations(k));
   }
 
   public static IEnumerable<T> Shuffle<T>(this IEnumerable<T> items) => items.OrderBy(_ => Globals.Random.Next());
@@ -70,14 +64,24 @@ public static class EnumerableExtensions {
   }
 
   public static (T a, T b) First2<T>(this IEnumerable<T> items) {
-    var enumerable = items.ToArray();
+    using var it = items.GetEnumerator();
+    it.MoveNext();
+    var a = it.Current;
+    it.MoveNext();
+    var b = it.Current;
 
-    return (enumerable[0], enumerable[1]);
+    return (a, b);
   }
 
   public static (T a, T b, T c) First3<T>(this IEnumerable<T> items) {
-    var enumerable = items.ToArray();
+    using var it = items.GetEnumerator();
+    it.MoveNext();
+    var a = it.Current;
+    it.MoveNext();
+    var b = it.Current;
+    it.MoveNext();
+    var c = it.Current;
 
-    return (enumerable[0], enumerable[1], enumerable[2]);
+    return (a, b, c);
   }
 }

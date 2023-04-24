@@ -44,5 +44,5 @@ public readonly record struct Node(int Index, int X, int Y) {
   public static Node operator -(Node first, Node other) => first + -other;
   public static Node operator +(Node first, Node other) => new(-1, first.X + other.X, first.Y + other.Y);
 
-  public bool Equals(Node? other) => other is not null && other.Value.Index == Index;
+  public bool Equals(Node? other) => other is not null && other.Value.X == X && other.Value.Y == Y;
 }
