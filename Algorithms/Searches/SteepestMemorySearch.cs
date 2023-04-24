@@ -44,9 +44,10 @@ internal sealed class SteepestMemorySearch : ISearch {
         var gain = first == second
           ? instance.Gain.ExchangeEdge(first, edge.a, edge.b)
           : instance.Gain.ExchangeVertex(first, second, edge.a, edge.b);
-        
+
         return (neighbourhoods: (va, vb), edge, first, second, gain);
       })
+      .Where(c => c.gain > 0)
       .ToList();
 
     var hasMoved = true;
