@@ -1,4 +1,3 @@
-using Domain.Extensions;
 using Domain.Structures;
 using Domain.Structures.Instances;
 
@@ -24,7 +23,7 @@ internal sealed class GreedyNearestNeighbour : ISearch {
 
   private static IEnumerable<IEnumerable<Node>>
     Single(Instance instance, ObservableList<Node> path, int? start) {
-    path.Add(start is null ? Node.Choose(instance.Nodes) : instance.Nodes[start.Value]);
+    path.Add(start is null ? Globals.Random.Choose(instance.Nodes) : instance.Nodes[start.Value]);
     path.Notify();
 
     while (path.Count < instance.Dimension) {
@@ -37,7 +36,7 @@ internal sealed class GreedyNearestNeighbour : ISearch {
 
   private static IEnumerable<IEnumerable<Node>>
     Double(Instance instance, ObservableList<Node> first, ObservableList<Node> second, int? start) {
-    first.Add(start is null ? Node.Choose(instance.Nodes) : instance.Nodes[start.Value]);
+    first.Add(start is null ? Globals.Random.Choose(instance.Nodes) : instance.Nodes[start.Value]);
     first.Notify();
     second.Add(instance.Move.FurthestTo(first.First()));
     second.Notify();

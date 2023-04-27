@@ -53,7 +53,7 @@ public sealed record Moves(Instance Instance) {
     except ??= new List<Node>();
 
     return count < 2
-      ? Yield(Node.Choose(Instance.Nodes)).Except(except)
+      ? Yield(Globals.Random.Choose(Instance.Nodes)).Except(except)
       : Instance.Nodes.Hull().Except(except).Combinations(count)
         .MaxBy(nodes => nodes.Edges().Sum(edge => Instance[edge]))!;
   }

@@ -1,4 +1,3 @@
-using Domain.Extensions;
 using Domain.Structures;
 using Domain.Structures.Instances;
 
@@ -24,11 +23,11 @@ internal sealed class RandomSearch : ISearch {
 
   private static IEnumerable<IEnumerable<Node>>
     Single(Instance instance, ObservableList<Node> cycle, int? start) {
-    cycle.Add(start is null ? Node.Choose(instance.Nodes) : instance.Nodes[start.Value]);
+    cycle.Add(start is null ? Globals.Random.Choose(instance.Nodes) : instance.Nodes[start.Value]);
     cycle.Notify();
 
     while (cycle.Count < instance.Dimension) {
-      cycle.Add(Node.Choose(instance.Nodes.Except(cycle)));
+      cycle.Add(Globals.Random.Choose(instance.Nodes.Except(cycle)));
       cycle.Notify();
     }
 
@@ -37,17 +36,17 @@ internal sealed class RandomSearch : ISearch {
 
   private static IEnumerable<IEnumerable<Node>>
     Double(Instance instance, ObservableList<Node> first, ObservableList<Node> second, int? start) {
-    first.Add(start is null ? Node.Choose(instance.Nodes) : instance.Nodes[start.Value]);
+    first.Add(start is null ? Globals.Random.Choose(instance.Nodes) : instance.Nodes[start.Value]);
     first.Notify();
     second.Add(instance.Move.FurthestTo(first.First()));
     second.Notify();
 
     while (true) {
       if (first.Count + second.Count == instance.Dimension) break;
-      first.Add(Node.Choose(instance.Nodes.Except(first).Except(second)));
+      first.Add(Globals.Random.Choose(instance.Nodes.Except(first).Except(second)));
       first.Notify();
       if (first.Count + second.Count == instance.Dimension) break;
-      second.Add(Node.Choose(instance.Nodes.Except(first).Except(second)));
+      second.Add(Globals.Random.Choose(instance.Nodes.Except(first).Except(second)));
       second.Notify();
     }
 
@@ -67,7 +66,7 @@ internal sealed class RandomSearch : ISearch {
 
     while (true) {
       foreach (var cycle in cycles) {
-        cycle.Add(Node.Choose(instance.Nodes.Except(cycles.Flatten())));
+        cycle.Add(Globals.Random.Choose(instance.Nodes.Except(cycles.Flatten())));
         cycle.Notify();
         if (++count == instance.Dimension) return cycles;
       }

@@ -1,4 +1,3 @@
-using Domain.Extensions;
 using Domain.Structures;
 using Domain.Structures.Instances;
 
@@ -29,7 +28,7 @@ internal sealed class GreedyWeightedRegretCycleExpansion : ISearch {
 
   private static IEnumerable<IEnumerable<Node>>
     Single(Instance instance, ObservableList<Node> cycle, int? start, int regret, float weight) {
-    cycle.Add(start is null ? Node.Choose(instance.Nodes) : instance.Nodes[start.Value]);
+    cycle.Add(start is null ? Globals.Random.Choose(instance.Nodes) : instance.Nodes[start.Value]);
     cycle.Notify();
     cycle.Add(instance.Move.ClosestTo(cycle.First()));
     cycle.Notify();
@@ -46,7 +45,7 @@ internal sealed class GreedyWeightedRegretCycleExpansion : ISearch {
     Double(Instance instance, ObservableList<Node> first, ObservableList<Node> second, int? start,
       int regret,
       float weight) {
-    first.Add(start is null ? Node.Choose(instance.Nodes) : instance.Nodes[start.Value]);
+    first.Add(start is null ? Globals.Random.Choose(instance.Nodes) : instance.Nodes[start.Value]);
     first.Notify();
     first.Add(instance.Move.ClosestTo(first.First()));
     first.Notify();

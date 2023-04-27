@@ -1,4 +1,3 @@
-using Domain.Extensions;
 using Domain.Structures;
 using Domain.Structures.Instances;
 
